@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-login',
@@ -30,13 +31,20 @@ import { CommonModule } from '@angular/common';
                 </div>
             </div>
 
-            <button class="google-signin-button" (click)="signInWithGoogle()" type="button">
+            <button 
+                class="google-signin-button" 
+                (click)="signInWithGoogle()" 
+                type="button"
+                [disabled]="isLoading"
+            >
                 <img 
                     src="assets/google-buttons/web_dark_rd_ctn@4x.png" 
                     alt="Continue with Google"
                     class="google-button-image"
+                    [style.opacity]="isLoading ? '0.6' : '1'"
                 />
             </button>
+            <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
             <div class="login-footer">
                 Authorized RPR Communications LLC personnel only.
             </div>
@@ -139,25 +147,42 @@ import { CommonModule } from '@angular/common';
         font-size: 11px;
         color: var(--text-secondary);
     }
+    .error-message {
+        color: #ef4444;
+        font-size: 14px;
+        margin: 16px 0;
+        padding: 12px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 8px;
+        text-align: center;
+    }
+    .google-signin-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
   `]
 })
 export class LoginComponent {
     // AG-LESSON: Entry point for RPR COMMUNICATIONS LLC Google Workspace login.
+    
+    private authService = inject(AuthService);
+    
+    isLoading = false;
+    errorMessage = '';
 
-    signInWithGoogle(): void {
-        // AG-LESSON: Stub for Google Workspace SSO / OAuth2 integration.
-        // TODO: Implement Firebase Google Auth when Firebase is configured
-        // Example implementation:
-        // try {
-        //   const provider = new GoogleAuthProvider();
-        //   const result = await signInWithPopup(this.auth, provider);
-        //   this.router.navigate(['/dashboard']);
-        // } catch (error) {
-        //   console.error('Google sign-in error:', error);
-        // }
-        console.log('Google sign-in clicked - Stub');
-        if (typeof window !== 'undefined') {
-            window.location.href = '/dashboard';
+    async signInWithGoogle(): Promise<void> {
+        this.isLoading = true;
+        this.errorMessage = '';
+        
+        try {
+            await this.authService.signInWithGoogle();
+            // Navigation is handled by AuthService
+        } catch (error: any) {
+            console.error('Sign-in error:', error);
+            this.errorMessage = error.message || 'Failed to sign in. Please try again.';
+        } finally {
+            this.isLoading = false;
         }
     }
 }
