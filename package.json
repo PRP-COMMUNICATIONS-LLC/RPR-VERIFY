@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4200",
     "build": "ng build",
     "build:local": "ng build",
     "vercel-build": "npm run build && mkdir -p .vercel/output/static && cp -R dist/rpr-client-portal/* .vercel/output/static",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,
@@ -38,11 +39,14 @@
     "@angular/build": "^21.0.2",
     "@angular/cli": "^21.0.2",
     "@angular/compiler-cli": "^21.0.0",
+    "angular-eslint": "21.0.1",
     "autoprefixer": "^10.4.22",
+    "eslint": "^9.39.1",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.2",
+    "typescript-eslint": "8.46.4",
     "vitest": "^4.0.8"
   }
 }

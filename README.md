@@ -69,8 +69,8 @@ When deploying (e.g. Vercel, Netlify, Firebase Hosting), use:
   ```
 
 - **Output directory:**
-  `dist/rpr-client-portal`  
-  (this is defined in `angular.json` as `outputPath` for the `build` target)
+  `dist/rpr-client-portal/browser`  
+  (Angular 21's application builder outputs files in a `browser` subdirectory)
 
 ## Vercel Deployment
 
@@ -83,7 +83,9 @@ npm install
 npm run build
 ```
 
-Confirm that `dist/rpr-client-portal/index.html` exists. You can test it by right-clicking the file in WebStorm and selecting "Open in Browser".
+Confirm that `dist/rpr-client-portal/browser/index.html` exists. You can test it by right-clicking the file in WebStorm and selecting "Open in Browser".
+
+> **Note:** Angular 21's new `@angular/build:application` builder outputs publicly accessible files in a `browser` subdirectory. This is why Vercel must point to `dist/rpr-client-portal/browser`.
 
 ### Step 2: Verify Repository Configuration
 
@@ -114,7 +116,7 @@ Ensure these files are correctly configured (they should already be):
   "version": 2,
   "framework": "angular",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/rpr-client-portal",
+  "outputDirectory": "dist/rpr-client-portal/browser",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
@@ -130,7 +132,7 @@ In your Vercel dashboard:
    - **Framework Preset:** `Angular`
    - **Build Command:** `npm run build`
    - **Install Command:** `npm install` (default)
-   - **Output Directory:** `dist/rpr-client-portal`
+   - **Output Directory:** `dist/rpr-client-portal/browser`
 3. Click **Save**
 
 ### Step 4: Deploy
@@ -155,9 +157,10 @@ Vercel will automatically trigger a new deployment. You can also manually redepl
 If you get `404: NOT_FOUND` errors:
 
 1. **Check Build Logs:** Review the deployment logs in Vercel to ensure the build succeeded
-2. **Verify Output Directory:** Confirm `dist/rpr-client-portal/index.html` was created during the build
+2. **Verify Output Directory:** Confirm `dist/rpr-client-portal/browser/index.html` was created during the build (note the `/browser` subdirectory)
 3. **Check Rewrites:** The `vercel.json` rewrites ensure Angular routing works (client-side navigation won't 404)
 4. **Framework Preset:** Make sure "Angular" is selected in Vercel settings
+5. **Output Directory Setting:** Ensure Vercel is configured to use `dist/rpr-client-portal/browser` (not just `dist/rpr-client-portal`)
 
 If issues persist after following all steps above, check:
 - The exact Vercel project URL
@@ -206,6 +209,35 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## Troubleshooting
+
+### Deployment shows Angular starter screen instead of CIS UI
+
+If your deployed app shows the Angular welcome page with "Hello, rpr-client-portal" instead of the dashboard:
+
+1. **Check `app.html`**: Ensure it contains only your application shell (header + `<router-outlet>`) and not the Angular starter template
+2. **Verify standalone components**: All feature components must have `standalone: true` in their `@Component` decorator
+3. **Check routes**: Confirm `app.routes.ts` maps the default path (`''`) to `DashboardComponent`
+4. **Inspect browser console**: Open DevTools → Console and check for errors related to missing imports or standalone configuration
+5. **Verify build output**: After running `npm run build`, check that `dist/rpr-client-portal/browser/index.html` exists and contains your actual app code
+
+### Deployment shows blank or old page
+
+1. **Confirm build output path**: Ensure hosting configuration points to the correct `dist` folder
+2. **For Firebase Hosting**: Check `firebase.json` has `"public": "dist/rpr-client-portal/browser"`
+3. **For Vercel**: Ensure "Output Directory" in project settings is `dist/rpr-client-portal/browser`
+4. **Clear browser cache**: Hard-refresh with Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
+5. **Redeploy**: After fixing configuration, trigger a new deployment
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Antigravity Usage
+
+Antigravity must treat `ANTIGRAVITY-RPR-VERIFY-IDE-RULES.md` as its source of truth for workspace hygiene, brand tokens, logo asset, and prompting discipline.
+
+All AG commands should follow the AG-COMMAND template and must not introduce unapproved UI design. 
+
+**Mandatory Output Format:**
+Antigravity must follow the "Copy-to-Clipboard" format (Section 3.4 of the rules doc), returning all implementation code and reasoning in a single fenced code block.

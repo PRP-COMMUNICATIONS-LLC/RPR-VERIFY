@@ -41,3 +41,42 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# --- Antigravity Managed Rules ---
+# See ANTIGRAVITY-RPR-VERIFY-IDE-RULES.md
+
+# --- Build Artifacts ---
+dist/
+build/
+out/
+
+# --- Tooling Caches ---
+.angular/
+.firebase/
+.sass-cache/
+
+# --- Generated Reports ---
+qodana-report/
+coverage/
+
+# --- Manual Backups & Temporary Files ---
+BACKUP-*/
+*.backup.js
+*.bak
+*.old
+*.tmp
+
+# --- Standard Dependencies ---
+node_modules/
+
+# --- OS System Files ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log*

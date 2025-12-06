@@ -5,14 +5,14 @@
       <p class="text-slate-400 mt-1">Reviewing evidence and timeline for resolution.</p>
     </div>
     <div class="flex items-center gap-4">
-      <button class="px-6 py-2 bg-rpr-green/20 text-rpr-green rounded-full border border-rpr-green/30 font-medium hover:bg-rpr-green/30 transition">Resolve</button>
+      <button class="btn-primary resolve-dispute-button px-6 py-2 font-medium transition">Resolve</button>
       <button class="px-6 py-2 bg-rpr-red/20 text-rpr-red rounded-full border border-rpr-red/30 font-medium hover:bg-rpr-red/30 transition">Escalate</button>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Column 1: Timeline -->
-    <div class="bg-rpr-800 border border-rpr-700 rounded-2xl p-6">
+    <div class="timeline-panel rounded-2xl p-6">
       <h3 class="text-lg font-medium text-white mb-6">Timeline</h3>
       <div class="relative space-y-8">
         <!-- Vertical Line -->
@@ -65,7 +65,7 @@
     </div>
 
     <!-- Column 2: Evidence -->
-    <div class="bg-rpr-800 border border-rpr-700 rounded-2xl p-6">
+    <div class="evidence-panel rounded-2xl p-6">
       <h3 class="text-lg font-medium text-white mb-6">Evidence</h3>
       <div class="space-y-4">
         <div class="flex items-center justify-between p-4 bg-rpr-900 rounded-lg border border-rpr-700">
@@ -76,7 +76,7 @@
               <p class="text-sm text-slate-400">2.1 MB</p>
             </div>
           </div>
-          <button class="text-rpr-teal text-sm font-medium hover:underline">View</button>
+          <button class="file-action">View</button>
         </div>
         <div class="flex items-center justify-between p-4 bg-rpr-900 rounded-lg border border-rpr-700">
           <div class="flex items-center gap-3">
@@ -86,7 +86,7 @@
               <p class="text-sm text-slate-400">512 KB</p>
             </div>
           </div>
-          <button class="text-rpr-teal text-sm font-medium hover:underline">View</button>
+          <button class="file-action">View</button>
         </div>
          <div class="flex items-center justify-between p-4 bg-rpr-900 rounded-lg border border-rpr-700">
           <div class="flex items-center gap-3">
@@ -96,13 +96,13 @@
               <p class="text-sm text-slate-400">850 KB</p>
             </div>
           </div>
-          <button class="text-rpr-teal text-sm font-medium hover:underline">View</button>
+          <button class="file-action">View</button>
         </div>
       </div>
     </div>
 
     <!-- Column 3: Outcomes -->
-    <div class="bg-rpr-800 border border-rpr-700 rounded-2xl p-6">
+    <div class="outcomes-panel rounded-2xl p-6">
       <h3 class="text-lg font-medium text-white mb-6">Decision & Outcome</h3>
       <div class="space-y-4">
         <div class="p-4 bg-rpr-900 rounded-lg border border-rpr-700 text-center">
@@ -113,7 +113,7 @@
             <label for="decision-notes" class="text-sm font-medium text-slate-300">Notes for Action</label>
             <textarea id="decision-notes" rows="4" class="w-full bg-rpr-900 border border-rpr-700 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-rpr-teal" placeholder="Enter required actions or justifications..."></textarea>
         </div>
-        <button class="w-full py-3 bg-rpr-teal text-rpr-900 font-bold rounded-lg hover:bg-rpr-teal/80 transition">Submit Decision</button>
+        <button class="btn-primary outcome-submit-button w-full py-3 font-bold transition">Submit Decision</button>
       </div>
     </div>
   </div>

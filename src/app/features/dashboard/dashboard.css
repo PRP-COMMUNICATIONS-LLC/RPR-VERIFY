@@ -1,0 +1,38 @@
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.04em;
+}
+
+.dashboard-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #00D9CC; /* same teal accent as charts */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ensure any old overview text style is not used */
+.overview-text {
+  display: none;
+}
+
+.metric-card,
+.chart-card,
+.dashboard-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+}
+
+.metric-card h3,
+.metric-card .metric-label {
+  color: #FFFFFF;
+}
+
+.metric-card .metric-caption {
+  color: #00D9CC;            /* teal for "Last 30 Days" etc. */
+}
+
