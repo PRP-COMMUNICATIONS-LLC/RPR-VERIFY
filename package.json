@@ -9,8 +9,7 @@
     "vercel-build": "ng build --configuration production && node scripts/prepare-vercel-output.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint",
-    "postinstall": "npm install --legacy-peer-deps"
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,
