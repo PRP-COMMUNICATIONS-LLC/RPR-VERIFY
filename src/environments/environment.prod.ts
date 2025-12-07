@@ -10,7 +10,7 @@ export const environment = {
     measurementId: "G-L36FVSRC6C"
   },
   googleDrive: {
-    clientId: "1060972638787-7lijsof1o1ii1rumr703o8toj6gnrpr3.apps.googleusercontent.com",
+    clientId: "1060972638787-kacfsegdfd030q6pb88jcbo4end6t4c4.apps.googleusercontent.com",
     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
     scopes: [
       'https://www.googleapis.com/auth/drive.file',
