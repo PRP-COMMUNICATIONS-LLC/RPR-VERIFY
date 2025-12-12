@@ -1,0 +1,78 @@
+<div class="space-y-8">
+  <div class="flex justify-between items-center">
+    <h2 class="text-3xl font-bold text-white tracking-tight">Cases</h2>
+    <div class="flex items-center gap-4">
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="Search cases..."
+          class="w-64 pl-10 pr-4 py-2 bg-rpr-800 border border-rpr-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-rpr-teal"
+        />
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+        </span>
+      </div>
+      <select class="px-4 py-2 bg-rpr-800 border border-rpr-700 rounded-full text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-rpr-teal">
+        <option>Status: All</option>
+        <option>Pending</option>
+        <option>In Review</option>
+        <option>Resolved</option>
+      </select>
+      <select class="px-4 py-2 bg-rpr-800 border border-rpr-700 rounded-full text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-rpr-teal">
+        <option>Risk Level: All</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bg-rpr-900 border border-rpr-700 rounded-2xl overflow-hidden">
+    <table class="w-full text-sm text-left">
+      <thead class="bg-rpr-800 text-slate-400 uppercase tracking-wider">
+        <tr>
+          <th class="p-4">Case ID</th>
+          <th class="p-4">Subject</th>
+          <th class="p-4">Status</th>
+          <th class="p-4">Risk Level</th>
+          <th class="p-4">Date</th>
+          <th class="p-4">Assigned To</th>
+          <th class="p-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (case of cases(); track case.id) {
+          <tr class="border-b border-rpr-700 hover:bg-rpr-800/50 transition-colors">
+            <td class="p-4 text-white font-medium">{{ case.id }}</td>
+            <td class="p-4">{{ case.subject }}</td>
+            <td class="p-4">
+                <span class="px-2 py-1 rounded-full text-xs font-medium" 
+                      [class]="{
+                        'bg-yellow-500/20 text-yellow-400': case.status === 'Pending',
+                        'bg-blue-500/20 text-blue-400': case.status === 'In Review',
+                        'bg-rpr-green/20 text-rpr-green': case.status === 'Resolved'
+                      }">
+                  {{ case.status }}
+                </span>
+            </td>
+            <td class="p-4">
+              <span class="px-2 py-1 rounded-full text-xs font-medium"
+                    [class]="{
+                      'bg-rpr-red/20 text-rpr-red': case.risk === 'High',
+                      'bg-orange-500/20 text-orange-400': case.risk === 'Medium',
+                      'bg-rpr-green/20 text-rpr-green': case.risk === 'Low'
+                    }">
+                {{ case.risk }}
+              </span>
+            </td>
+            <td class="p-4 text-slate-400">{{ case.date }}</td>
+            <td class="p-4 text-slate-400">{{ case.assignedTo }}</td>
+            <td class="p-4 text-right">
+                <button class="text-rpr-teal hover:underline">View</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

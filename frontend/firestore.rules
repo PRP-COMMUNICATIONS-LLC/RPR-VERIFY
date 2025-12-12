@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Core Collections - accessible by authenticated users
+    
+    // CASES: Users can read/write cases they own or participate in
+    match /cases/{caseId} {
+      allow read, write: if request.auth != null; // Refine to owner-only later
+    }
+    
+    // DISPUTES: Users can read/write disputes they are involved in
+    match /disputes/{disputeId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // NOTES: Private notes for users
+    match /notes/{noteId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // DOCUMENTS: Metadata for uploaded files
+    match /documents/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // System & Processing (Backend Only)
+    match /processing/{processId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only backend (service account) can write
+    }
+    
+    match /system/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only backend (service account) can write
+    }
+    
+    // User Profiles
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

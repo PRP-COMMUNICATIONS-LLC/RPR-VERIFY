@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   AG-MANAGED: BRAND TOKENS (DO NOT EDIT WITHOUT DESIGN DOC)
+   Source: DOCS/ANTIGRAVITY-RPR-VERIFY-IDE-RULES.md
+   ========================================================================== */
+
+:root {
+  --rpr-midnight: #020712;
+  --rpr-ink: #050815;
+  --rpr-cyan: #00e0ff;
+  --rpr-electric-blue: #0099ff;
+  --rpr-white: #ffffff;
+  --rpr-light-gray: #e5e5e5;
+  --rpr-mid-gray: #808080;
+  --rpr-alert-red: #ff3366;
+  /* AG-MANAGED: Theme refinement */
+  --rpr-soft-black: #02040a;
+  
+  /* Unified panel colors for all cards/holders */
+  --panel-bg: #13171F;         /* unified card/holder background */
+  --panel-border: #1D2938;     /* subtle border */
+  
+  /* Network status colors (strict two-state: healthy or down) */
+  --network-ok: #00E6CC;       /* teal for healthy */
+  --network-down: #FF5252;     /* red for down/critical */
+  
+  /* Primary accent colors (teal matching sidebar/logo) */
+  --accent-primary: #00D9CC;   /* teal for primary buttons */
+  --accent-hover: #00FFF0;     /* lighter teal for hover state */
+  
+  /* Login page colors */
+  --bg-primary: #000000;       /* page background */
+  --card-bg: #13171F;          /* login card background */
+  --border: #1D2938;           /* card + input borders */
+  --text-primary: #FFFFFF;     /* headings, labels */
+  --text-secondary: #B4BCC8;   /* helper text, placeholders */
+}
+
+/* Typography Helper Classes */
+.rpr-heading {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.rpr-body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.rpr-label {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #00e0ff;
+}
+
+body {
+  /* AG-LESSON: Global background forced to solid black per Founder spec. */
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  @apply text-slate-50 antialiased;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+app-root,
+.app-root {
+  background-color: #000000;
+}
+
+/* AG-LESSON: Default button background set to grey (#555555) per Founder spec (subject to later change). */
+button,
+.btn,
+.button {
+  background-color: #555555;
+  color: #ffffff;
+}
+
+h1,
+h2 {
+  font-weight: 700;
+}
+
+h3,
+h4 {
+  font-weight: 600;
+}
+
+strong,
+b,
+.font-medium {
+  font-weight: 500;
+}
+
+/* Network status indicator pattern (two-state: ok or down) */
+.network-status.ok {
+  color: var(--network-ok);
+}
+
+.network-status.down {
+  color: var(--network-down);
+}
+
+/* Primary buttons: Resolve Dispute, Submit, etc. */
+.btn-primary,
+.resolve-dispute-button,
+.outcome-submit-button {
+  background: var(--accent-primary);
+  color: #000000;
+  border-radius: 8px;
+  border: none;
+}
+
+.btn-primary:hover,
+.resolve-dispute-button:hover,
+.outcome-submit-button:hover {
+  background: var(--accent-hover);
+}
