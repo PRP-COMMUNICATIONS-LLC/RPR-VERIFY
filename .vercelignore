@@ -1,7 +1,0 @@
-flask_app.py
-requirements.txt
-Dockerfile
-cloud-deploy.sh
-/src/
-/templates/
-/data/
