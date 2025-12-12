@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Information Sheet - BUSINESS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --border-color: #CCCCCC;
+            --bg-light: #F5F5F5;
+            --bg-highlight: #F9F9F9;
+            --screen-bg: #525659;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: var(--primary-color);
+            background: var(--screen-bg);
+        }
+
+        .page-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: white;
+            padding: 15mm;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 4px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0;
+            font-family: 'League Spartan', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .customer-type-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 13pt;
+            font-weight: 600;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            background-color: var(--bg-light);
+            padding: 5px 10px;
+            border-left: 5px solid var(--primary-color);
+            font-family: 'League Spartan', sans-serif;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            font-size: 11pt;
+            font-weight: 600;
+            margin: 10px 0 8px 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 9pt;
+        }
+
+        th {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: left;
+            padding: 8px;
+            border: 1px solid var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        /* Page breaks */
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+            height: 0;
+            margin: 0;
+            border: none;
+        }
+
+        /* Supporting Documents */
+        .supporting-document {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 20mm;
+        }
+
+        .supporting-document.page-break-before {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .document-header h2 {
+            margin: 0;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .section-label {
+            font-size: 9pt;
+            color: var(--secondary-color);
+            text-align: right;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .supporting-document img,
+        .document-image {
+            display: block;
+            width: 170mm;
+            height: auto;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            border: 1px solid var(--border-color);
+            margin: 10px 0;
+        }
+
+        .caption {
+            font-size: 9pt;
+            color: var(--secondary-color);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Print styles */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            body {
+                background: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-container {
+                margin: 0;
+                padding: 15mm;
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                page-break-after: always;
+                break-after: page;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page 1: Data Tables -->
+    <div class="page-container">
+        <div class="header">
+            <h1>CUSTOMER INFORMATION SHEET (C.I.S)</h1>
+            <div class="customer-type-label">BUSINESS</div>
+        </div>
+
+        <h2>Proof of Identity</h2>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Primary Identification Document</td>
+                <td><span id="val-identity-doc">Australian Driver's License</span></td>
+            </tr>
+            <tr>
+                <td>Licence Number</td>
+                <td><span id="val-identity-number">350015</span></td>
+            </tr>
+            <tr>
+                <td>Date of Birth</td>
+                <td><span id="val-identity-dob">11 Jan 1955</span></td>
+            </tr>
+            <tr>
+                <td>Expiry Date</td>
+                <td><span id="val-identity-expiry">18 Apr 2026</span></td>
+            </tr>
+        </table>
+
+        <h2>Proof of Residence</h2>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Document Type</td>
+                <td><span id="val-residence-doc">Utility Bill</span></td>
+            </tr>
+            <tr>
+                <td>Residential Address</td>
+                <td><span id="val-residence-address">15 BUCHANAN RISE, COOGEE WA 6166</span></td>
+            </tr>
+            <tr>
+                <td>Issue Date</td>
+                <td><span id="val-residence-date">20 JAN 2025</span></td>
+            </tr>
+        </table>
+
+        <h2>Account Holder Verification</h2>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Account Name</td>
+                <td><span id="val-account-name">G & DM POP</span></td>
+            </tr>
+            <tr>
+                <td>BSB</td>
+                <td><span id="val-account-bsb">012-345</span></td>
+            </tr>
+            <tr>
+                <td>Account Number</td>
+                <td><span id="val-account-number">678912345</span></td>
+            </tr>
+            <tr>
+                <td>Statement Period</td>
+                <td><span id="val-account-period">60 DAYS</span></td>
+            </tr>
+        </table>
+
+        <h2>ABN Verification</h2>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Entity Name</td>
+                <td><span id="val-abn-entity">The Trustee for THE ARDEAL TRADING TRUST</span></td>
+            </tr>
+            <tr>
+                <td>ABN</td>
+                <td><span id="val-abn-number">16 920 472 163</span></td>
+            </tr>
+            <tr>
+                <td>Trustee Name</td>
+                <td><span id="val-abn-trustee">ARDUIN, MICHAEL ANTHONY</span></td>
+            </tr>
+            <tr>
+                <td>Trading Name</td>
+                <td><span id="val-abn-trading">ARDEAL CONCRETE CONTRACTORS</span></td>
+            </tr>
+        </table>
+
+        <div class="page-footer"
+            style="border-top: 1px solid #CCCCCC; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #333333;">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- Page 2: Proof of Identity -->
+    <div class="page-container">
+        <div class="document-header">
+            <h2>Proof of Identity</h2>
+            <div class="section-label">SUPPORTING DOCUMENTS</div>
+        </div>
+        <h3>Driver's License</h3>
+        <table>
+            <tr>
+                <th>Metadata</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Filename</td>
+                <td>PROOF-OF-IDENTIFICATION.jpg</td>
+            </tr>
+            <tr>
+                <td>Document Type</td>
+                <td>Australian Driver's License</td>
+            </tr>
+            <tr>
+                <td>Processing Date</td>
+                <td>01 December 2025</td>
+            </tr>
+            <tr>
+                <td>Verification Status</td>
+                <td>VERIFIED</td>
+            </tr>
+        </table>
+        <img id="img-proof-identity" src="" alt="Driver's License" class="document-image">
+        <p class="caption">Scanned Document: Driver's License</p>
+
+        <div class="page-footer"
+            style="border-top: 1px solid #CCCCCC; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #333333; position: absolute; bottom: 15mm; left: 15mm; right: 15mm;">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- Page 3: Proof of Residence -->
+    <div class="page-container">
+        <div class="document-header">
+            <h2>Proof of Residence</h2>
+            <div class="section-label">SUPPORTING DOCUMENTS</div>
+        </div>
+        <h3>Utility Bill</h3>
+        <table>
+            <tr>
+                <th>Metadata</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Filename</td>
+                <td>PROOF-OF-ADDRESS.jpg</td>
+            </tr>
+            <tr>
+                <td>Document Type</td>
+                <td>Utility Bill</td>
+            </tr>
+            <tr>
+                <td>Processing Date</td>
+                <td>01 December 2025</td>
+            </tr>
+            <tr>
+                <td>Verification Status</td>
+                <td>VERIFIED</td>
+            </tr>
+        </table>
+        <img id="img-proof-residence" src="" alt="Utility Bill" class="document-image">
+        <p class="caption">Scanned Document: Proof of Address</p>
+
+        <div class="page-footer"
+            style="border-top: 1px solid #CCCCCC; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #333333; position: absolute; bottom: 15mm; left: 15mm; right: 15mm;">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- Page 4: Bank Statement -->
+    <div class="page-container">
+        <div class="document-header">
+            <h2>Account Holder Verification</h2>
+            <div class="section-label">SUPPORTING DOCUMENTS</div>
+        </div>
+        <h3>Bank Statement</h3>
+        <table>
+            <tr>
+                <th>Metadata</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Filename</td>
+                <td>BANK-STATEMENT.pdf</td>
+            </tr>
+            <tr>
+                <td>Document Type</td>
+                <td>Bank Statement</td>
+            </tr>
+            <tr>
+                <td>Processing Date</td>
+                <td>01 December 2025</td>
+            </tr>
+            <tr>
+                <td>Verification Status</td>
+                <td>VERIFIED</td>
+            </tr>
+        </table>
+        <img id="img-bank-statement" src="" alt="Bank Statement" class="document-image">
+        <p class="caption">Scanned Document: Bank Statement</p>
+
+        <div class="page-footer"
+            style="border-top: 1px solid #CCCCCC; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #333333; position: absolute; bottom: 15mm; left: 15mm; right: 15mm;">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- Page 5: ABN Verification -->
+    <div class="page-container">
+        <div class="document-header">
+            <h2>ABN Verification</h2>
+            <div class="section-label">SUPPORTING DOCUMENTS</div>
+        </div>
+        <h3>ABN Certificate</h3>
+        <table>
+            <tr>
+                <th>Metadata</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Filename</td>
+                <td>ABN-VERIFICATION.jpg</td>
+            </tr>
+            <tr>
+                <td>Document Type</td>
+                <td>ABN Certificate</td>
+            </tr>
+            <tr>
+                <td>Processing Date</td>
+                <td>01 December 2025</td>
+            </tr>
+            <tr>
+                <td>Verification Status</td>
+                <td>VERIFIED</td>
+            </tr>
+        </table>
+        <img id="img-abn" src="" alt="ABN Certificate" class="document-image">
+        <p class="caption">Scanned Document: ABN Verification</p>
+
+        <div class="page-footer"
+            style="border-top: 1px solid #CCCCCC; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #333333; position: absolute; bottom: 15mm; left: 15mm; right: 15mm;">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+</body>
+<script>
+    // Base64 Image Data
+    const BASE64_IMAGES = {
+        "PROOF-OF-IDENTIFICATION": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w==",
+        "PROOF-OF-ADDRESS": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w==",
+        "ABN-VERIFICATION": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w==",
+        "BANK-ACCOUNT-VERIFICATION": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w=="
+    };
+
+    // Sample Data (matching original hardcoded values)
+    const REPORT_DATA = {
+        identity: {
+            doc: "Australian Driver's License",
+            number: "350015",
+            dob: "11 Jan 1955",
+            expiry: "18 Apr 2026"
+        },
+        residence: {
+            doc: "Utility Bill",
+            address: "15 BUCHANAN RISE, COOGEE WA 6166",
+            date: "20 JAN 2025"
+        },
+        account: {
+            name: "G & DM POP",
+            bsb: "012-345",
+            number: "678912345",
+            period: "60 DAYS"
+        },
+        abn: {
+            entity: "The Trustee for THE ARDEAL TRADING TRUST",
+            number: "16 920 472 163",
+            trustee: "ARDUIN, MICHAEL ANTHONY",
+            trading: "ARDEAL CONCRETE CONTRACTORS"
+        }
+    };
+
+    function renderReport() {
+        // Populate Text Fields
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        };
+
+        set('val-identity-doc', REPORT_DATA.identity.doc);
+        set('val-identity-number', REPORT_DATA.identity.number);
+        set('val-identity-dob', REPORT_DATA.identity.dob);
+        set('val-identity-expiry', REPORT_DATA.identity.expiry);
+
+        set('val-residence-doc', REPORT_DATA.residence.doc);
+        set('val-residence-address', REPORT_DATA.residence.address);
+        set('val-residence-date', REPORT_DATA.residence.date);
+
+        set('val-account-name', REPORT_DATA.account.name);
+        set('val-account-bsb', REPORT_DATA.account.bsb);
+        set('val-account-number', REPORT_DATA.account.number);
+        set('val-account-period', REPORT_DATA.account.period);
+
+        set('val-abn-entity', REPORT_DATA.abn.entity);
+        set('val-abn-number', REPORT_DATA.abn.number);
+        set('val-abn-trustee', REPORT_DATA.abn.trustee);
+        set('val-abn-trading', REPORT_DATA.abn.trading);
+
+        // Populate Images
+        const imgIdentity = document.getElementById('img-proof-identity');
+        if (imgIdentity) imgIdentity.src = BASE64_IMAGES["PROOF-OF-IDENTIFICATION"];
+
+        const imgResidence = document.getElementById('img-proof-residence');
+        if (imgResidence) imgResidence.src = BASE64_IMAGES["PROOF-OF-ADDRESS"];
+
+        const imgBank = document.getElementById('img-bank-statement');
+        if (imgBank) imgBank.src = BASE64_IMAGES["BANK-ACCOUNT-VERIFICATION"];
+
+        const imgAbn = document.getElementById('img-abn');
+        if (imgAbn) imgAbn.src = BASE64_IMAGES["ABN-VERIFICATION"];
+    }
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', renderReport);
+</script>
+
+</html>

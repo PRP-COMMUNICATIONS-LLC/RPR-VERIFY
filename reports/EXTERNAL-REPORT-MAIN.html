@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Information Sheet Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #000;
+            margin-bottom: 30px;
+            font-family: 'League Spartan', sans-serif;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .selector-group {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid #000;
+            background: white;
+            color: #000;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        button.active {
+            background: #000;
+            color: white;
+        }
+
+        button:hover {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 5px solid #000;
+            border-radius: 4px;
+        }
+
+        .form-section h3 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group.full {
+            grid-template-columns: 1fr;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn-download {
+            background: #000;
+            color: white;
+            padding: 14px 40px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background: #333;
+        }
+
+        .btn-reset {
+            background: white;
+            color: #000;
+            border: 2px solid #000;
+            padding: 12px 40px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #f5f5f5;
+        }
+
+        .info-box {
+            background: #f0f0f0;
+            border-left: 4px solid #666;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CUSTOMER INFORMATION SHEET (C.I.S) GENERATOR</h1>
+        
+        <div class="selector-group">
+            <div class="button-group">
+                <button class="type-btn active" data-type="individual">Individual</button>
+                <button class="type-btn" data-type="business">Business</button>
+            </div>
+        </div>
+
+        <div class="info-box">
+            📋 Complete the customer information below. Select document type and generate PDF with supporting documents section.
+        </div>
+
+        <!-- INDIVIDUAL FORM -->
+        <div id="individual-form" class="form-container">
+            <div class="form-section">
+                <h3>Proof of Identity</h3>
+                <div class="form-group">
+                    <div>
+                        <label for="ind-id-type">ID Document Type</label>
+                        <select id="ind-id-type">
+                            <option>Australian Driver's License</option>
+                            <option>Passport</option>
+                            <option>State ID Card</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="ind-license-number">License/ID Number</label>
+                        <input type="text" id="ind-license-number" placeholder="e.g., 350015">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="ind-dob">Date of Birth</label>
+                        <input type="date" id="ind-dob">
+                    </div>
+                    <div>
+                        <label for="ind-expiry">Expiry Date</label>
+                        <input type="date" id="ind-expiry">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Proof of Residence</h3>
+                <div class="form-group">
+                    <div>
+                        <label for="ind-residence-type">Document Type</label>
+                        <select id="ind-residence-type">
+                            <option>Utility Bill</option>
+                            <option>Lease Agreement</option>
+                            <option>Mortgage Statement</option>
+                            <option>Council Rate Notice</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="ind-issue-date">Issue Date</label>
+                        <input type="date" id="ind-issue-date">
+                    </div>
+                </div>
+                <div class="form-group full">
+                    <label for="ind-address">Residential Address</label>
+                    <input type="text" id="ind-address" placeholder="e.g., 15 BUCHANAN RISE, COOGEE WA 6166">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Bank Account Verification</h3>
+                <div class="form-group">
+                    <div>
+                        <label for="ind-bank-name">Bank Name</label>
+                        <input type="text" id="ind-bank-name" placeholder="e.g., National Australia Bank">
+                    </div>
+                    <div>
+                        <label for="ind-account-name">Account Name</label>
+                        <input type="text" id="ind-account-name" placeholder="e.g., John Doe">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="ind-bsb">BSB</label>
+                        <input type="text" id="ind-bsb" placeholder="e.g., 086-217">
+                    </div>
+                    <div>
+                        <label for="ind-account-number">Account Number</label>
+                        <input type="text" id="ind-account-number" placeholder="e.g., 63-533-7192">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="ind-statement-period">Statement Period</label>
+                        <input type="text" id="ind-statement-period" placeholder="e.g., 20 September - 19 October 2025">
+                    </div>
+                    <div>
+                        <label for="ind-metadata-source">Metadata Source</label>
+                        <select id="ind-metadata-source">
+                            <option>PDF Bank Statement</option>
+                            <option>Apple iPhone 14 Pro Camera</option>
+                            <option>Canon Scanner Model TS8520</option>
+                            <option>WhatsApp (metadata stripped)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUSINESS FORM -->
+        <div id="business-form" class="form-container hidden">
+            <div class="form-section">
+                <h3>Business Details</h3>
+                <div class="form-group full">
+                    <label for="bus-name">Business Name</label>
+                    <input type="text" id="bus-name" placeholder="e.g., ABC Consultant Pty Ltd">
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="bus-acn">ACN</label>
+                        <input type="text" id="bus-acn" placeholder="e.g., 123 456 789">
+                    </div>
+                    <div>
+                        <label for="bus-abn">ABN</label>
+                        <input type="text" id="bus-abn" placeholder="e.g., 12 123 456 789">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Director/Proprietor Details</h3>
+                <div class="form-group">
+                    <div>
+                        <label for="bus-director-name">Full Name</label>
+                        <input type="text" id="bus-director-name" placeholder="e.g., John Doe">
+                    </div>
+                    <div>
+                        <label for="bus-director-dob">Date of Birth</label>
+                        <input type="date" id="bus-director-dob">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Proof of Identity</h3>
+                <div class="form-group">
+                    <div>
+                        <label for="bus-id-type">ID Document Type</label>
+                        <select id="bus-id-type">
+                            <option>Australian Driver's License</option>
+                            <option>Passport</option>
+                            <option>State ID Card</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="bus-license-number">License/ID Number</label>
+                        <input type="text" id="bus-license-number" placeholder="e.g., 350015">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Business Address</h3>
+                <div class="form-group full">
+                    <label for="bus-address">Registered Address</label>
+                    <input type="text" id="bus-address" placeholder="e.g., 15 BUCHANAN RISE, COOGEE WA 6166">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Bank Account Verification</h3>
+                <div class="form-group">
+                    <div>
+                        <label for="bus-bank-name">Bank Name</label>
+                        <input type="text" id="bus-bank-name" placeholder="e.g., National Australia Bank">
+                    </div>
+                    <div>
+                        <label for="bus-account-name">Account Name</label>
+                        <input type="text" id="bus-account-name" placeholder="e.g., ABC Consultant Pty Ltd">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="bus-bsb">BSB</label>
+                        <input type="text" id="bus-bsb" placeholder="e.g., 086-217">
+                    </div>
+                    <div>
+                        <label for="bus-account-number">Account Number</label>
+                        <input type="text" id="bus-account-number" placeholder="e.g., 63-533-7192">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="bus-statement-period">Statement Period</label>
+                        <input type="text" id="bus-statement-period" placeholder="e.g., 20 September - 19 October 2025">
+                    </div>
+                    <div>
+                        <label for="bus-metadata-source">Metadata Source</label>
+                        <select id="bus-metadata-source">
+                            <option>PDF Bank Statement</option>
+                            <option>Apple iPhone 14 Pro Camera</option>
+                            <option>Canon Scanner Model TS8520</option>
+                            <option>WhatsApp (metadata stripped)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="btn-download" onclick="generatePDF()">Download PDF</button>
+            <button class="btn-reset" onclick="resetForm()">Reset</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        let currentType = 'individual';
+
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentType = btn.dataset.type;
+                
+                document.querySelectorAll('.form-container').forEach(f => f.classList.add('hidden'));
+                document.getElementById(currentType + '-form').classList.remove('hidden');
+            });
+        });
+
+        function generatePDF() {
+            const element = document.createElement('div');
+            
+            if (currentType === 'individual') {
+                element.innerHTML = generateIndividualHTML();
+            } else {
+                element.innerHTML = generateBusinessHTML();
+            }
+
+            const opt = {
+                margin: 15,
+                filename: `CIS-${currentType.toUpperCase()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).save(element);
+        }
+
+        function generateIndividualHTML() {
+            const data = {
+                idType: document.getElementById('ind-id-type').value,
+                licenseNumber: document.getElementById('ind-license-number').value,
+                dob: document.getElementById('ind-dob').value,
+                expiry: document.getElementById('ind-expiry').value,
+                residenceType: document.getElementById('ind-residence-type').value,
+                issueDate: document.getElementById('ind-issue-date').value,
+                address: document.getElementById('ind-address').value,
+                bankName: document.getElementById('ind-bank-name').value,
+                accountName: document.getElementById('ind-account-name').value,
+                bsb: document.getElementById('ind-bsb').value,
+                accountNumber: document.getElementById('ind-account-number').value,
+                statementPeriod: document.getElementById('ind-statement-period').value,
+                metadataSource: document.getElementById('ind-metadata-source').value
+            };
+
+            return `
+                <div style="font-family: 'Helvetica Neue', Arial; font-size: 10pt; color: #000;">
+                    <div style="border-bottom: 4px solid #000; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h1 style="font-size: 24pt; font-weight: 700; margin: 0; font-family: 'League Spartan', sans-serif; text-transform: uppercase;">CUSTOMER INFORMATION SHEET (C.I.S)</h1>
+                        <div style="font-size: 16px; font-weight: 700; text-transform: uppercase;">INDIVIDUAL</div>
+                    </div>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Proof of Identity</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Primary Identification Document</td><td style="padding: 8px; border: 1px solid #ccc;">${data.idType}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Document Number</td><td style="padding: 8px; border: 1px solid #ccc;">${data.licenseNumber}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Date of Birth</td><td style="padding: 8px; border: 1px solid #ccc;">${data.dob}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Expiry Date</td><td style="padding: 8px; border: 1px solid #ccc;">${data.expiry}</td></tr>
+                    </table>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Proof of Residence</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Primary Document Type</td><td style="padding: 8px; border: 1px solid #ccc;">${data.residenceType}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Issue Date</td><td style="padding: 8px; border: 1px solid #ccc;">${data.issueDate}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Residential Address</td><td style="padding: 8px; border: 1px solid #ccc;">${data.address}</td></tr>
+                    </table>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Bank Account Verification</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Bank Name</td><td style="padding: 8px; border: 1px solid #ccc;">${data.bankName}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Account Name</td><td style="padding: 8px; border: 1px solid #ccc;">${data.accountName}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">BSB</td><td style="padding: 8px; border: 1px solid #ccc;">${data.bsb}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Account Number</td><td style="padding: 8px; border: 1px solid #ccc;">${data.accountNumber}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Statement Period</td><td style="padding: 8px; border: 1px solid #ccc;">${data.statementPeriod}</td></tr>
+                    </table>
+
+                    <div style="border-top: 1px solid #ccc; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #666;">
+                        CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes only
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateBusinessHTML() {
+            const data = {
+                businessName: document.getElementById('bus-name').value,
+                acn: document.getElementById('bus-acn').value,
+                abn: document.getElementById('bus-abn').value,
+                directorName: document.getElementById('bus-director-name').value,
+                directorDob: document.getElementById('bus-director-dob').value,
+                idType: document.getElementById('bus-id-type').value,
+                licenseNumber: document.getElementById('bus-license-number').value,
+                address: document.getElementById('bus-address').value,
+                bankName: document.getElementById('bus-bank-name').value,
+                accountName: document.getElementById('bus-account-name').value,
+                bsb: document.getElementById('bus-bsb').value,
+                accountNumber: document.getElementById('bus-account-number').value,
+                statementPeriod: document.getElementById('bus-statement-period').value,
+                metadataSource: document.getElementById('bus-metadata-source').value
+            };
+
+            return `
+                <div style="font-family: 'Helvetica Neue', Arial; font-size: 10pt; color: #000;">
+                    <div style="border-bottom: 4px solid #000; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h1 style="font-size: 24pt; font-weight: 700; margin: 0; font-family: 'League Spartan', sans-serif; text-transform: uppercase;">CUSTOMER INFORMATION SHEET (C.I.S)</h1>
+                        <div style="font-size: 16px; font-weight: 700; text-transform: uppercase;">BUSINESS</div>
+                    </div>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Business Details</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Business Name</td><td style="padding: 8px; border: 1px solid #ccc;">${data.businessName}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">ACN</td><td style="padding: 8px; border: 1px solid #ccc;">${data.acn}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">ABN</td><td style="padding: 8px; border: 1px solid #ccc;">${data.abn}</td></tr>
+                    </table>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Director/Proprietor Details</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Full Name</td><td style="padding: 8px; border: 1px solid #ccc;">${data.directorName}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Date of Birth</td><td style="padding: 8px; border: 1px solid #ccc;">${data.directorDob}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Identification Document</td><td style="padding: 8px; border: 1px solid #ccc;">${data.idType}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Document Number</td><td style="padding: 8px; border: 1px solid #ccc;">${data.licenseNumber}</td></tr>
+                    </table>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Business Address</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Registered Address</td><td style="padding: 8px; border: 1px solid #ccc;">${data.address}</td></tr>
+                    </table>
+
+                    <h2 style="font-size: 13pt; font-weight: 600; margin: 15px 0 10px 0; background: #f5f5f5; padding: 5px 10px; border-left: 5px solid #000; text-transform: uppercase;">Bank Account Verification</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 9pt;">
+                        <tr><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; width: 50%; text-transform: uppercase;">Head</th><th style="background: #f5f5f5; font-weight: 700; padding: 8px; border: 1px solid #000; text-transform: uppercase;">Particulars</th></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Bank Name</td><td style="padding: 8px; border: 1px solid #ccc;">${data.bankName}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Account Name</td><td style="padding: 8px; border: 1px solid #ccc;">${data.accountName}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">BSB</td><td style="padding: 8px; border: 1px solid #ccc;">${data.bsb}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Account Number</td><td style="padding: 8px; border: 1px solid #ccc;">${data.accountNumber}</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid #ccc;">Statement Period</td><td style="padding: 8px; border: 1px solid #ccc;">${data.statementPeriod}</td></tr>
+                    </table>
+
+                    <div style="border-top: 1px solid #ccc; padding-top: 10px; margin-top: 20px; font-size: 8pt; text-align: center; color: #666;">
+                        CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes only
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetForm() {
+            if (currentType === 'individual') {
+                document.getElementById('ind-form').reset();
+            } else {
+                document.getElementById('bus-form').reset();
+            }
+        }
+    </script>
+</body>
+</html>

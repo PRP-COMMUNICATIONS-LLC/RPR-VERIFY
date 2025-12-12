@@ -83,3 +83,5 @@ firebase-debug.log*
 
 # --- Vercel ---
 .vercel/
+.vercel
+.env*.local
