@@ -9,6 +9,7 @@ from pathlib import Path
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from google.cloud import storage
+from google.cloud import firestore
 
 # --- CIS Module Import Strategy ---
 # This ensures we can find your existing modules inside the container
@@ -58,8 +59,17 @@ logging.basicConfig(
     format='[%(asctime)s] [%(levelname)s] [%(request_id)s] %(message)s'
 )
 
-# Initialize report generator once
-report_generator = ReportGenerator()
+# Initialize Firestore client
+try:
+    GCP_PROJECT_ID = os.environ.get('GCP_PROJECT', 'rpr-verify-b')
+    db_client = firestore.Client(project=GCP_PROJECT_ID)
+    print("Firestore client initialized successfully.")
+except Exception as e:
+    print(f"CRITICAL: Failed to initialize Firestore client. Error: {e}")
+    db_client = None
+
+# Initialize report generator with database
+report_generator = ReportGenerator(database=db_client)
 
 # --- Helper Functions ---
 def get_request_id():
