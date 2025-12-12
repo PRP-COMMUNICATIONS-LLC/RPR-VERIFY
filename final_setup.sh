@@ -74,7 +74,8 @@ echo "--- 3. Commit and Deployment ---"
 echo "   - Staging and committing all changes..."
 git add -A # Stage structural moves and .gitignore changes
 # Ensure all manually edited files are also staged
-git add .firebaserc backend/src/service-account-key.json functions/service-account-key.json
+git add .firebaserc
+# Note: service-account-key.json files are intentionally not tracked (in .gitignore)
 
 git commit -m "FINAL INTEGRATION: Completed monorepo structure, aligned .firebaserc/Firebase key to rpr-verify-b, and secured service account key."
 git push origin main

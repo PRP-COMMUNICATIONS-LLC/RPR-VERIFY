@@ -85,3 +85,9 @@ firebase-debug.log*
 .vercel/
 .vercel
 .env*.local
+
+# Service Account Keys (Security)
+**/service-account-key.json
+**/*credentials*.json
+**/*service-account*.json
+backend/src/service-account-key.json
