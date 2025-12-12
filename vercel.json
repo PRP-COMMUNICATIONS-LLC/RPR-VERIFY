@@ -1,6 +1,6 @@
 {
-  "name": "rpr-verify-frontend",
-  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build -- --configuration production",
-  "outputDirectory": "frontend/dist/rpr-client-portal",
+  "buildCommand": "npm run build -- --configuration production",
+  "outputDirectory": "dist/rpr-client-portal",
+  "installCommand": "npm install --legacy-peer-deps",
   "framework": "angular"
 }

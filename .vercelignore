@@ -1,0 +1,7 @@
+flask_app.py
+src/
+templates/
+data/
+*.py
+requirements.txt
+Dockerfile
