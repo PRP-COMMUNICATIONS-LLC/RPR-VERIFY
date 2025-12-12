@@ -1,6 +1,3 @@
 {
-  "buildCommand": "npm run build -- --configuration production",
-  "outputDirectory": "dist/rpr-client-portal",
-  "installCommand": "npm install --legacy-peer-deps",
   "framework": "angular"
 }
