@@ -38,20 +38,20 @@ print_success() {
 }
 
 # Validate we're in the correct directory
-if [ ! -f "Dockerfile" ]; then
-    print_error "Dockerfile not found in current directory!"
+if [ ! -f "backend/Dockerfile" ]; then
+    print_error "Dockerfile not found in backend/ directory!"
     print_info "Please run this script from: RPR-VERIFY/"
     exit 1
 fi
 
-if [ ! -f "flask_app.py" ]; then
-    print_error "flask_app.py not found in current directory!"
+if [ ! -f "backend/flask_app.py" ]; then
+    print_error "flask_app.py not found in backend/ directory!"
     print_info "Please run this script from: RPR-VERIFY/"
     exit 1
 fi
 
-if [ ! -f "requirements.txt" ]; then
-    print_error "requirements.txt not found in current directory!"
+if [ ! -f "backend/requirements.txt" ]; then
+    print_error "requirements.txt not found in backend/ directory!"
     exit 1
 fi
 
@@ -130,8 +130,9 @@ gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
 echo ""
 print_info "🔨 Building Docker image for Cloud Run (linux/amd64)..."
 print_info "This may take a few minutes..."
-docker build --platform linux/amd64 -t ${IMAGE_NAME}:latest .
-docker build --platform linux/amd64 -t ${IMAGE_NAME}:v1.0-production .
+# Build from backend/ directory with Dockerfile in backend/
+docker build --platform linux/amd64 -f backend/Dockerfile -t ${IMAGE_NAME}:latest backend/
+docker build --platform linux/amd64 -f backend/Dockerfile -t ${IMAGE_NAME}:v1.0-production backend/
 
 if [ $? -ne 0 ]; then
     print_error "Docker build failed!"
