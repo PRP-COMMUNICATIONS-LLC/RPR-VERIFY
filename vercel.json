@@ -1,7 +1,6 @@
 {
-  "version": 2,
-  "framework": null,
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": ".vercel/output"
+  "name": "rpr-verify-frontend",
+  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build -- --configuration production",
+  "outputDirectory": "frontend/dist/rpr-client-portal",
+  "framework": "angular"
 }
-
