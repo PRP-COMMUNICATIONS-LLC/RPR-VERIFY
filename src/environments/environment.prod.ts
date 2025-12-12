@@ -1,13 +1,12 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "AIzaSyD5YgzV-X-Pah5SbwJnH73_VKeBJY0sORU",
-    authDomain: "gen-lang-client-0313233462.firebaseapp.com",
-    projectId: "gen-lang-client-0313233462",
-    storageBucket: "gen-lang-client-0313233462.firebasestorage.app",
-    messagingSenderId: "1060972638787",
-    appId: "1:1060972638787:web:b81d1c1cbef7591cbadaf6",
-    measurementId: "G-L36FVSRC6C"
+    apiKey: "AIzaSyAcVS96uBW7BW8tw8jeZVV556VqIz1MWKc",
+    authDomain: "rpr-verify-b.firebaseapp.com",
+    projectId: "rpr-verify-b",
+    storageBucket: "rpr-verify-b.firebasestorage.app",
+    messagingSenderId: "794095666194",
+    appId: "1:794095666194:web:53d30da820b709635844cb"
   },
   googleDrive: {
     clientId: "1060972638787-kacfsegdfd030q6pb88jcbo4end6t4c4.apps.googleusercontent.com",
