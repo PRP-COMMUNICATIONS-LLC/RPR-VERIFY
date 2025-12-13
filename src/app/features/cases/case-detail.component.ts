@@ -1,11 +1,12 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 @Component({
     selector: 'app-case-detail',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, SafeHtmlPipe],
     styles: [`
       .dispute-panel,
       .timeline-panel,
@@ -46,6 +47,10 @@ import { RouterModule } from '@angular/router';
              <div class="text-rpr-alert-red text-lg font-bold">High (85/100)</div>
            </div>
         </div>
+        <div class="mt-8">
+            <label class="text-xs uppercase text-slate-500 font-semibold tracking-wider">Summary</label>
+            <div class="text-white text-lg" [innerHTML]="summary_text | safeHtml"></div>
+        </div>
       </div>
 
       <!-- TODO: KYC Upload & Client ID Section -->
@@ -59,4 +64,7 @@ import { RouterModule } from '@angular/router';
 })
 export class CaseDetailComponent {
     @Input() id?: string;
+    summary_text: string = '<ul><li>First item</li><li>Second item</li></ul>';
+
+    constructor() {}
 }
