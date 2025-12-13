@@ -11,7 +11,10 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ]
+    ],
+    "frameworks": {
+      "nodeVersion": "18"
+    }
   },
   "firestore": {
     "rules": "firestore.rules",
