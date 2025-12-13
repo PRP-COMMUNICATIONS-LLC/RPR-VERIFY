@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  apiUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',
   firebase: {
     apiKey: "AIzaSyAcVS96uBW7BW8tw8jeZVV556VqIz1MWKc",
     authDomain: "rpr-verify-b.firebaseapp.com",
@@ -17,4 +18,3 @@ export const environment = {
     ]
   }
 };
-
