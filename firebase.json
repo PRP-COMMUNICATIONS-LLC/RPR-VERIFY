@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/**",
+        "function": "cisReportApi"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
