@@ -1,0 +1,39 @@
+name: RPR-VERIFY Full Stack Deployment
+
+# Trigger on every push to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    name: Build Frontend & Deploy All to Firebase
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x' # Use your specified Node version
+
+      - name: Install Root Dependencies
+        run: npm ci
+
+      # 1. Build the Angular Frontend (Hosting Content)
+      - name: Build Angular Client Portal
+        run: npm run build -- --configuration production
+
+      # 2. Deploy to Firebase
+      # Deploys both hosting (from the build) and the functions directory
+      - name: Deploy to Firebase Hosting and Functions
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          # Uses the Service Account you securely set up
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: rpr-verify-b
+          channelId: live # Deploys to the production live URL
