@@ -1,0 +1,73 @@
+Timestamp: Sun Dec 14 05:50:25 +08 2025
+User: puvansivanasan
+Path: /Users/puvansivanasan/.antigravity/antigravity/bin:/Users/puvansivanasan/.antigravity/antigravity/bin:/Users/puvansivanasan/.antigravity/antigravity/bin:/Users/puvansivanasan/.antigravity/antigravity/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pmk/env/global/bin:/Library/Apple/usr/bin:/Library/TeX/texbin:/Users/puvansivanasan/PERPLEXITY/FLUTTER/bin:/Users/puvansivanasan/.antigravity/antigravity/bin:/Users/puvansivanasan/miniconda3/bin:/Users/puvansivanasan/miniconda3/condabin:/Users/puvansivanasan/.local/bin:/Users/puvansivanasan/.antigravity/extensions/ms-python.debugpy-2025.14.1-darwin-arm64/bundled/scripts/noConfigScripts
+---
+Step 1: Git pull
+error: Your local changes to the following files would be overwritten by merge:
+	angular.json
+Please commit your changes or stash them before you merge.
+Aborting
+Updating c753333..7153b50
+Git pull warning
+Step 2: Build
+❯ Building...
+✔ Building...
+Initial chunk files | Names                       |  Raw size | Estimated transfer size
+chunk-PR6CVWRD.js   | -                           | 270.47 kB |                72.74 kB
+main-UEEUXHHS.js    | main                        | 246.10 kB |                68.07 kB
+styles-R5QKJCJP.css | styles                      |  35.77 kB |                 5.42 kB
+chunk-XTAFGZBR.js   | -                           | 639 bytes |               639 bytes
+
+                    | Initial total               | 552.97 kB |               146.87 kB
+
+Lazy chunk files    | Names                       |  Raw size | Estimated transfer size
+chunk-SBEFGDEP.js   | cis-report-viewer-component |   8.38 kB |                 2.46 kB
+chunk-TWMIBWT4.js   | cases-list-component        |   4.04 kB |                 1.52 kB
+chunk-JL5KLNL7.js   | case-detail-component       |   2.54 kB |                 1.06 kB
+
+Application bundle generation complete. [1.716 seconds] - 2025-12-13T21:50:28.262Z
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: SidebarComponent is not used within the template of AppComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.component.ts:9:54:
+[37m      9 │ ...orts: [RouterOutlet, RouterModule, CommonModule, [32mSidebarComponent[37m],
+        ╵                                                     [32m~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mbundle initial exceeded maximum budget. Budget 500.00 kB was not met by 52.97 kB with a total of 552.97 kB.[0m
+
+
+Output location: /Users/puvansivanasan/PERPLEXITY/JOBS/CLIENT-2025-003-VERIFY/OPERATIONS/RPR-VERIFY/dist/rpr-client-portal
+
+Step 3: Deploy
+
+=== Deploying to 'rpr-verify-b'...
+
+i  deploying hosting
+i  hosting[rpr-verify-b]: beginning deploy...
+i  hosting[rpr-verify-b]: found 26 files in dist/rpr-client-portal/browser
+✔  hosting[rpr-verify-b]: file upload complete
+i  hosting[rpr-verify-b]: finalizing version...
+✔  hosting[rpr-verify-b]: version finalized
+i  hosting[rpr-verify-b]: releasing new version...
+✔  hosting[rpr-verify-b]: release complete
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/rpr-verify-b/overview
+Hosting URL: https://rpr-verify-b.web.app
+Step 4: Update Status
+sed: 1: "s|^**Date:** .*|**Date: ...": RE error: repetition-operator operand invalid
+✅ Status report updated successfully with current deployment date: December 14, 2025, 05:50:34 AM
+Step 5: Commit
+[main a49ae96] doc: Auto-updated deployment status summary after successful final deployment.
+ 1 file changed, 197 insertions(+)
+ create mode 100644 DEPLOYMENT-SUMMARY.md
+To https://github.com/Butterdime/rpr-verify.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/Butterdime/rpr-verify.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. If you want to integrate the remote changes,
+hint: use 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+Sequence Complete

@@ -1,11 +1,11 @@
-Flask==3.0.0
+# Core Flask dependencies
+flask==3.0.0
+flask-cors==4.0.0
+google-cloud-firestore==2.14.0
+
+# PDF Generation (NEWLY ADDED - Issue 1 & 6 resolved)
+playwright==1.40.0
+greenlet==3.0.1
+
+# Production WSGI server (Issue 6 resolved)
 gunicorn==21.2.0
-google-cloud-storage==2.13.0
-google-cloud-firestore==2.13.0
-werkzeug>=3.0.0
-requests>=2.31.0
-opencv-python-headless>=4.8.0
-pytesseract>=0.3.10
-numpy>=1.24.0
-pillow>=10.0.0
-flask-cors>=4.0.0

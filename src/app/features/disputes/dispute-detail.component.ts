@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -185,6 +185,7 @@ import { CommonModule } from '@angular/common';
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisputeDetailComponent { }
