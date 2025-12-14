@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -38,8 +38,8 @@ import { AuthService } from '../../core/services/auth.service';
                 [disabled]="isLoading"
             >
                 <img 
-                    src="assets/google-buttons/web_dark_rd_ctn@4x.png" 
-                    alt="Continue with Google"
+                    src="assets/google-buttons/web_dark_sq_SI@4x.png" 
+                    alt="Sign in with Google"
                     class="google-button-image"
                     [style.opacity]="isLoading ? '0.6' : '1'"
                 />
@@ -161,28 +161,32 @@ import { AuthService } from '../../core/services/auth.service';
         cursor: not-allowed;
         opacity: 0.6;
     }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
     // AG-LESSON: Entry point for RPR COMMUNICATIONS LLC Google Workspace login.
-    
+
     private authService = inject(AuthService);
-    
+    private cdr = inject(ChangeDetectorRef);
+
     isLoading = false;
     errorMessage = '';
 
     async signInWithGoogle(): Promise<void> {
         this.isLoading = true;
         this.errorMessage = '';
-        
+
         try {
             await this.authService.signInWithGoogle();
             // Navigation is handled by AuthService
         } catch (error: any) {
             console.error('Sign-in error:', error);
             this.errorMessage = error.message || 'Failed to sign in. Please try again.';
+            this.cdr.markForCheck();
         } finally {
             this.isLoading = false;
+            this.cdr.markForCheck();
         }
     }
 }
