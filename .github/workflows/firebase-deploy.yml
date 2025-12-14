@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        # We need the GITHUB_TOKEN for branch deletion permissions
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -37,3 +40,13 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: rpr-verify-b
           channelId: live # Deploys to the production live URL
+
+      # ----------------------------------------------------
+      # POST-DEPLOYMENT CLEANUP STEP
+      # ----------------------------------------------------
+      - name: Run Stale Branch Cleanup Script
+        # Use the 'run' keyword to execute the bash script
+        # The script must be executable, so we explicitly call bash
+        # This step only runs if the deployment step (above) succeeds
+        if: success()
+        run: bash cleanup-old-branches.sh
