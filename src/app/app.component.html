@@ -1,7 +1,31 @@
-<!-- AG-LESSON: App container fixed to flex row layout with sidebar + main content -->
-<div class="app-container">
-  <app-sidebar></app-sidebar>
-  <main class="main-content">
+<div class="min-h-screen bg-gray-100">
+
+  <!-- Header/Navigation Bar -->
+  <header class="bg-white shadow-md z-10 sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+      <div class="text-xl font-extrabold text-indigo-600">
+        RPR Client Portal
+      </div>
+      <nav>
+        <a routerLink="/" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <router-outlet></router-outlet>
   </main>
+
+  <!-- FLOATING PDF TEST LINK -->
+  <div
+    class="fixed bottom-4 right-4 p-3 bg-indigo-50 border border-indigo-300 rounded-lg shadow-xl z-50 transition transform hover:scale-105">
+    <p class="font-bold text-xs text-indigo-800 mb-1">LIVE PDF MIGRATION TEST:</p>
+    <a routerLink="/cases/TEST-CASE-001/cis-report"
+      class="text-indigo-600 hover:text-indigo-800 font-bold underline text-sm">
+      TEST-CASE-001 Report Viewer
+    </a>
+    <p class="text-xs text-gray-500 mt-1">Backend: US-Central1</p>
+  </div>
+
 </div>

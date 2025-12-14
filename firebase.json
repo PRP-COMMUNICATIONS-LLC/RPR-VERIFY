@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/rpr-verify/browser",
+    "public": "dist/rpr-client-portal/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

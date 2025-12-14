@@ -1,0 +1,71 @@
+=== ANGULAR.JSON OUTPUT PATH ===
+            "outputPath": "dist/rpr-client-portal",
+            "browser": "src/main.ts",
+
+=== FIREBASE.JSON PUBLIC PATH ===
+    "public": "dist/rpr-client-portal/browser",
+    "ignore": [
+
+=== PRODUCTION API URL ===
+        apiUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',
+
+=== FIREBASE PROJECT ===
+{
+  "projects": {
+    "default": "rpr-verify-b"
+  }
+}
+
+=== GIT STATUS ===
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   angular.json
+	modified:   backend/requirements.txt
+	modified:   backend/src/modules/report_generator.py
+	modified:   deployed-image-url.txt
+	modified:   src/app/app.component.html
+	modified:   src/app/app.config.ts
+	modified:   src/app/app.routes.ts
+	modified:   src/app/features/auth/login.component.ts
+	modified:   src/environments/environment.ts
+	modified:   src/styles.css
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	DEPLOYMENT-CIS-COMPLIANT.md
+	DEPLOYMENT-SUMMARY.md
+	DEPLOYMENT-VERIFICATION-REPORT.md
+	PRINT_CSS_FIX.md
+	backend/__pycache__/
+	backend/insert_test_data.py
+	backend/pdf_generator.py
+	backend/requirements.txt.backup.20251213_092510
+	backend/src/modules/__pycache__/
+	backend/src/modules/cis_report_template.html
+	backend/src/modules/report_generator.py.backup
+	backend/src/modules/report_generator.py.backup-1765571159
+	backend/src/modules/report_generator.py.backup-20251213-0336
+	backend/test.pdf
+	backend/test_docker.pdf
+	backend/test_local.pdf
+	backend/tests/
+	backend:Dockerfile-instructions.md
+	deployment_check_output.txt
+	report_generator_implementation.py
+	scripts/01_local_backend_setup.sh
+	scripts/02_local_backend_test.sh
+	scripts/03_docker_validation.sh
+	scripts/04_frontend_implementation.sh
+	scripts/05_local_e2e_test.sh
+	scripts/06_cloud_backend_deploy.sh
+	scripts/07_cloud_verification.sh
+	scripts/08_frontend_deploy.sh
+	scripts/complete_implementation.sh
+	src/app/core/services/report.service.ts
+	src/app/features/reports/
+
+no changes added to commit (use "git add" and/or "git commit -a")

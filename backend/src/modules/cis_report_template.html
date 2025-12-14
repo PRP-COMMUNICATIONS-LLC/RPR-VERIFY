@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{REPORT_TITLE}} - {{CASE_ID}}</title>
+    <style>
+        /* Print-friendly A4 page styling */
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 3px solid #00D9FF;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #00D9FF;
+            font-size: 24pt;
+            margin-bottom: 10px;
+        }
+
+        .header-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10pt;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Status Colors */
+        .status-pass {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status-fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status-review {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box.status-overall-pass {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .highlight-box.status-overall-review {
+            border-color: #ffc107;
+            background-color: #fff3cd;
+        }
+
+        .highlight-box.status-overall-fail {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        /* Sections */
+        h1 {
+            color: #00D9FF;
+            font-size: 18pt;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 14pt;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 12pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11pt;
+        }
+
+        table thead {
+            background-color: #00D9FF;
+            color: white;
+        }
+
+        table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #00D9FF;
+        }
+
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Attachment Images */
+        .attachment-container {
+            text-align: center;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+
+        .audit-image {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .image-note {
+            font-size: 10pt;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .image-note code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Page Breaks */
+        .page-break-after {
+            page-break-after: always;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 10pt;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .page-break-after {
+                page-break-after: always;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>{{REPORT_TITLE}}</h1>
+        <div class="header-meta">
+            <div>
+                <strong>Case ID:</strong> {{CASE_ID}}<br>
+                <strong>Document Type:</strong> {{DOC_TYPE}}<br>
+                <strong>Submission Date:</strong> {{SUBMISSION_DATE}}
+            </div>
+            <div>
+                <strong>Status:</strong> <span class="status-{{OVERALL_STATUS}}">{{OVERALL_STATUS}}</span><br>
+                <strong>Version:</strong> {{GENERATOR_VERSION}}<br>
+                <strong>Generated:</strong> {{CURRENT_DATE}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Sections -->
+    {{SECTIONS_CONTENT}}
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>This report was generated automatically by RPR-VERIFY CIS Dashboard v{{GENERATOR_VERSION}}</p>
+        <p>Generated on {{CURRENT_DATE}} | Case ID: {{CASE_ID}}</p>
+    </div>
+</body>
+</html>
+

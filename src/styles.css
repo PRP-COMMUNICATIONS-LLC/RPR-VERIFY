@@ -128,3 +128,33 @@ b,
 .outcome-submit-button:hover {
   background: var(--accent-hover);
 }
+/* ============================================================================
+   GLOBAL PRINT STYLES - RPR VERIFY APPLICATION
+   Purpose: Ensure clean PDF exports across all report types
+   ============================================================================ */
+
+@media print {
+  /* Hide application-wide navigation elements */
+  app-sidebar,
+  app-header,
+  nav,
+  aside,
+  .sidebar,
+  .app-navigation {
+    display: none !important;
+  }
+
+  /* Reset body margins for print */
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Force all content to use full page width */
+  .app-container,
+  .main-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+}
