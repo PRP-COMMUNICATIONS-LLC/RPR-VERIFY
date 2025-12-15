@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   apiUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',
   firebase: {
     apiKey: "AIzaSyDSv50wy6g0TlhJoEa2gldfDgKNxSDkyEk",

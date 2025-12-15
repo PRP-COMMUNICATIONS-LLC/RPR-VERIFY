@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "rpr-verify-b"
+    "default": "rpr-verify-b",
+    "production": "rpr-verify-b",
+    "staging": "rpr-verify-05901876-be7b3"
   }
 }
