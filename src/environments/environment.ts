@@ -1,5 +1,6 @@
 export const environment = {
-  production: true,
+  production: false,
+  oauthClientId: '794095666194-ggusorgqvmgkqjbenlgr2adr1n3jchjs.apps.googleusercontent.com',
   apiUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',
   firebase: {
     apiKey: "AIzaSyDSv50wy6g0TlhJoEa2gldfDgKNxSDkyEk",
