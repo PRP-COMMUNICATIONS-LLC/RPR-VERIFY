@@ -3,6 +3,9 @@ flask==3.0.0
 flask-cors==4.0.0
 google-cloud-firestore==2.14.0
 
+# Firebase Admin SDK for token verification
+firebase-admin==6.4.0
+
 # PDF Generation (NEWLY ADDED - Issue 1 & 6 resolved)
 playwright==1.40.0
 greenlet==3.0.1
