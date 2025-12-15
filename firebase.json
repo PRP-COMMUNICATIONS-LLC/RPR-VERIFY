@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "rpr-verify-b",
     "public": "dist/rpr-client-portal/browser",
     "ignore": [
       "firebase.json",
@@ -8,12 +9,19 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
-        "function": "cisReportApi"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(css|js)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=1year"
+          }
+        ]
       }
     ],
     "frameworks": {
