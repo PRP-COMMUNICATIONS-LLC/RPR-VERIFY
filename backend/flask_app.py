@@ -20,14 +20,15 @@ from pdf_generator import PDFGenerator
 # Initialize Flask
 app = Flask(__name__)
 
-# CORS Configuration
-ALLOWED_ORIGINS = [
-    "https://rpr-verify-b.web.app",
-    "https://verify.rprcomms.com",
-    "https://rprcomms.com",
-    "https://rpr-verify-et8hakpyt-butterdime.vercel.app",
-    "http://localhost:4200"
-]
+# CORS Configuration (environment-driven)
+# Read allowed origins from ALLOWED_ORIGINS env var (CSV). Default to localhost for local dev/testing.
+origins_env = os.environ.get("ALLOWED_ORIGINS", "").strip()
+if origins_env:
+    ALLOWED_ORIGINS = [o.strip() for o in origins_env.split(",") if o.strip()]
+else:
+    ALLOWED_ORIGINS = ["http://localhost:4200"]
+
+logger.info(f"🔒 CORS allowed origins: {ALLOWED_ORIGINS}")
 
 CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
 

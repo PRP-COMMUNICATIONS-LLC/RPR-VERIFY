@@ -9,12 +9,13 @@ import {
 import { EscalationService } from '../../services/escalation.service';
 import { DocumentQualityAnalyzer, AnalysisResult } from '../../utils/document-quality-analyzer';
 import { StatusIndicatorComponent } from '../../shared/status-indicator/status-indicator.component';
+import { QualityScoreBadgeComponent } from '../../shared/quality-score-badge/quality-score-badge.component';
 
 
 @Component({
   selector: 'app-escalation-dashboard',
   standalone: true,
-  imports: [CommonModule, StatusIndicatorComponent],
+  imports: [CommonModule, StatusIndicatorComponent, QualityScoreBadgeComponent],
   templateUrl: './escalation-dashboard.component.html',
   styleUrls: ['./escalation-dashboard.component.css']
 })

@@ -51,16 +51,7 @@
 
               <!-- Quality Score -->
               <td class="px-4 py-3">
-                <span
-                  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                  [ngClass]="{
-                    'bg-green-100 text-green-800': row.qualityStatus === 'Good',
-                    'bg-yellow-100 text-yellow-800': row.qualityStatus === 'Fair',
-                    'bg-red-100 text-red-800': row.qualityStatus === 'Poor'
-                  }"
-                >
-                  {{ row.qualityScore | number:'1.0-0' }} / 100
-                </span>
+                <rpr-quality-score-badge [score]="row.qualityScore ?? 0"></rpr-quality-score-badge>
               </td>
 
               <!-- Quality Issue -->
