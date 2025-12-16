@@ -66,7 +66,7 @@ if not firebase_admin._apps:
 # ============================================================================
 
 # CRITICAL: Use the authorized Sign-In Client ID (OAuth Client ID) as the Audience
-EXPECTED_AUD = '794095666194-ggusorgqvmgkqjbenlgr2adr1n3jchjs.apps.googleusercontent.com'
+EXPECTED_AUD = '794095666194-j1jl81fks7pl6a5v2mv557cs16hpsmkg.apps.googleusercontent.com'
 
 def verify_firebase_token(id_token: str):
     """
