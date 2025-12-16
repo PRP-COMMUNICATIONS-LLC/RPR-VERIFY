@@ -91,3 +91,15 @@ firebase-debug.log*
 **/*credentials*.json
 **/*service-account*.json
 backend/src/service-account-key.json
+
+# Phase 1 backups
+backups/
+
+# Postman artifacts
+scripts/.postman/
+scripts/postman/
+*.postman_*
+
+# Function build artifacts (keep committed versions, ignore new builds)
+functions/lib/*.map
+
