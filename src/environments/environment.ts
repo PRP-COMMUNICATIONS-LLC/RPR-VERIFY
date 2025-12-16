@@ -17,5 +17,7 @@ export const environment = {
       'https://www.googleapis.com/auth/drive.file',
       'https://www.googleapis.com/auth/drive.appdata'
     ]
-  }
+  },
+  // Dev toggle to disable Firebase auth guard for quick local UI development
+  disableAuth: true
 };
