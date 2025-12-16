@@ -1,14 +1,15 @@
 export const environment = {
   production: true,
   oauthClientId: '794095666194-ggusorgqvmgkqjbenlgr2adr1n3jchjs.apps.googleusercontent.com',
-  apiUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',
+  apiBaseUrl: 'https://rpr-verify-7kzxnscuuq-as.a.run.app',
   firebase: {
-    apiKey: "AIzaSyDSv50wy6g0TlhJoEa2gldfDgKNxSDkyEk",
-    authDomain: "rpr-verify-b.firebaseapp.com",
-    projectId: "rpr-verify-b",
-    storageBucket: "rpr-verify-b.firebasestorage.app",
-    messagingSenderId: "794095666194",
-    appId: "1:794095666194:web:53d30da820b709635844cb"
+    projectId: 'rpr-verify-b',
+    apiKey: 'AIzaSyC9yImskFScuBxHyPHpCYvwr_A3CpvLR90',
+    authDomain: 'rpr-verify-b.firebaseapp.com',
+    databaseURL: 'https://rpr-verify-b.firebaseio.com',
+    storageBucket: 'rpr-verify-b.appspot.com',
+    messagingSenderId: '794095666194',
+    appId: '1:794095666194:web:53d30da820b709635844cb'
   },
   googleDrive: {
     clientId: "794095666194-fimj7pc39nmugc4rqt7bd3k490mrsu3q.apps.googleusercontent.com",

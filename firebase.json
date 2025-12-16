@@ -1,7 +1,10 @@
 {
+  "projects": {
+    "default": "rpr-verify-b"
+  },
   "hosting": {
     "site": "rpr-verify-b",
-    "public": "dist/rpr-client-portal/browser",
+    "public": "dist/rpr-verify/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -12,28 +15,6 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(css|js)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=1year"
-          }
-        ]
-      }
-    ],
-    "frameworks": {
-      "nodeVersion": "18"
-    }
-  },
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20"
+    ]
   }
 }
