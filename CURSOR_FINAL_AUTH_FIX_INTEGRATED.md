@@ -92,7 +92,7 @@ chunk-O6FIOPEX.js   | -                     | 245.59 kB |                66.06 k
 styles-DYP77YLO.css | styles                |  34.28 kB |                 5.24 kB
 
 Application bundle generation complete. [11.433 seconds]
-Output location: /Users/puvansivanasan/.../dist/rpr-client-portal
+Output location: /Users/puvansivanasan/.../dist/rpr-verify
 ```
 
 ---

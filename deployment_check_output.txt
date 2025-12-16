@@ -1,9 +1,9 @@
 === ANGULAR.JSON OUTPUT PATH ===
-            "outputPath": "dist/rpr-client-portal",
+            "outputPath": "dist/rpr-verify",
             "browser": "src/main.ts",
 
 === FIREBASE.JSON PUBLIC PATH ===
-    "public": "dist/rpr-client-portal/browser",
+    "public": "dist/rpr-verify/browser",
     "ignore": [
 
 === PRODUCTION API URL ===

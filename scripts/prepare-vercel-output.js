@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const distPath = path.join(__dirname, '../dist/rpr-client-portal/browser');
+const distPath = path.join(__dirname, '../dist/rpr-verify/browser');
 const outputPath = path.join(__dirname, '../.vercel/output');
 
 // Create Vercel output structure
