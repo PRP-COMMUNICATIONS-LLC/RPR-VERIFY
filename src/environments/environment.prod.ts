@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   oauthClientId: '794095666194-ggusorgqvmgkqjbenlgr2adr1n3jchjs.apps.googleusercontent.com',
-  apiBaseUrl: 'https://rpr-verify-7kzxnscuuq-as.a.run.app',
+  apiBaseUrl: 'https://[TARGET-PROJECT-A-CLOUD-RUN-ENDPOINT].run.app',
   firebase: {
     projectId: 'rpr-verify-b',
     apiKey: 'AIzaSyC9yImskFScuBxHyPHpCYvwr_A3CpvLR90',
