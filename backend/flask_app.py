@@ -66,7 +66,7 @@ if not firebase_admin._apps:
 # ============================================================================
 
 # CRITICAL: Use the authorized Sign-In Client ID (OAuth Client ID) as the Audience
-EXPECTED_AUD = '794095666194-j1jl81fks7pl6a5v2mv557cs16hpsmkg.apps.googleusercontent.com'
+EXPECTED_AUD = '794095666194-ggusorgqvmgkqjbenlgr2adr1n3jchjs.apps.googleusercontent.com'
 
 def verify_firebase_token(id_token: str):
     """
@@ -349,6 +349,121 @@ def get_cis_report(case_id):
     
     except Exception as e:
         logger.error(f"❌ Error generating report: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Internal server error'
+# ============================================================================
+# ESCALATION DASHBOARD ENDPOINTS
+# ============================================================================
+
+@app.route('/api/escalation/status/<string:report_id>', methods=['GET'])
+@require_auth
+def get_escalation_status(report_id):
+    """
+    Get escalation status for a report
+    Requires valid Firebase ID token in Authorization header.
+    """
+    try:
+        # Log authenticated user
+        user_email = request.user.get('email', 'unknown') if hasattr(request, 'user') else 'unknown'
+        logger.info(f"📊 Getting escalation status for report: {report_id}, user: {user_email}")
+        
+        # Mock escalation status data
+        escalation_data = {
+            'report_id': report_id,
+            'status': 'active',
+            'priority': 'high',
+            'assigned_to': 'compliance_team',
+            'last_updated': '2025-12-16T10:00:00Z',
+            'notes': 'Escalation under review'
+        }
+        
+        return jsonify({
+            'status': 'success',
+            'data': escalation_data
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"❌ Error getting escalation status: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Internal server error'
+        }), 500
+
+
+@app.route('/api/escalation/list', methods=['GET'])
+@require_auth
+def list_escalations():
+    """
+    List all escalations
+    Requires valid Firebase ID token in Authorization header.
+    """
+    try:
+        # Log authenticated user
+        user_email = request.user.get('email', 'unknown') if hasattr(request, 'user') else 'unknown'
+        logger.info(f"📊 Listing escalations for user: {user_email}")
+        
+        # Mock escalation list
+        escalations = [
+            {
+                'report_id': 'RPR-2025-0001',
+                'status': 'active',
+                'priority': 'high',
+                'assigned_to': 'compliance_team'
+            },
+            {
+                'report_id': 'RPR-2025-0002',
+                'status': 'pending',
+                'priority': 'medium',
+                'assigned_to': 'review_team'
+            }
+        ]
+        
+        return jsonify({
+            'status': 'success',
+            'data': escalations
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"❌ Error listing escalations: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Internal server error'
+        }), 500
+
+
+@app.route('/api/escalation/update/<string:report_id>', methods=['POST'])
+@require_auth
+def update_escalation(report_id):
+    """
+    Update escalation status
+    Requires valid Firebase ID token in Authorization header.
+    """
+    try:
+        # Log authenticated user
+        user_email = request.user.get('email', 'unknown') if hasattr(request, 'user') else 'unknown'
+        logger.info(f"📊 Updating escalation for report: {report_id}, user: {user_email}")
+        
+        # Get update data from request
+        update_data = request.get_json()
+        
+        # Mock update response
+        updated_escalation = {
+            'report_id': report_id,
+            'status': update_data.get('status', 'active'),
+            'priority': update_data.get('priority', 'medium'),
+            'assigned_to': update_data.get('assigned_to', 'compliance_team'),
+            'last_updated': '2025-12-16T10:30:00Z',
+            'notes': update_data.get('notes', 'Updated via API')
+        }
+        
+        return jsonify({
+            'status': 'success',
+            'data': updated_escalation
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"❌ Error updating escalation: {str(e)}")
         return jsonify({
             'status': 'error',
             'message': 'Internal server error'
