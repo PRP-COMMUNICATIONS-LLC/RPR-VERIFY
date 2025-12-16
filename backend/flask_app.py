@@ -20,6 +20,10 @@ from pdf_generator import PDFGenerator
 # Initialize Flask
 app = Flask(__name__)
 
+# Logging - ensure logger available early for startup logs
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # CORS Configuration (environment-driven)
 # Read allowed origins from ALLOWED_ORIGINS env var (CSV). Default to localhost for local dev/testing.
 origins_env = os.environ.get("ALLOWED_ORIGINS", "").strip()
@@ -28,13 +32,11 @@ if origins_env:
 else:
     ALLOWED_ORIGINS = ["http://localhost:4200"]
 
-logger.info(f"🔒 CORS allowed origins: {ALLOWED_ORIGINS}")
+logger.info("🔒 CORS allowed origins: %s", ALLOWED_ORIGINS)
 
 CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
 
-# Logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Logging already configured above for startup visibility
 
 # ============================================================================
 # FIREBASE ADMIN INITIALIZATION
