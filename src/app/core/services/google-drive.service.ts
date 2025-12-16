@@ -132,17 +132,17 @@ export class GoogleDriveService {
   /**
    * Upload a file to Google Drive
    */
-  async uploadFile(file: File, folderId?: string): Promise<any> {
+  async uploadFile(file: File, folderId?: string): Promise<unknown> {
     await this.ensureSignedIn();
 
     try {
-      const metadata: any = {
+      const metadata: Record<string, unknown> = {
         name: file.name,
         mimeType: file.type
       };
 
       if (folderId) {
-        metadata.parents = [folderId];
+        metadata['parents'] = [folderId];
       }
 
       const form = new FormData();
@@ -166,12 +166,13 @@ export class GoogleDriveService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof DriveApiError) {
         throw error;
       }
+      const msg = (error as any)?.message ?? String(error);
       throw new DriveApiError(
-        `Failed to upload file: ${error.message}`,
+        `Failed to upload file: ${msg}`,
         'UPLOAD_ERROR'
       );
     }
@@ -180,7 +181,7 @@ export class GoogleDriveService {
   /**
    * List files in Google Drive
    */
-  async listFiles(folderId?: string): Promise<any[]> {
+  async listFiles(folderId?: string): Promise<unknown[]> {
     await this.ensureSignedIn();
 
     try {
@@ -196,8 +197,8 @@ export class GoogleDriveService {
       });
 
       return response.result.files || [];
-    } catch (error: any) {
-      await this.handleApiError(error, 'LIST_ERROR');
+    } catch (error: unknown) {
+      await this.handleApiError(error as any, 'LIST_ERROR');
       return [];
     }
   }
@@ -205,17 +206,17 @@ export class GoogleDriveService {
   /**
    * Create a folder in Google Drive
    */
-  async createFolder(name: string, parentId?: string): Promise<any> {
+  async createFolder(name: string, parentId?: string): Promise<unknown> {
     await this.ensureSignedIn();
 
     try {
-      const metadata: any = {
+      const metadata: Record<string, unknown> = {
         name: name,
         mimeType: 'application/vnd.google-apps.folder'
       };
 
       if (parentId) {
-        metadata.parents = [parentId];
+        metadata['parents'] = [parentId];
       }
 
       const response = await gapi.client.drive.files.create({
@@ -224,8 +225,8 @@ export class GoogleDriveService {
       });
 
       return response.result;
-    } catch (error: any) {
-      await this.handleApiError(error, 'CREATE_FOLDER_ERROR');
+    } catch (error: unknown) {
+      await this.handleApiError(error as any, 'CREATE_FOLDER_ERROR');
       throw error;
     }
   }

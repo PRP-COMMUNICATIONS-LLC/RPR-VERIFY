@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
     selector: 'app-transactions',
     standalone: true,
     imports: [CommonModule],
-    template: `<div style="color:white; padding: 20px;"><h1>Transactions placeholder</h1></div>`
+    template: `<div class="transactions-placeholder"><h1>Transactions placeholder</h1></div>`,
+    styles: [`.transactions-placeholder { color: white; padding: 20px; }`]
 })
 export class TransactionsComponent { }

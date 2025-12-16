@@ -65,8 +65,8 @@
                      fill="url(#gradient)" stroke="none" opacity="0.2" />
                   <defs>
                      <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#00D9FF;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#00D9FF;stop-opacity:0" />
+                        <stop offset="0%" class="gradient-stop-0" />
+                        <stop offset="100%" class="gradient-stop-100" />
                      </linearGradient>
                   </defs>
                </svg>
@@ -77,8 +77,7 @@
             class="chart-card text-white p-8 flex flex-col items-center justify-center relative shadow-lg shadow-black/40">
             <h3 class="absolute top-6 left-6 text-white font-medium">Dispute Outcomes</h3>
             <div class="absolute top-6 right-6 text-xs text-slate-500">Total Disputes: 573</div>
-            <div class="w-48 h-48 rounded-full border-[16px] border-rpr-black relative flex items-center justify-center"
-               style="background: conic-gradient(#00E676 0% 75%, #FF5252 75% 90%, #00D9FF 90% 100%); border-radius: 50%;">
+            <div class="w-48 h-48 rounded-full border-[16px] border-rpr-black relative flex items-center justify-center donut-bg">
                <div class="w-32 h-32 bg-[var(--rpr-ink)] rounded-full flex flex-col items-center justify-center z-10">
                   <span class="text-3xl font-bold text-white">573</span>
                   <span class="text-xs text-slate-400">Total Disputes</span>

@@ -103,3 +103,15 @@ scripts/postman/
 # Function build artifacts (keep committed versions, ignore new builds)
 functions/lib/*.map
 
+
+# --- Workspace & Status File Exclusions (for 445+ pending files) ---
+# Ignore large status reports and operational artifacts
+ALL_PROJECTS_STATUS.json
+*CLAUDEN*-BACKBONE*.md
+*CLAUDEN*-OPERATIONAL-BACKBONE*.md
+*MIGRATION-STATUS*.md
+*PERPLEXITY-INTEGRATED*.md
+*AG-ONBOARDING*.md
+*KONTROL-BIBLE*.md
+*app-flask-complete.py
+*CONSOLIDATED_EXTERNAL_VALIDA*

@@ -5,8 +5,10 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "vitest/globals"
-    ]
+      "vitest"
+    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "include": [
     "src/**/*.d.ts",
