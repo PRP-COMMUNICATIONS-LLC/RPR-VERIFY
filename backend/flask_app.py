@@ -352,6 +352,7 @@ def get_cis_report(case_id):
         return jsonify({
             'status': 'error',
             'message': 'Internal server error'
+        }), 500
 # ============================================================================
 # ESCALATION DASHBOARD ENDPOINTS
 # ============================================================================
