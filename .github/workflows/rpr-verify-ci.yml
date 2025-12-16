@@ -39,15 +39,11 @@ jobs:
           name: dist
           path: dist
 
-      - name: Smoke test (optional)
+      - name: Smoke test (Puppeteer)
         if: env.RUN_SMOKE_TEST == 'true'
         run: |
-          set -euo pipefail
-          echo "Checking https://rpr-verify-b.web.app ..."
-          CODE=$(curl -s -o /dev/null -w "%{http_code}" https://rpr-verify-b.web.app || echo "000")
-          if [ "$CODE" != "200" ]; then
-            echo "Smoke test failed: HTTP $CODE"
-            exit 1
-          fi
-          curl -s https://rpr-verify-b.web.app | grep -q 'app-root' || (echo "app-root not found" && exit 1)
-          echo "Smoke test passed."
+          cd tests/browser
+          npm ci
+          FRONTEND_URL=https://rpr-verify-b.web.app \
+          BACKEND_IDENTIFIER=rpr-verify-7kzxnscuuq-as.a.run.app \
+          node verify_frontend.js
