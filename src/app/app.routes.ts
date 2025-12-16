@@ -15,6 +15,10 @@ export const routes: Routes = [
         // canActivate: [authGuard]  // Temporarily disabled for testing
     },
     {
+        path: 'dashboard/escalation',
+        loadComponent: () => import('./components/escalation-dashboard/escalation-dashboard.component').then(m => m.EscalationDashboardComponent)
+    },
+    {
         path: 'case-detail',
         loadComponent: () => import('./features/cases/case-detail.component').then(m => m.CaseDetailComponent)
         // canActivate: [authGuard]  // Temporarily disabled for testing
