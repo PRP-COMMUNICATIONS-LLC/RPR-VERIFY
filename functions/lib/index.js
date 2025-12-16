@@ -38,12 +38,37 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.helloWorld = void 0;
 const functions = __importStar(require("firebase-functions"));
+const cors_1 = __importDefault(require("cors"));
+// CORS configuration
+const corsOptions = {
+    origin: [
+        'https://verify.rprcomms.com',
+        'https://www.rprcomms.com',
+        'http://localhost:4200', // For local development
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
+};
+// CORS middleware wrapper
+const corsHandler = (0, cors_1.default)(corsOptions);
+// Helper to wrap functions with CORS
+function withCors(handler) {
+    return functions.https.onRequest((request, response) => {
+        corsHandler(request, response, () => {
+            handler(request, response);
+        });
+    });
+}
 // Placeholder for future Cloud Functions
 // Add your functions here as you develop them
-exports.helloWorld = functions.https.onRequest((request, response) => {
+exports.helloWorld = withCors((request, response) => {
     response.json({ message: 'RPR-VERIFY Functions API is running' });
 });
 //# sourceMappingURL=index.js.map

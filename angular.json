@@ -12,7 +12,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/rpr-client-portal",
+            "outputPath": "dist/rpr-verify",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
