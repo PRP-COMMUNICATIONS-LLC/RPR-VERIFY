@@ -1,0 +1,55 @@
+<div class="max-w-7xl mx-auto">
+  <div class="dashboard-header mb-6">
+    <h1 class="dashboard-title">Escalation Dashboard</h1>
+    <p class="dashboard-subtitle">Live view of escalated verification reports.</p>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="dashboard-panel p-6 overflow-x-auto">
+      <table class="min-w-full text-left">
+        <thead>
+          <tr class="text-slate-400 text-sm">
+            <th class="px-4 py-2">Report ID</th>
+            <th class="px-4 py-2">Level</th>
+            <th class="px-4 py-2">Route Target</th>
+            <th class="px-4 py-2">Status</th>
+            <th class="px-4 py-2">Last Updated</th>
+            <th class="px-4 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows" class="border-t border-rpr-slate/20">
+            <td class="px-4 py-3">{{ row.reportId }}</td>
+            <td class="px-4 py-3"> 
+              <span class="inline-flex items-center gap-2">
+                <span [ngClass]="{
+                    'bg-rpr-cyan text-black': row.escalationLevel === 'LOW',
+                    'bg-rpr-green text-black': row.escalationLevel === 'MEDIUM',
+                    'bg-rpr-yellow text-black': row.escalationLevel === 'HIGH',
+                    'bg-rpr-red text-white': row.escalationLevel === 'CRITICAL'
+                  }" class="px-2 py-1 rounded-full text-xs font-medium">
+                  {{ row.escalationLevel }}
+                </span>
+              </span>
+            </td>
+            <td class="px-4 py-3">{{ row.routeTarget }}</td>
+            <td class="px-4 py-3">
+              <span [ngClass]="{
+                  'bg-rpr-slate text-white px-2 rounded-full text-xs': row.status === 'IDLE',
+                  'bg-rpr-yellow text-black px-2 rounded-full text-xs': row.status === 'PENDING',
+                  'bg-rpr-cyan text-black px-2 rounded-full text-xs': row.status === 'ACTIVE',
+                  'bg-rpr-green text-black px-2 rounded-full text-xs': row.status === 'RESOLVED',
+                  'bg-rpr-red text-white px-2 rounded-full text-xs': row.status === 'FAILED'
+                }">{{ row.status }}</span>
+            </td>
+            <td class="px-4 py-3">{{ row.lastUpdated }}</td>
+            <td class="px-4 py-3">
+              <button (click)="onResolve(row)" [disabled]="row.status === 'RESOLVED'"
+                class="px-3 py-1 rounded-md text-sm bg-rpr-cyan/10 text-rpr-cyan disabled:opacity-50">Resolve</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
