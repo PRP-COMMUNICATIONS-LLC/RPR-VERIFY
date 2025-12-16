@@ -56,15 +56,18 @@ export class AuthService {
 
       // Navigate to dashboard
       await this.router.navigate(['/dashboard']);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Google sign-in error:', error);
-      
+
+      // Narrow the unknown error to known shape for handling
+      const err = error as { code?: string; message?: string };
+
       // Handle specific error cases
-      if (error.code === 'auth/popup-closed-by-user') {
+      if (err.code === 'auth/popup-closed-by-user') {
         throw new Error('Sign-in was cancelled. Please try again.');
-      } else if (error.code === 'auth/popup-blocked') {
+      } else if (err.code === 'auth/popup-blocked') {
         throw new Error('Popup was blocked. Please allow popups and try again.');
-      } else if (error.message?.includes('Access denied')) {
+      } else if (err.message?.includes('Access denied')) {
         throw error;
       } else {
         throw new Error('Failed to sign in. Please try again.');

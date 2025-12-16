@@ -16,7 +16,8 @@ export const routes: Routes = [
     },
     {
         path: 'dashboard/escalation',
-        loadComponent: () => import('./components/escalation-dashboard/escalation-dashboard.component').then(m => m.EscalationDashboardComponent)
+        loadComponent: () => import('./components/escalation-dashboard/escalation-dashboard.component').then(m => m.EscalationDashboardComponent),
+        title: 'RPR Verify | Escalation Dashboard'
     },
     {
         path: 'case-detail',

@@ -36,3 +36,18 @@
   color: #00D9CC;            /* teal for "Last 30 Days" etc. */
 }
 
+/* Donut background pulled out of inline style */
+.donut-bg {
+  background: conic-gradient(#00E676 0% 75%, #FF5252 75% 90%, #00D9FF 90% 100%);
+}
+
+/* Gradient stop styles for SVG */
+.gradient-stop-0 {
+  stop-color: #00D9FF;
+  stop-opacity: 1;
+}
+
+.gradient-stop-100 {
+  stop-color: #00D9FF;
+  stop-opacity: 0;
+}

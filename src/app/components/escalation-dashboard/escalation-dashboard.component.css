@@ -5,3 +5,13 @@
 @media (max-width: 640px){
   table{min-width:720px}
 }
+
+/* Primary issue truncated display */
+.issue-text {
+  display: inline-block;
+  max-width: 12rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}

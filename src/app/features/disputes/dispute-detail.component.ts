@@ -38,7 +38,7 @@ import { CommonModule } from '@angular/common';
                         <div class="text-sm text-slate-400">Dispute initiated by customer satisfying compliance action requirements.</div>
                     </div>
                     <div class="timeline-item relative pl-8 pb-4 border-l border-slate-700">
-                        <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full" style="background: rgba(0, 217, 204, 0.2); border: 1px solid var(--accent-primary);"></div>
+                        <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full timeline-dot-accent"></div>
                         <div class="text-xs text-slate-400 mb-1">2023-11-02</div>
                         <div class="text-white font-medium">Initial Review Started</div>
                         <div class="text-sm text-slate-400">Initial review started to process and categorize.</div>
@@ -118,6 +118,9 @@ import { CommonModule } from '@angular/common';
     .header-section {
         display: flex;
         justify-content: space-between;
+    }
+    .timeline-dot-accent { background: rgba(0, 217, 204, 0.2); border: 1px solid var(--accent-primary); }
+    .timeline-item {
         align-items: flex-start;
         padding-bottom: 24px;
         border-bottom: 1px solid rgba(255,255,255,0.1);
