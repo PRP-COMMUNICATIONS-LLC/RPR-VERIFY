@@ -6,12 +6,12 @@ const path = require('path');
   console.log("🚀 Starting Frontend Smoke Test...");
 
   // --- CONFIGURATION ---
-  // The live frontend we just deployed
-  const FRONTEND_URL = 'https://gen-lang-client-0313233462.web.app';
+  // The live frontend we just deployed (override with env vars if needed)
+  const FRONTEND_URL = process.env.FRONTEND_URL || 'https://rpr-verify-b.web.app';
   
   // The unique part of your backend URL to look for in network traffic
-  // (From your deployment log: rpr-verify-f6geq3l3za-as.a.run.app)
-  const BACKEND_IDENTIFIER = 'rpr-verify-f6geq3l3za-as.a.run.app'; 
+  // (override with env var BACKEND_IDENTIFIER if needed)
+  const BACKEND_IDENTIFIER = process.env.BACKEND_IDENTIFIER || 'rpr-verify-7kzxnscuuq-as.a.run.app'; 
 
   const browser = await puppeteer.launch({ 
     headless: "new", // Set to false if you want to see the browser open
