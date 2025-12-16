@@ -108,6 +108,12 @@ def require_auth(f):
     """
     @wraps(f)
     def wrapper(*args, **kwargs):
+        # Allow CORS preflight requests to bypass authentication so flask-cors
+        # can add the required Access-Control-* headers for OPTIONS requests.
+        # This prevents the auth decorator from returning 401/403 for preflights.
+        if request.method == 'OPTIONS':
+            logger.info("➡️ CORS preflight detected - bypassing authentication for OPTIONS")
+            return ('', 204)
         # Check if Firebase Admin is initialized
         if not firebase_admin._apps:
             logger.error("❌ Firebase Admin not initialized - cannot verify tokens")
