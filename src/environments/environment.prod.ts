@@ -2,6 +2,7 @@ export const environment = {
   production: true,
   oauthClientId: '794095666194-j1jl81fks7pl6a5v2mv557cs16hpsmkg.apps.googleusercontent.com',
   apiBaseUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',
+  apiUrl: 'https://rpr-verify-794095666194.asia-southeast1.run.app',  // Added for EscalationService
   firebase: {
     projectId: 'rpr-verify-b',
     apiKey: 'AIzaSyC9yImskFScuBxHyPHpCYvwr_A3CpvLR90',
