@@ -55,23 +55,25 @@ export class SecureUploadComponent {
     this.selectedFile = event.target.files[0];
   }
 
-  async createJobFolder() {
+  createJobFolder() {
     if (!this.reportId) {
       alert('Please enter a Report ID');
       return;
     }
-    try {
-      const result = await this.escalationService.createJobFolder(this.reportId);
-      this.currentFolderId = result.folderId;
-      console.log('Folder created:', result);
-      alert(`Success: Drive Folder ID: ${result.folderId}`);
-    } catch (error) {
-      console.error('Folder creation failed:', error);
-      alert('Folder creation failed. Check console.');
-    }
+    this.escalationService.createJobFolder(this.reportId).subscribe({
+      next: (result) => {
+        this.currentFolderId = result.folderId;
+        console.log('Folder created:', result);
+        alert(`Success: Drive Folder ID: ${result.folderId}`);
+      },
+      error: (error) => {
+        console.error('Folder creation failed:', error);
+        alert('Folder creation failed. Check console.');
+      }
+    });
   }
 
-  async uploadBankSlip() {
+  uploadBankSlip() {
     if (!this.selectedFile) {
       alert('Please select a file first');
       return;
@@ -81,16 +83,18 @@ export class SecureUploadComponent {
       return;
     }
     
-    try {
-      const result = await this.escalationService.uploadDocument(
-        this.reportId,
-        this.selectedFile
-      );
-      console.log('Upload success:', result);
-      alert(`Success: File uploaded! Drive File ID: ${result.fileId}`);
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert('Upload failed. Check console.');
-    }
+    this.escalationService.uploadDocument(
+      this.reportId,
+      this.selectedFile
+    ).subscribe({
+      next: (result) => {
+        console.log('Upload success:', result);
+        alert(`Success: File uploaded! Drive File ID: ${result.fileId}`);
+      },
+      error: (error) => {
+        console.error('Upload failed:', error);
+        alert('Upload failed. Check console.');
+      }
+    });
   }
 }
