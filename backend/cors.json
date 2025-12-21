@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://verify.rprcomms.com"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  }
+]
