@@ -1,7 +1,0 @@
-asia-southeast1-docker.pkg.dev/rpr-verify-b/cloud-run-repo/rpr-verify                        latest                                                                        0b977aa7bf9f   2 hours ago     344MB
-asia-southeast1-docker.pkg.dev/rpr-verify-b/cloud-run-repo/rpr-verify                        v1.0-production                                                               61433d8a9fb0   2 hours ago     344MB
-asia-southeast1-docker.pkg.dev/gen-lang-client-0313233462/cloud-run-repo/rpr-verify          v1.0-production                                                               c08e5abb9d49   7 hours ago     452MB
-asia-southeast1-docker.pkg.dev/gen-lang-client-0313233462/cloud-run-repo/rpr-verify          latest                                                                        a68cbb779c46   7 hours ago     452MB
-asia-southeast1-docker.pkg.dev/gen-lang-client-0313233462/cloud-run-repo/rpr-doc-processor   latest                                                                        e3ab9863d5d6   21 hours ago    985MB
-asia-southeast1-docker.pkg.dev/gen-lang-client-0313233462/cloud-run-repo/rpr-doc-processor   v1.0-production                                                               14387a3c78d8   21 hours ago    985MB
-rpr-doc-processor                                                                            latest                                                                        b8481dfc684d   22 hours ago    985MB
