@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { EscalationState } from '../models/escalation';
 
 // ✅ Defined Interfaces to fix "Object is of type unknown" errors
 export interface CreateJobFolderResponse {
@@ -43,6 +44,40 @@ export class EscalationService {
       fileId: 'stub-file-' + Date.now(),
       success: true,
       message: 'File uploaded successfully'
+    });
+  }
+
+  /**
+   * Get escalation status for a report (stub for dashboard)
+   */
+  getStatus(reportId: string): Observable<EscalationState> {
+    console.log('Stub: Getting escalation status for report', reportId);
+    return of({
+      reportId,
+      escalationLevel: 1,
+      status: 'ACTIVE',
+      lastCheckTimestamp: new Date().toISOString(),
+      routeTarget: '/dashboard',
+      notificationsSent: [],
+      resolutionNote: undefined,
+      actionTaken: undefined
+    });
+  }
+
+  /**
+   * Resolve an escalation (stub for dashboard)
+   */
+  resolve(reportId: string, resolutionNote: string): Observable<EscalationState> {
+    console.log('Stub: Resolving escalation for report', reportId, 'with note:', resolutionNote);
+    return of({
+      reportId,
+      escalationLevel: 0,
+      status: 'RESOLVED',
+      lastCheckTimestamp: new Date().toISOString(),
+      routeTarget: '/dashboard',
+      notificationsSent: [],
+      resolutionNote,
+      actionTaken: 'Resolved via dashboard UI'
     });
   }
 }

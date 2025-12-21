@@ -23,4 +23,23 @@ declare module '@angular/common/http' {
   }
 
   export class HttpParams {}
+
+  // Interceptor types
+  export interface HttpInterceptor {
+    intercept(req: HttpRequest<any>, next: HttpHandler): import('rxjs').Observable<HttpEvent<any>>;
+  }
+
+  export class HttpRequest<T> {
+    constructor(method: string, url: string, body?: T | null, init?: any);
+    clone(update?: any): HttpRequest<T>;
+    url: string;
+  }
+
+  export interface HttpHandler {
+    handle(req: HttpRequest<any>): import('rxjs').Observable<HttpEvent<any>>;
+  }
+
+  export type HttpEvent<T> = any;
+
+  export const HTTP_INTERCEPTORS: any;
 }
