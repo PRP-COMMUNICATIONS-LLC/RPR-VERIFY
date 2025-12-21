@@ -1,0 +1,20 @@
+steps:
+  # Deploy Backend to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - gcloud
+      - run
+      - deploy
+      - rpr-verify
+      - --source=./backend
+      - --region=asia-southeast1
+      - --memory=2Gi
+      - --timeout=60s
+      - --allow-unauthenticated
+      - --set-secrets=GEMINI_API_KEY=gemini-api-key:latest
+      - --service-account=google-drive-admin@rpr-verify-b.iam.gserviceaccount.com
+      - --project=rpr-verify-b
+
+timeout: 1200s
+options:
+  logging: CLOUD_LOGGING_ONLY
