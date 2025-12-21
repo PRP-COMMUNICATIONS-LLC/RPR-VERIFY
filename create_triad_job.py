@@ -134,4 +134,10 @@ def create_triad_job(job_name):
             print("💡 TIP: Did you connect the Bot to the page? (Click '...' > 'Connect to')")
 
 if __name__ == "__main__":
-    create_triad_job("RPR Infrastructure Verification")
+    # Accept command-line argument for job name, or use default
+    if len(sys.argv) > 1:
+        job_name = sys.argv[1]
+    else:
+        job_name = "RPR Infrastructure Verification"
+    
+    create_triad_job(job_name)
