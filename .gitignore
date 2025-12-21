@@ -77,10 +77,6 @@ test-output.log
 backups/
 Ph-4-cursor/
 
-
-
-<<<<<<< HEAD
-
 # --- Workspace & Status File Exclusions (for 445+ pending files) ---
 # Ignore large status reports and operational artifacts
 ALL_PROJECTS_STATUS.json
@@ -92,7 +88,6 @@ ALL_PROJECTS_STATUS.json
 *KONTROL-BIBLE*.md
 *app-flask-complete.py
 *CONSOLIDATED_EXTERNAL_VALIDA*
-=======
+
 # Notion Service Account Key
 key-notion-bot.json
->>>>>>> main

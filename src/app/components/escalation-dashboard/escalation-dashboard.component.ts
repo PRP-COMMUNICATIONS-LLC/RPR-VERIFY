@@ -143,9 +143,9 @@ const baseUi: EscalationRowUI = {
           }
         });
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Failed to resolve escalation', err);
-        this.errorState.set(err?.message ? String(err.message) : String(err));
+        this.errorState.set(err && (err as Error).message ? String((err as Error).message) : String(err));
       }
     });
   }
