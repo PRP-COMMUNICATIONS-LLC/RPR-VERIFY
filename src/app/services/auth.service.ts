@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { getAuth, onAuthStateChanged, User } from '@angular/fire/auth';
+import { getAuth, onAuthStateChanged, User, signOut } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +39,7 @@ export class AuthService {
     console.log('Stub: Login with Google called');
   }
 
-  async logout(): Promise<void> {
-    console.log('Stub: Logout called');
+  async signOut(): Promise<void> {
+    await signOut(this.auth);
   }
 }

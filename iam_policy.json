@@ -1,0 +1,280 @@
+{
+  "bindings": [
+    {
+      "members": [
+        "serviceAccount:rpr-verify-b@appspot.gserviceaccount.com"
+      ],
+      "role": "roles/appengine.appAdmin"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-artifactregistry.iam.gserviceaccount.com"
+      ],
+      "role": "roles/artifactregistry.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:794095666194-compute@developer.gserviceaccount.com"
+      ],
+      "role": "roles/artifactregistry.writer"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-cloudaicompanion.iam.gserviceaccount.com"
+      ],
+      "role": "roles/cloudaicompanion.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:794095666194@cloudbuild.gserviceaccount.com"
+      ],
+      "role": "roles/cloudbuild.builds.builder"
+    },
+    {
+      "members": [
+        "serviceAccount:github-rpr-verify-deploy@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/cloudbuild.builds.editor"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-cloudbuild.iam.gserviceaccount.com"
+      ],
+      "role": "roles/cloudbuild.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com",
+        "serviceAccount:github-rpr-verify-deploy@rpr-verify-b.iam.gserviceaccount.com",
+        "serviceAccount:rpr-verify-b@appspot.gserviceaccount.com"
+      ],
+      "role": "roles/cloudfunctions.developer"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcf-admin-robot.iam.gserviceaccount.com"
+      ],
+      "role": "roles/cloudfunctions.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@container-analysis.iam.gserviceaccount.com"
+      ],
+      "role": "roles/containeranalysis.ServiceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@containerregistry.iam.gserviceaccount.com"
+      ],
+      "role": "roles/containerregistry.ServiceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-containerscanning.iam.gserviceaccount.com"
+      ],
+      "role": "roles/containerscanning.ServiceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:google-drive-admin@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/datastore.owner"
+    },
+    {
+      "members": [
+        "serviceAccount:rpr-verifyrpr-verify-runtime@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/datastore.user"
+    },
+    {
+      "members": [
+        "serviceAccount:firebase-app-hosting-compute@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/developerconnect.readTokenAccessor"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-devconnect.iam.gserviceaccount.com"
+      ],
+      "role": "roles/developerconnect.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:794095666194-compute@developer.gserviceaccount.com",
+        "serviceAccount:794095666194@cloudservices.gserviceaccount.com",
+        "serviceAccount:google-drive-admin@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/editor"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-firebase.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebase.managementServiceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:firebase-adminsdk-fbsvc@rpr-verify-b.iam.gserviceaccount.com",
+        "serviceAccount:firebase-app-hosting-compute@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebase.sdkAdminServiceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:firebase-app-hosting-compute@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebaseapphosting.computeRunner"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebaseapphosting.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:firebase-adminsdk-fbsvc@rpr-verify-b.iam.gserviceaccount.com",
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebaseauth.admin"
+    },
+    {
+      "members": [
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com",
+        "serviceAccount:github-rpr-verify-deploy@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebasehosting.admin"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-firebasemods.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebasemods.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@firebase-rules.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firebaserules.system"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-firestore.iam.gserviceaccount.com"
+      ],
+      "role": "roles/firestore.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:firebase-adminsdk-fbsvc@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/iam.serviceAccountTokenCreator"
+    },
+    {
+      "members": [
+        "serviceAccount:794095666194-compute@developer.gserviceaccount.com",
+        "serviceAccount:794095666194@cloudbuild.gserviceaccount.com",
+        "serviceAccount:github-rpr-verify-deploy@rpr-verify-b.iam.gserviceaccount.com",
+        "serviceAccount:google-drive-admin@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/iam.serviceAccountUser"
+    },
+    {
+      "members": [
+        "serviceAccount:794095666194-compute@developer.gserviceaccount.com"
+      ],
+      "role": "roles/logging.logWriter"
+    },
+    {
+      "members": [
+        "user:Butterdime@gmail.com",
+        "user:hello@rprcomms.com"
+      ],
+      "role": "roles/owner"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-pubsub.iam.gserviceaccount.com"
+      ],
+      "role": "roles/pubsub.serviceAgent"
+    },
+    {
+      "members": [
+        "user:hello@rprcomms.com"
+      ],
+      "role": "roles/resourcemanager.organizationAdmin"
+    },
+    {
+      "members": [
+        "user:hello@rprcomms.com"
+      ],
+      "role": "roles/resourcemanager.projectMover"
+    },
+    {
+      "members": [
+        "serviceAccount:794095666194-compute@developer.gserviceaccount.com",
+        "serviceAccount:794095666194@cloudbuild.gserviceaccount.com"
+      ],
+      "role": "roles/run.admin"
+    },
+    {
+      "members": [
+        "serviceAccount:google-drive-admin@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/run.invoker"
+    },
+    {
+      "members": [
+        "serviceAccount:service-794095666194@serverless-robot-prod.iam.gserviceaccount.com"
+      ],
+      "role": "roles/run.serviceAgent"
+    },
+    {
+      "members": [
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/run.viewer"
+    },
+    {
+      "condition": {
+        "expression": "request.time < timestamp(\"2025-12-20T08:53:57.878Z\")",
+        "title": "developer-connect-connection-setup"
+      },
+      "members": [
+        "serviceAccount:service-794095666194@gcp-sa-devconnect.iam.gserviceaccount.com"
+      ],
+      "role": "roles/secretmanager.admin"
+    },
+    {
+      "members": [
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/serviceusage.apiKeysViewer"
+    },
+    {
+      "members": [
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/serviceusage.serviceUsageConsumer"
+    },
+    {
+      "members": [
+        "serviceAccount:github-action-1113001536@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/storage.admin"
+    },
+    {
+      "members": [
+        "serviceAccount:rpr-verifyrpr-verify-runtime@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/storage.objectCreator"
+    },
+    {
+      "members": [
+        "serviceAccount:google-drive-admin@rpr-verify-b.iam.gserviceaccount.com"
+      ],
+      "role": "roles/storage.objectViewer"
+    }
+  ],
+  "etag": "BwZGchyFoHY=",
+  "version": 3
+}

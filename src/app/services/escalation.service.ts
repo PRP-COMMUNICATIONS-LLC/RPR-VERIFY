@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { EscalationState } from '../models/escalation';
+import { EscalationState, EscalationTriggerResponse } from '../models/escalation';
+import { environment } from '../../environments/environment';
 
 // ✅ Defined Interfaces to fix "Object is of type unknown" errors
 export interface CreateJobFolderResponse {
@@ -15,10 +17,23 @@ export interface UploadDocumentResponse {
   message: string;
 }
 
+export interface ForensicResult {
+  matchScore: number;
+  riskMarker: 0 | 1 | 2 | 3;
+  extractedMetadata: {
+    amount: number;
+    date: string;
+    accountNumber: string;
+    institution: string;
+  };
+  mismatches: any[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class EscalationService {
+  private http = inject(HttpClient);
 
   constructor() {}
 
@@ -48,20 +63,19 @@ export class EscalationService {
   }
 
   /**
-   * Get escalation status for a report (stub for dashboard)
+   * Get escalation status for a report
    */
   getStatus(reportId: string): Observable<EscalationState> {
-    console.log('Stub: Getting escalation status for report', reportId);
-    return of({
-      reportId,
-      escalationLevel: 1,
-      status: 'ACTIVE',
-      lastCheckTimestamp: new Date().toISOString(),
-      routeTarget: '/dashboard',
-      notificationsSent: [],
-      resolutionNote: undefined,
-      actionTaken: undefined
-    });
+    return this.http.get<EscalationState>(`${environment.apiUrl}/api/escalation/status/${reportId}`);
+  }
+
+  /**
+   * Upload a slip and create an escalation
+   */
+  uploadSlip(reportId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${environment.apiUrl}/api/storage/upload/${reportId}`, formData);
   }
 
   /**
@@ -79,5 +93,47 @@ export class EscalationService {
       resolutionNote,
       actionTaken: 'Resolved via dashboard UI'
     });
+  }
+
+  /**
+   * Trigger an escalation (stub for dashboard)
+   */
+  trigger(reportId: string, metadata: any): Observable<EscalationTriggerResponse> {
+    console.log('Stub: Triggering escalation for report', reportId, 'with metadata:', metadata);
+    const state: EscalationState = {
+      reportId,
+      escalationLevel: 2,
+      status: 'ACTIVE',
+      lastCheckTimestamp: new Date().toISOString(),
+      routeTarget: '/dashboard',
+      notificationsSent: [],
+    };
+    return of({
+      success: true,
+      currentState: state,
+      actionTaken: 'Escalation triggered manually'
+    });
+  }
+
+  /**
+   * Scan a bank slip using the backend vision engine
+   */
+  scanSlip(payload: { 
+    driveFileId: string; 
+    reportId: string; 
+    declaredMetadata: any; 
+    fileBytes: string; // base64 string from UI
+  }): Observable<ForensicResult> {
+    return this.http.post<ForensicResult>(
+      '/api/v1/slips/scan', 
+      payload
+    );
+  }
+
+  /**
+   * Wrapper for scanSlip to be used by components
+   */
+  runScan(reportId: string, payload: any): Observable<ForensicResult> {
+    return this.scanSlip(payload);
   }
 }
