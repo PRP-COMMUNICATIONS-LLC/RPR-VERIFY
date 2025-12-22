@@ -1,104 +1,95 @@
 import { Injectable, inject } from '@angular/core';
+import { Firestore, collection, doc, setDoc, getDoc, collectionData, query, where } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { EscalationState, EscalationTriggerResponse } from '../models/escalation';
-import { environment } from '../../environments/environment';
+import { Observable, from, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
-// ✅ Defined Interfaces to fix "Object is of type unknown" errors
-export interface CreateJobFolderResponse {
-  folderId: string;
-  status: string;
-  path: string;
-}
-
-export interface UploadDocumentResponse {
-  fileId: string;
-  success: boolean;
-  message: string;
+export interface EscalationState {
+  reportId: string;
+  clientUid?: string;
+  status: 'PENDING' | 'VERIFIED' | 'ESCALATED' | 'RESOLVED' | 'ACTIVE';
+  riskScore?: number;
+  extractedMetadata?: any;
+  timestamp?: string;
+  escalationLevel?: number;
+  lastCheckTimestamp?: string;
+  routeTarget?: string;
+  notificationsSent?: string[];
 }
 
 export interface ForensicResult {
-  matchScore: number;
-  riskMarker: 0 | 1 | 2 | 3;
-  extractedMetadata: {
-    amount: number;
-    date: string;
-    accountNumber: string;
-    institution: string;
-  };
-  mismatches: any[];
+  success: boolean;
+  data?: any;
+  error?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class EscalationService {
-  private http = inject(HttpClient);
-
-  constructor() {}
-
-  /**
-   * Mock implementation of creating a job folder
-   * Returns an Observable to match standard Angular component patterns (.subscribe)
-   */
-  createJobFolder(reportId: string): Observable<CreateJobFolderResponse> {
-    console.log('Stub: Creating folder for report', reportId);
-    return of({
-      folderId: 'stub-folder-' + reportId,
-      status: 'created',
-      path: '/RPR-JOBS/STUB'
-    });
-  }
+  private firestore = inject(Firestore);
+  private auth = inject(AuthService);
+  private http = inject(HttpClient); // Inject HttpClient
 
   /**
-   * Mock implementation of document upload
+   * Creates a new escalation job in Firestore
    */
-  uploadDocument(reportId: string, file: File): Observable<UploadDocumentResponse> {
-    console.log('Stub: Uploading file', file.name);
-    return of({
-      fileId: 'stub-file-' + Date.now(),
-      success: true,
-      message: 'File uploaded successfully'
-    });
-  }
+  createJob(reportId: string, metadata: any): Observable<void> {
+    const user = this.auth.currentUser();
+    if (!user) return new Observable(observer => observer.error('Unauthorized'));
 
-  /**
-   * Get escalation status for a report
-   */
-  getStatus(reportId: string): Observable<EscalationState> {
-    return this.http.get<EscalationState>(`${environment.apiUrl}/api/escalation/status/${reportId}`);
-  }
-
-  /**
-   * Upload a slip and create an escalation
-   */
-  uploadSlip(reportId: string, file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post(`${environment.apiUrl}/api/storage/upload/${reportId}`, formData);
-  }
-
-  /**
-   * Resolve an escalation (stub for dashboard)
-   */
-  resolve(reportId: string, resolutionNote: string): Observable<EscalationState> {
-    console.log('Stub: Resolving escalation for report', reportId, 'with note:', resolutionNote);
-    return of({
+    const docRef = doc(this.firestore, 'escalations', reportId);
+    const payload: EscalationState = {
       reportId,
-      escalationLevel: 0,
-      status: 'RESOLVED',
-      lastCheckTimestamp: new Date().toISOString(),
-      routeTarget: '/dashboard',
-      notificationsSent: [],
-      resolutionNote,
-      actionTaken: 'Resolved via dashboard UI'
-    });
+      clientUid: user.uid,
+      status: 'PENDING',
+      riskScore: 0,
+      extractedMetadata: metadata,
+      timestamp: new Date().toISOString()
+    };
+
+    return from(setDoc(docRef, payload));
   }
 
   /**
-   * Trigger an escalation (stub for dashboard)
+   * Retrieves specific job status
    */
-  trigger(reportId: string, metadata: any): Observable<EscalationTriggerResponse> {
+  getStatus(reportId: string): Observable<EscalationState | null> {
+    const docRef = doc(this.firestore, 'escalations', reportId);
+    return from(getDoc(docRef)).pipe(
+      map(snap => snap.exists() ? snap.data() as EscalationState : null)
+    );
+  }
+
+  /**
+   * Retrieves all escalations for the current user
+   */
+  getEscalations(): Observable<EscalationState[]> {
+    const user = this.auth.currentUser();
+    if (!user) return of([]);
+
+    const colRef = collection(this.firestore, 'escalations');
+    const q = query(colRef, where('clientUid', '==', user.uid));
+    
+    return collectionData(q, { idField: 'reportId' }) as Observable<EscalationState[]>;
+  }
+
+  /**
+   * Computes dashboard statistics (Mock logic for Phase 4)
+   */
+  getStats(): Observable<any> {
+    // In a real app, this might be an aggregation query or a separate stats document
+    return of({
+      activeAudits: 3,
+      riskLevel: 'MEDIUM',
+      systemHealth: 98.4
+    });
+  }
+
+  // --- MOVED INSIDE CLASS ---
+
+  trigger(reportId: string, metadata: any): Observable<any> {
     console.log('Stub: Triggering escalation for report', reportId, 'with metadata:', metadata);
     const state: EscalationState = {
       reportId,

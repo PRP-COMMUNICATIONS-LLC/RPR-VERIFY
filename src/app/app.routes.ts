@@ -19,7 +19,7 @@ export const routes: Routes = [
     children: [
       { 
         path: '', 
-        redirectTo: 'dashboard', 
+        redirectTo: 'upload', 
         pathMatch: 'full' 
       },
       {
@@ -42,5 +42,5 @@ export const routes: Routes = [
   },
 
   // 3. Fallback
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: 'upload' }
 ];

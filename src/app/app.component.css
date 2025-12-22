@@ -1,14 +1,8 @@
-/* AG-LESSON: Flexbox row layout - sidebar left, content right */
-.app-container {
-  display: flex;
-  height: 100vh;
-  background: #000000;
-}
+/* Root App Component Styles */
+/* Minimal styles - all layout handled by MainLayoutComponent */
 
-.main-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 32px;
-  background: #000000;  /* Pure black background */
-  color: #FFFFFF;
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
