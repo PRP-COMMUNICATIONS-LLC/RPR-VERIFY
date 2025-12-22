@@ -24,6 +24,13 @@ export interface ForensicResult {
   error?: string;
 }
 
+export interface ForensicMetadata {
+  caseId: string;
+  analystId: string;
+  documentType: 'BANK_SLIP' | 'ID_CARD' | 'CONTRACT' | 'OTHER';
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -108,12 +115,49 @@ export class EscalationService {
 
   /**
    * Scan a bank slip using the backend vision engine
+   * Sends file + forensic metadata to /api/v1/slips/scan
+   */
+  scanSlipWithMetadata(
+    file: File,
+    metadata: ForensicMetadata,
+    reportId: string
+  ): Observable<ForensicResult> {
+    const formData = new FormData();
+    
+    // Append the file
+    formData.append('file', file, file.name);
+    
+    // Append forensic metadata as JSON string
+    formData.append('caseId', metadata.caseId);
+    formData.append('analystId', metadata.analystId);
+    formData.append('documentType', metadata.documentType);
+    formData.append('priority', metadata.priority);
+    formData.append('reportId', reportId);
+    
+    // Send to backend Vision Engine
+    return this.http.post<ForensicResult>(
+      '/api/v1/slips/scan',
+      formData
+    ).pipe(
+      catchError((error) => {
+        console.error('Vision Engine scan failed:', error);
+        return of({
+          success: false,
+          error: error.message || 'Failed to scan document'
+        } as ForensicResult);
+      })
+    );
+  }
+
+  /**
+   * Legacy method - kept for backward compatibility
+   * @deprecated Use scanSlipWithMetadata instead
    */
   scanSlip(payload: { 
     driveFileId: string; 
     reportId: string; 
     declaredMetadata: any; 
-    fileBytes: string; // base64 string from UI
+    fileBytes: string;
   }): Observable<ForensicResult> {
     return this.http.post<ForensicResult>(
       '/api/v1/slips/scan', 
