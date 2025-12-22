@@ -14,6 +14,10 @@ export class AuthService {
     onAuthStateChanged(this.auth, (u) => (this.user = u));
   }
 
+  currentUser(): User | null {
+    return this.user;
+  }
+
   // Observable stream (for secure-upload.component.ts)
   get user$(): Observable<User | null> {
     return new Observable(observer => {

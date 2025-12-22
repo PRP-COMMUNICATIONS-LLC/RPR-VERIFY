@@ -1,0 +1,172 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.sovereign-root {
+  position: relative;
+  min-height: 100vh;
+  @include sovereign-bg;
+  color: $ink-light;
+  font-family: $font-primary;
+  overflow: hidden;
+
+  /* Ensure content renders above global scanline */
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Persistent scanline overlay – reuse existing class name */
+.scanline-overlay {
+  @include scanline-overlay;
+}
+
+.sovereign-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  @include header-bg('monitor');
+  backdrop-filter: blur(18px);
+}
+
+.sovereign-root.alert-mode .sovereign-header {
+  @include header-bg('alert');
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.brand-mark {
+  @include brand-mark('monitor');
+}
+
+.sovereign-root.alert-mode .brand-mark {
+  @include brand-mark('alert');
+}
+
+.brand-title {
+  font-weight: $font-weight-black;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: $ink-subtle;
+}
+
+.header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: $ink-muted;
+}
+
+.header-label {
+  font-weight: $font-weight-semibold;
+}
+
+.header-subtitle {
+  opacity: 0.7;
+}
+
+/* Header right: mode toggle + nav */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mode-toggle {
+  @include mode-toggle('monitor');
+}
+
+.mode-toggle.mode-alert {
+  @include mode-toggle('alert');
+}
+
+.mode-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: $teal-primary;
+  box-shadow: $shadow-glow-teal;
+}
+
+.mode-toggle.mode-alert .mode-indicator {
+  background: $alert-red;
+  box-shadow: $shadow-glow-red;
+}
+
+.mode-text {
+  white-space: nowrap;
+}
+
+.primary-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-item {
+  position: relative;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: $ink-muted;
+  text-decoration: none;
+  transition: color 140ms ease-out;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(to right, $teal-primary, transparent);
+    transition: width 140ms ease-out;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+
+  &.active {
+    color: $ink-light;
+
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+.sovereign-root.alert-mode .nav-item::after {
+  background: linear-gradient(to right, $alert-red, transparent);
+}
+
+/* Main frame – glass panel that will wrap SecureUpload and Assets/Inventory */
+.sovereign-main {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.panel-frame {
+  border-radius: $radius-lg;
+  @include glass-panel;
+  padding: 1.25rem;
+}
