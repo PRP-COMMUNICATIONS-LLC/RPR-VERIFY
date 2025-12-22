@@ -1,3 +1,4 @@
+import 'zone.js';
 import 'zone.js/testing'; // Necessary for Angular testing
 
 import { TestBed } from '@angular/core/testing';

@@ -12,3 +12,10 @@ greenlet==3.0.1
 
 # Production WSGI server (Issue 6 resolved)
 gunicorn==21.2.0
+
+# Notion API integration (Method 1)
+requests>=2.31.0
+
+# Vision Engine dependencies
+google-generativeai>=0.3.0
+google-genai>=0.1.0

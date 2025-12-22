@@ -18,6 +18,13 @@ export interface EscalationState {
   notificationsSent: string[];
   resolutionNote?: string;
   actionTaken?: string;
+  riskMarker?: number;
+  matchScore?: number;
+  extractedMetadata?: {
+    institution?: string;
+    accountNumber?: string;
+    [key: string]: any;
+  };
 }
 
 export interface EscalationRowUI {
@@ -27,6 +34,14 @@ export interface EscalationRowUI {
   status: EscalationStatus;
   lastUpdated: Date;
   isResolved: boolean;
+  riskMarker: number;
+  matchScore: number;
+  extractedMetadata?: {
+    institution?: string;
+    accountNumber?: string;
+    [key: string]: any;
+  };
+  mismatches?: any[];
 
   // Quality assessment fields (optional, added by UI enrichment)
   qualityScore?: number; // 0-100 composite score
@@ -62,5 +77,8 @@ export function mapApiStateToRowUI(apiState: EscalationState): EscalationRowUI {
     status: apiState.status,
     lastUpdated: new Date(apiState.lastCheckTimestamp),
     isResolved,
+    riskMarker: apiState.riskMarker ?? apiState.escalationLevel,
+    matchScore: apiState.matchScore ?? 0,
+    extractedMetadata: apiState.extractedMetadata
   };
 }

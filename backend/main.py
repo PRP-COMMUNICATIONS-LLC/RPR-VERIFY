@@ -582,6 +582,132 @@ def api_upload_document(report_id):
         return jsonify({'error': str(e)}), 500
 
 
+# ============================================================================
+# VISION ENGINE / SLIP SCANNING ENDPOINTS
+# ============================================================================
+
+@app.route('/api/v1/slips/scan', methods=['POST'])
+@require_auth
+def scan_slip():
+    """
+    Scan a bank slip using Vision Engine with forensic extraction.
+    Requires valid Firebase ID token in Authorization header.
+    
+    Request Body:
+        {
+            "driveFileId": "string",
+            "reportId": "string",
+            "declaredMetadata": {
+                "amount": float,
+                "date": "string",
+                "accountNumber": "string",
+                "institution": "string"
+            }
+        }
+    
+    Returns:
+        {
+            "status": "success" | "error",
+            "risk_level": int (0-3),
+            "matchScore": float (0-100),
+            "riskMarker": int (0-3),
+            "extractedMetadata": {...},
+            "mismatches": [...]
+        }
+    """
+    try:
+        # Log authenticated user
+        user_email = request.user.get('email', 'unknown') if hasattr(request, 'user') else 'unknown'
+        logger.info(f"🔍 Scanning slip for user: {user_email}")
+        
+        # Parse request data
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'status': 'error',
+                'message': 'Request body is required'
+            }), 400
+        
+        drive_file_id = data.get('driveFileId')
+        report_id = data.get('reportId')
+        declared_metadata = data.get('declaredMetadata')
+        
+        # Validate required fields
+        if not drive_file_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'driveFileId is required'
+            }), 400
+        
+        if not report_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'reportId is required'
+            }), 400
+        
+        if not declared_metadata:
+            return jsonify({
+                'status': 'error',
+                'message': 'declaredMetadata is required'
+            }), 400
+        
+        # Import vision engine
+        try:
+            from vision_engine import VisionAuditEngine
+        except ImportError as e:
+            logger.error(f"❌ Failed to import VisionAuditEngine: {str(e)}")
+            return jsonify({
+                'status': 'error',
+                'message': 'Vision engine not available'
+            }), 503
+        
+        # Initialize vision engine
+        try:
+            vision_engine = VisionAuditEngine()
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize VisionAuditEngine: {str(e)}")
+            return jsonify({
+                'status': 'error',
+                'message': f'Vision engine initialization failed: {str(e)}'
+            }), 503
+        
+        # Fetch file from Google Drive
+        # Note: This assumes you have a function to fetch file bytes from Drive
+        # For now, we'll need to implement this or get it from the request
+        # For MVP, we can accept file bytes in the request or fetch from Drive
+        
+        # Option 1: File bytes in request (for testing)
+        if 'fileBytes' in data:
+            import base64
+            file_bytes = base64.b64decode(data['fileBytes'])
+        else:
+            # Option 2: Fetch from Google Drive (requires Drive API)
+            # TODO: Implement Drive file fetching
+            logger.warning("⚠️ File bytes not provided in request - Drive fetching not yet implemented")
+            return jsonify({
+                'status': 'error',
+                'message': 'File bytes must be provided in request body as base64-encoded fileBytes'
+            }), 400
+        
+        # Perform audit
+        result = vision_engine.audit_slip(
+            drive_file_id=drive_file_id,
+            file_bytes=file_bytes,
+            declared_metadata=declared_metadata,
+            report_id=report_id,
+            admin_email=user_email
+        )
+        
+        return jsonify(result), 200
+        
+    except Exception as e:
+        logger.error(f"❌ Error scanning slip: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Internal server error: {str(e)}'
+        }), 500
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port, debug=True)

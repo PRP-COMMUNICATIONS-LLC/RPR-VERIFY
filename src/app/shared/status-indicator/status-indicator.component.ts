@@ -8,50 +8,36 @@ export type DocumentStatus = 'Pass' | 'Flagged' | 'Error';
 
 @Component({
   standalone: true,
-  selector: 'rpr-status-indicator',
+  selector: 'app-status-indicator',
   template: `
-    <span class="status-badge" [ngClass]="statusClass()">
-      {{ status | uppercase }}
+    <span class="status-pill" [ngClass]="'risk-' + riskLevel">
+      <i class="material-icons" *ngIf="statusIcon()">{{ statusIcon() }}</i>
+      {{ statusLabel() }}
     </span>
   `,
-  styles: [`
-    .status-badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 0.85em;
-      min-width: 80px;
-      text-align: center;
-    }
-    .status-pass {
-      background-color: #d4edda; /* Light Green */
-      color: #155724; /* Dark Green */
-    }
-    .status-flagged {
-      background-color: #fff3cd; /* Light Yellow */
-      color: #856404; /* Dark Yellow */
-    }
-    .status-error {
-      background-color: #f8d7da; /* Light Red */
-      color: #721c24; /* Dark Red */
-    }
-  `],
+  styleUrls: ['./status-indicator.component.scss'],
   imports: [CommonModule]
 })
 export class StatusIndicatorComponent {
-  @Input({ required: true }) status!: DocumentStatus;
+  @Input({ required: true }) riskLevel!: number;
 
-  statusClass = computed(() => {
-    switch (this.status) {
-      case 'Pass':
-        return 'status-pass';
-      case 'Flagged':
-        return 'status-flagged';
-      case 'Error':
-        return 'status-error';
-      default:
-        return '';
+  statusLabel = computed(() => {
+    switch (this.riskLevel) {
+      case 3: return 'Critical Mismatch';
+      case 2: return 'High Discrepancy';
+      case 1: return 'Minor Variance';
+      case 0: return 'Verified';
+      default: return 'Audit Required';
+    }
+  });
+
+  statusIcon = computed(() => {
+    switch (this.riskLevel) {
+      case 3: return 'priority_high';
+      case 2: return 'warning';
+      case 1: return 'info';
+      case 0: return 'check_circle';
+      default: return 'help_outline';
     }
   });
 }

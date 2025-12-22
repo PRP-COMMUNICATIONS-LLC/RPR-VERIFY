@@ -1,13 +1,23 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { EscalationService } from '../../services/escalation.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './dashboard.html',
+  styles: []
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  private escalationService = inject(EscalationService);
+  
+  stats$!: Observable<any>;
+  escalations$!: Observable<any[]>;
+
+  ngOnInit() {
+    this.stats$ = this.escalationService.getStats();
+    this.escalations$ = this.escalationService.getEscalations();
+  }
 }
