@@ -1,0 +1,132 @@
+@import '../../../styles/variables.scss';
+
+.weekly-transactions-container {
+  color: $text-primary; // #FFFFFF
+  padding: 40px;
+
+  .tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .title-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-title {
+    font-size: $h1;
+    font-weight: $weight-bold;
+    color: $text-primary;
+    margin: 0 0 5px 0;
+  }
+
+  .week-display {
+    font-size: $h4;
+    color: #999999;
+    margin-top: 5px;
+    display: block;
+  }
+
+  .action-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .summary-bar {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid $border-subtle;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      label {
+        font-size: 12px;
+        color: #999999;
+        text-transform: uppercase;
+      }
+
+      .total-amount {
+        font-size: $hero; // 36px - Hero Title size
+        font-weight: $weight-bold;
+        display: block;
+        color: $text-primary;
+      }
+    }
+  }
+
+  .table-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid $border-subtle;
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .sovereign-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+
+    th {
+      text-align: left;
+      font-size: $small; // 14px
+      color: #999999;
+      padding: 10px;
+      border-bottom: 1px solid $border-subtle;
+      text-transform: uppercase;
+      letter-spacing: $letter-spacing-label; // 0.1em
+    }
+
+    td {
+      padding: 10px;
+      border-top: 1px solid $border-subtle;
+      font-size: $small;
+      color: $text-primary;
+    }
+  }
+
+  .escalate-btn {
+    background: transparent;
+    color: $text-primary; // #FFFFFF
+    border: 1px solid $text-primary;
+    padding: 6px 16px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: $weight-medium;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &.activated {
+      background: $text-primary;
+      color: $bg-primary; // Black text on white background when active
+      font-weight: $weight-bold;
+    }
+  }
+
+  .download-btn {
+    background: transparent;
+    color: $text-primary;
+    border: 1px solid $border-subtle;
+    padding: 10px 20px;
+    font-size: $small;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: $text-primary;
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+}

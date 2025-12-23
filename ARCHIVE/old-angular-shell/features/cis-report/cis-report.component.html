@@ -1,0 +1,71 @@
+<div class="reports-container">
+  <header class="tab-header">
+    <div class="search-group">
+      <h2 class="section-title">REPORTS & DOSSIER</h2>
+      <div class="lookup-input-wrapper">
+        <input 
+          type="text" 
+          placeholder="ENTER USER ID (e.g. VASILE-2025)" 
+          [(ngModel)]="searchUserId"
+          (keyup.enter)="lookupUser()">
+        <button class="lookup-btn" (click)="lookupUser()">CALL RECORD</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="report-workspace" *ngIf="selectedUser()">
+    <section class="cis-details-card glass-panel">
+      <h3 class="card-title">CUSTOMER INFORMATION SHEET (CIS)</h3>
+      <div class="details-grid">
+        <div class="detail-item">
+          <label>FULL NAME</label>
+          <span>{{ selectedUser()?.fullName }}</span>
+        </div>
+        <div class="detail-item">
+          <label>POSTCODE</label>
+          <span>{{ selectedUser()?.postcode }}</span>
+        </div>
+        <div class="detail-item">
+          <label>ABN STATUS</label>
+          <span class="status-active">{{ selectedUser()?.abnStatus }}</span>
+        </div>
+        <div class="detail-item">
+          <label>ENTITY</label>
+          <span>{{ selectedUser()?.entityName }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="ledger-card glass-panel">
+      <h3 class="card-title">TRANSACTION LEDGER (BANK STATEMENT VIEW)</h3>
+      <table class="statement-table">
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>DESCRIPTION</th>
+            <th>DEBIT</th>
+            <th>CREDIT</th>
+            <th>BALANCE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of selectedUser()?.transactions">
+            <td>{{ tx.date }}</td>
+            <td>{{ tx.description }}</td>
+            <td>{{ tx.debit | currency:'USD' }}</td>
+            <td>{{ tx.credit | currency:'USD' }}</td>
+            <td>{{ tx.balance | currency:'USD' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <aside class="document-gen-card glass-panel">
+      <h3 class="card-title">SUPPORTING DOCUMENTS</h3>
+      <div class="gen-actions">
+        <button class="gen-btn" (click)="generateDossier()">GENERATE FULL FORENSIC DOSSIER</button>
+        <p class="gen-hint">Bundles verified ID, ABN Certificate, and Statement into a single encrypted PDF.</p>
+      </div>
+    </aside>
+  </div>
+</div>

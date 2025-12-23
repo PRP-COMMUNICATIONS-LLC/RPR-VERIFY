@@ -12,6 +12,11 @@
   ],
   "exclude": [
     "src/**/*.spec.ts",
-    "src/test-setup.ts"
+    "src/test-setup.ts",
+    "_legacy_archive",
+    "src/app-OLD/**/*",
+    "src/app/features/auth/**/*",
+    "src/app/features/cases/**/*",
+    "src/app/features/dashboard/**/*"
   ]
 }
