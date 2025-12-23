@@ -1,0 +1,122 @@
+@import '../../styles/variables';
+
+.sovereign-header {
+  background: $bg-primary; // #000000
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  border-bottom: 1px solid $border-subtle;
+  height: 90px; // Increased from ~60px
+
+  .brand-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tri-icon {
+    width: 50px; // Reduced from 56px
+    height: 50px;
+    transition: fill 0.5s ease;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-size: 24px; // Increased from $h4 (16px)
+    color: $text-primary; // #FFFFFF
+    margin: 0;
+    font-weight: $weight-bold;
+    white-space: nowrap;
+    
+    .verify-text {
+      color: $accent-brand; // #008080
+      transition: color 0.5s ease;
+    }
+  }
+
+  .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 40px; // Increased from 30px
+  }
+
+  .nav-tab {
+    color: $text-primary; // #FFFFFF
+    font-size: 10px; // Brand standard: text-[10px]
+    font-weight: $weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.2em; // tracking-widest
+    text-decoration: none;
+    padding: 8px 16px; // px-4 py-2
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: $text-primary;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    &.active {
+      color: $text-primary;
+      background: rgba(255, 255, 255, 0.05);
+
+      &::after {
+        width: 80%;
+      }
+    }
+
+    &.resolution.active {
+      color: $accent-3d-mode; // #FF0000
+
+      &::after {
+        background: $accent-3d-mode;
+        width: 80%;
+      }
+    }
+  }
+
+  // Dispute/Resolution Mode Overrides
+  &.dispute-mode {
+    .tri-icon {
+      fill: #FF0000;
+    }
+
+    .verify-text {
+      color: #FF0000;
+    }
+
+    .nav-tab.active.resolution {
+      color: #FF0000;
+
+      &::after {
+        background: #FF0000;
+      }
+    }
+  }
+}
+
+.company-bar {
+  background: #050815; // From brand HTML
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 0;
+  text-align: center;
+  font-size: 11px;
+  color: #666; // text-slate-500 equivalent
+  letter-spacing: 0.15em; // tracking-[0.4em]
+  text-transform: uppercase;
+  font-weight: 900; // font-black
+}
+
+.content-area {
+  min-height: calc(100vh - 90px - 36px); // Adjusted for header (90px) + company bar (~36px)
+  background: $bg-primary;
+  color: $text-primary;
+}

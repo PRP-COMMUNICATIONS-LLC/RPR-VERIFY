@@ -1,0 +1,53 @@
+<div class="weekly-transactions-container">
+  <header class="tab-header">
+    <div class="title-group">
+      <h2 class="section-title">WEEKLY TRANSACTIONS</h2>
+      <span class="week-display">ISO WEEK: {{ selectedWeek() }}</span>
+    </div>
+    
+    <div class="action-group">
+      <button class="download-btn" (click)="downloadWeeklyReport()">
+        DOWNLOAD WEEKLY REPORT
+      </button>
+    </div>
+  </header>
+
+  <section class="summary-bar glass-panel">
+    <div class="summary-item">
+      <label>WEEKLY TOTAL</label>
+      <span class="total-amount">{{ weeklyTotal() | currency:'USD' }}</span>
+    </div>
+  </section>
+
+  <div class="table-card glass-panel">
+    <table class="sovereign-table">
+      <thead>
+        <tr>
+          <th>CASE ID</th>
+          <th>FULL NAME</th>
+          <th>POSTCODE</th>
+          <th>AMOUNT</th>
+          <th>DATE</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of weeklyData()">
+          <td>{{ row.caseId }}</td>
+          <td>{{ row.fullName }}</td>
+          <td>{{ row.postcode }}</td>
+          <td>{{ row.amount | currency:'USD' }}</td>
+          <td>{{ row.date }}</td>
+          <td>
+            <button 
+              class="escalate-btn" 
+              [class.activated]="row.isEscalated"
+              (click)="toggleEscalation(row)">
+              {{ row.isEscalated ? 'ESCALATED' : 'ESCALATE' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
