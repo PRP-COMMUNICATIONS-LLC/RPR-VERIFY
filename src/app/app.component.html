@@ -8,6 +8,7 @@
   </nav>
 
   <app-information *ngIf="activeTab === 1"></app-information>
+  <app-transactions *ngIf="activeTab === 2"></app-transactions>
 
   <div *ngIf="activeTab === 3" class="hero-container">
     <div style="display: flex; align-items: flex-end; gap: 24px;">

@@ -1,0 +1,35 @@
+<div class="hero-container">
+  <div class="sovereign-offset" style="margin-bottom: 40px;">
+    <div style="height:14px; margin-bottom:8px; font-size:11px; color:var(--rpr-ghost); letter-spacing:0.1em;">WEEKLY</div>
+    <h1 style="font-size:60px; font-weight:900; margin:0; line-height:1;">TRANSACTIONS</h1>
+  </div>
+
+  <div class="sovereign-offset" style="margin-bottom: 24px;">
+    <label for="week-selector" style="font-size: 10px; color: #666; text-transform: uppercase; margin-right: 16px;">SELECT PERIOD:</label>
+    <select id="week-selector" (change)="onWeekChange($event)" [value]="currentWeek" style="background: #050505; color: #fff; border: 1px solid #333; padding: 8px 12px; font-size: 14px;">
+      <option value="W52">WEEK 52: DEC 22 - DEC 28</option>
+      <option value="W51">WEEK 51: DEC 15 - DEC 21</option>
+    </select>
+  </div>
+
+  <div class="sovereign-offset" style="border: 1px solid #1a1a1a; background: #000;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 1px solid #1a1a1a; background: #050505;">
+          <th style="padding: 12px 16px; font-size: 10px; color: #737373; text-transform: uppercase; text-align: left;">TIMESTAMP</th>
+          <th style="padding: 12px 16px; font-size: 10px; color: #737373; text-transform: uppercase; text-align: left;">TX_ID</th>
+          <th style="padding: 12px 16px; font-size: 10px; color: #737373; text-transform: uppercase; text-align: left;">ENTITY</th>
+          <th style="padding: 12px 16px; font-size: 10px; color: #737373; text-transform: uppercase; text-align: right;">AMOUNT (USD)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tx of transactions$ | async" style="border-bottom: 1px solid #1a1a1a;">
+          <td style="padding: 12px 16px; font-family: monospace; font-size: 14px;">{{tx.time}}</td>
+          <td style="padding: 12px 16px; font-family: monospace; font-size: 14px;">{{tx.id}}</td>
+          <td style="padding: 12px 16px; font-size: 14px;">{{tx.entity}}</td>
+          <td style="padding: 12px 16px; font-family: monospace; font-size: 14px; text-align: right;">{{tx.amount | currency}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

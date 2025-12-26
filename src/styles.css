@@ -29,6 +29,10 @@ body {
   margin-left: var(--sovereign-offset);
 }
 
+.sovereign-offset {
+  margin-left: var(--sovereign-offset);
+}
+
 button.rpr-button {
   background: var(--rpr-white);
   color: #000000;
