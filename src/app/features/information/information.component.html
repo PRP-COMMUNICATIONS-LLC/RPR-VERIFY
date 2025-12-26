@@ -1,0 +1,40 @@
+<div class="hero-container">
+  <div class="sovereign-offset">
+    <div style="height:14px; margin-bottom:8px; font-size:11px; color:var(--rpr-ghost); letter-spacing:0.1em;">
+      CUSTOMER
+    </div>
+    <h1 style="font-size:60px; font-weight:900; margin:0; line-height:1;">INFORMATION</h1>
+  </div>
+
+  <form [formGroup]="dossierForm" class="sovereign-offset" style="margin-top: 60px; max-width: 1000px;">
+    <div style="margin-bottom: 40px;">
+      <h3 style="font-size: 10px; color: var(--rpr-ghost); letter-spacing: 0.2em; border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; margin-bottom: 24px;">SECTION I // PRIMARY IDENTITY</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <div class="field">
+          <label style="display: block; font-size: 10px; color: #666666; text-transform: uppercase;">Legal Full Name</label>
+          <input type="text" formControlName="fullName" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #FFF; padding: 10px 0; font-family: 'Inter'; font-size: 16px;">
+        </div>
+        <div class="field">
+          <label style="display: block; font-size: 10px; color: #666666; text-transform: uppercase;">System UID</label>
+          <input type="text" formControlName="systemUID" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: var(--rpr-ghost); padding: 10px 0; font-family: 'Inter'; font-size: 16px;">
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 40px;">
+      <h3 style="font-size: 10px; color: var(--rpr-ghost); letter-spacing: 0.2em; border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; margin-bottom: 24px;">SECTION II // NETWORK METADATA</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <div class="field">
+          <label style="display: block; font-size: 10px; color: #666666; text-transform: uppercase;">Assigned IP Node</label>
+          <input type="text" formControlName="assignedIPNode" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #FFF; padding: 10px 0; font-family: 'Inter'; font-size: 16px;">
+        </div>
+        <div class="field">
+          <label style="display: block; font-size: 10px; color: #666666; text-transform: uppercase;">Clearance Level</label>
+          <input type="text" formControlName="clearanceLevel" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; color: #FFF; padding: 10px 0; font-family: 'Inter'; font-size: 16px;">
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 40px;">
+      <button type="submit" class="rpr-button">Update Dossier</button>
+    </div>
+  </form>
+</div>
