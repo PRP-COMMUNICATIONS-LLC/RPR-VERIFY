@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IdentityService } from '../../core/services/identity.service';
 
@@ -6,6 +6,7 @@ import { IdentityService } from '../../core/services/identity.service';
   selector: 'app-verification',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
       
@@ -102,38 +103,108 @@ import { IdentityService } from '../../core/services/identity.service';
         </aside>
       </div>
 
+      <!-- VERIFICATION PULSE SCANNER SECTION -->
       <div style="padding: 0 40px 40px;">
-        <section style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 4px; width: 100%; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+        <section style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 4px; width: 100%; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
           
           <div style="position: absolute; top: 20px; right: 32px; color: rgba(255,255,255,0.3); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;">
-            Dossier Preview: Page 01 / 03
+            Forensic Scanner: {{ currentPhaseLabel() }}
           </div>
 
-          <div style="text-align: center;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" style="margin-bottom: 20px;">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            <p style="font-size: 10px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.3em; margin: 0;">
-              Awaiting Verification Report Generation...
-            </p>
+          <!-- Pulse Scanner Container -->
+          <div style="position: relative; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center;">
+            
+            <!-- Pulse Rings -->
+            <div *ngIf="status() === 'SCANNING'" 
+                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid #00E0FF; opacity: 0; animation: sovereign-pulse 3s infinite ease-out;"></div>
+            <div *ngIf="status() === 'SCANNING'" 
+                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid #00E0FF; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 1s;"></div>
+            <div *ngIf="status() === 'SCANNING'" 
+                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid #00E0FF; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 2s;"></div>
+            
+            <!-- Central Core -->
+            <div style="position: absolute; width: 60px; height: 60px; background: #00E0FF; border-radius: 50%; box-shadow: 0 0 20px rgba(0, 224, 255, 0.5); display: flex; align-items: center; justify-content: center;">
+              <span *ngIf="status() === 'COMPLETED'" style="color: #000000; font-size: 32px; font-weight: 900;">✓</span>
+            </div>
           </div>
+
+          <!-- Readout Overlay -->
+          <div style="margin-top: 60px; text-align: center; width: 100%; max-width: 400px;">
+            <div style="font-size: 11px; color: #00E0FF; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
+              {{ currentPhaseLabel() }}
+            </div>
+            
+            <!-- Progress Bar -->
+            <div style="width: 100%; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden;">
+              <div [style.width.%]="(scanStep() / 3) * 100" 
+                   style="height: 100%; background: #00E0FF; transition: width 0.5s ease-out;"></div>
+            </div>
+            
+            <div *ngIf="status() === 'COMPLETED'" 
+                 style="margin-top: 24px; font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.2em; text-transform: uppercase;">
+              VERIFICATION COMPLETE
+            </div>
+          </div>
+
+          <!-- CSS Keyframes inline -->
+          <style>
+            @keyframes sovereign-pulse {
+              0% { 
+                transform: scale(0.5); 
+                opacity: 0.8; 
+              }
+              100% { 
+                transform: scale(2.5); 
+                opacity: 0; 
+              }
+            }
+          </style>
         </section>
       </div>
     </div>
   `
 })
-export class VerificationComponent {
+export class VerificationComponent implements OnInit {
   identity = inject(IdentityService);
+
+  // Sovereign State Machine for Pulse Scanner
+  readonly scanStep = signal<number>(0);
+  readonly status = signal<'SCANNING' | 'COMPLETED'>('SCANNING');
+
+  // Derived metadata for display
+  readonly currentPhaseLabel = computed(() => {
+    const labels = ['INITIALIZING', 'IDENTITY SCAN', 'HISTORY CROSS-CHECK', 'FORENSIC VERIFICATION'];
+    return labels[this.scanStep()] || 'PROCESSING';
+  });
 
   ledgerData = [
     { date: '2025-12-15', amount: '15,540.00', bank: 'CBA AU' },
     { date: '2025-12-18', amount: '1,250.50', bank: 'WESTPAC' },
     { date: '2025-12-20', amount: '3,200.75', bank: 'NAB' }
   ];
+
+  ngOnInit() {
+    this.runForensicSequence();
+  }
+
+  private runForensicSequence() {
+    const sequence = [
+      { step: 1, delay: 1000 },
+      { step: 2, delay: 2500 },
+      { step: 3, delay: 4000 },
+      { step: 4, delay: 5500 }
+    ];
+
+    sequence.forEach(phase => {
+      setTimeout(() => {
+        if (phase.step <= 3) {
+          this.scanStep.set(phase.step);
+        } else {
+          this.status.set('COMPLETED');
+        }
+      }, phase.delay);
+    });
+  }
 
   triggerVerificationReport() {
     // Comprehensive Verification Report: CIS + Transaction Ledger + Scanned Deposit Slips + Bank Email Instructions
