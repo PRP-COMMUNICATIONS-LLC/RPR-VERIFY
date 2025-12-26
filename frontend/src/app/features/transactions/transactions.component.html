@@ -1,0 +1,69 @@
+<div class="sovereign-view fade-in">
+  <header class="view-header">
+    <h2 class="eyebrow-small">FINANCIAL</h2>
+    <div class="header-lockup">
+      <h1 class="hero-large">TRANSACTIONS</h1>
+      <svg class="header-icon white" viewBox="0 0 512 512">
+        <path
+          d="M448,32H64C46.33,32,32,46.33,32,64v384c0,17.67,14.33,32,32,32h384c17.67,0,32-14.33,32-32V64C480,46.33,465.67,32,448,32z M416,160H96v-32h320V160z M416,256H96v-32h320V256z M416,352H96v-32h320V352z" />
+      </svg>
+    </div>
+  </header>
+
+  <div class="sovereign-grid">
+    <section class="main-content">
+      <div class="sovereign-card halo-glow mb-lg summary-card">
+        <div class="summary-item">
+          <span class="label">WEEKLY_TOTAL_EXPOSURE (AUD)</span>
+          <span class="value large">${{ weeklyTotal | number:'1.2-2' }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">PERIOD</span>
+          <span class="value">WK-52 / 2025</span>
+        </div>
+      </div>
+
+      <div class="sovereign-card halo-glow no-padding">
+        <div class="card-header-internal">
+          <h3 class="card-subtitle">TRANSACTION_LEDGER</h3>
+        </div>
+        <div class="ledger-table">
+          <div class="table-head">
+            <span>CUSTOMER_ID</span>
+            <span>IDENTIFIER</span>
+            <span>NODE_GATEWAY</span>
+            <span>CHANNEL</span>
+            <span class="text-right">VOLUME (AUD)</span>
+          </div>
+          <div class="table-body">
+            @for (item of ledgerItems; track item.id) {
+            <div class="table-row">
+              <span class="uid">{{ item.customerId }}</span>
+              <span>{{ item.name }}</span>
+              <span>{{ item.bank }}</span>
+              <span>{{ item.type }}</span>
+              <span class="text-right data-value">${{ item.amt | number:'1.2-2' }}</span>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="utility-sidebar">
+      <div class="sovereign-card halo-glow">
+        <h3 class="card-subtitle">SYSTEM_INTEGRITY</h3>
+        <div class="meta-block">
+          <div class="meta-item">
+            <span class="label">ENGINE_STATUS</span>
+            <span class="value">NOMINAL</span>
+          </div>
+          <div class="meta-item mt-md">
+            <span class="label">UPTIME</span>
+            <span class="value">99.98%</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

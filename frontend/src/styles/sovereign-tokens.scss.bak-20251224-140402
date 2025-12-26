@@ -1,0 +1,73 @@
+/* 1. SASS CORE MODULES */
+@use 'sass:color';
+
+/* 2. BRAND PRIMITIVES */
+$bg-primary: #000000;
+$bg-secondary: #050815;
+$accent-primary: #00BCD4;
+$alert-primary: #FF0000;
+$text-primary: #FFFFFF;
+$text-secondary: #94a3b8;
+$accent-teal: #008080;
+
+/* 3. SEMANTIC ALIASES (Fixes Pending/Secure-Upload/Layout) */
+$brand-primary: $accent-primary; // Fixes Pending-Verification
+$accent-brand: $accent-primary; // Fixes Secure-Upload
+$text-main: $text-primary; // Fixes Main-Layout
+$accent-resolution: $alert-primary; // Fixes Dispute-Resolution
+$wordmark-verify: $accent-primary;
+
+/* 4. SPACING & RADIUS */
+$space-xs: 8px;
+$space-sm: 16px;
+$space-md: 24px;
+$space-lg: 32px;
+$space-xl: 32px;
+$space-2xl: 48px;
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+
+/* 5. TYPOGRAPHY CONTRACT */
+$font-family-brand: 'Inter', sans-serif;
+$font-family-data: 'JetBrains Mono', monospace;
+$font-weight-black: 900;
+
+$font-hero-size: 3.5rem;
+$font-hero-weight: 900;
+$font-hero-ls: -0.02em;
+$font-section-size: 1.125rem;
+$font-section-weight: 700;
+$font-section-ls: 0.08em; // Fixes Transactions Error
+$letter-spacing-logo: -0.05em;
+
+/* 6. SURFACE & BORDER TOKENS */
+$card-surface: #020617;
+$card-border: rgba(148, 163, 184, 0.35);
+$shadow-default: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+/* 7. PLACEHOLDERS & MIXINS */
+%status-chip--success,
+.status-chip--success {
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  background: rgba(0, 255, 0, 0.1);
+  color: #00FF00;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+@mixin font-eyebrow {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $text-secondary;
+}
+
+@mixin font-body($weight: 400) {
+  font-family: $font-family-brand;
+  font-size: 14px;
+  font-weight: $weight;
+  color: $text-primary;
+}

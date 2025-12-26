@@ -1,0 +1,34 @@
+/* Ensure Inter is the Sovereign Standard */
+@import "tailwindcss";
+
+/* Force Tailwind v4 to scan the features directory - path relative to this file location */
+@source "./app/**/*.{html,ts}";
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #000000;
+  color: white;
+}
+
+/* Global utility for the frosted effect */
+.glass-header {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Active Navigation States - Brand Playbook Colors */
+.active-info, .active-verify {
+  color: #00E0FF !important;
+  border-bottom: 2px solid #00E0FF !important;
+}
+
+.active-trans {
+  color: #FFFFFF !important;
+  border-bottom: 2px solid #FFFFFF !important;
+}
+
+.active-reso {
+  color: #FF0000 !important;
+  border-bottom: 2px solid #FF0000 !important;
+}
