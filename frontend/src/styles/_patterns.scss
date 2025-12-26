@@ -1,0 +1,2 @@
+@use 'sovereign-tokens' as *; // Sibling import
+.eyebrow-label { @include font-eyebrow; margin-top: $space-sm; }

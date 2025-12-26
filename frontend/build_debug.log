@@ -1,0 +1,6 @@
+
+> rpr-client-portal@0.0.0 build
+> ng build
+
+Node packages may not be installed. Try installing with 'npm install'.
+Error: Could not find the '@angular/build:application' builder's node package.
