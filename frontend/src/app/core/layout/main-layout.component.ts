@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   template: `
     <div style="background-color: #000000; color: #ffffff;">
-      <router-outlet></router-outlet>
+        <router-outlet></router-outlet>
     </div>
   `
 })
