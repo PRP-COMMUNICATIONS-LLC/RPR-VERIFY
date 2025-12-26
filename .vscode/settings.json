@@ -1,4 +1,10 @@
 {
   "css.lint.unknownAtRules": "ignore",
-  "scss.lint.unknownAtRules": "ignore"
+  "scss.lint.unknownAtRules": "ignore",
+  "search.exclude": {
+    "**/frontend-backup-*": true
+  },
+  "files.exclude": {
+    "**/frontend-backup-*": true
+  }
 }

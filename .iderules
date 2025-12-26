@@ -1,0 +1,14 @@
+# RPR-VERIFY MASTER CONTEXT RULES (ANGULAR 19+)
+
+## Framework Constraints
+- **State Management:** ALWAYS use Angular Signals (`signal`, `computed`, `effect`) instead of `BehaviorSubject` for local and global state.
+- **Component Architecture:** All components MUST be `standalone: true`. Every pipe (e.g., `DecimalPipe`) and directive must be explicitly added to the `imports` array.
+- **Change Detection:** Default to `changeDetection: ChangeDetectionStrategy.OnPush`. Ensure `ChangeDetectionStrategy` is imported from `@angular/core`.
+
+## Path & Token Governance
+- **Path Awareness:** All frontend work is in `frontend/src/app/`. Verify paths with `ls` before writing.
+- **Efficiency:** IGNORE `node_modules/`, `.angular/`, and `dist/`.
+- **Styling:** Use `@use 'src/styles/sovereign-tokens.scss' as *;`. Never hardcode colors.
+
+## Brand Rules
+- **Logo:** RPR = White (#FFFFFF). Icon/Verify = Cyan (#00E0FF) by default, Red (#FF0000) if `isEscalated` is true.
