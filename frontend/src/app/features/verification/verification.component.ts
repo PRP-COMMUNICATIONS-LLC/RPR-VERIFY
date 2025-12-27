@@ -12,7 +12,7 @@ import { IdentityService } from '../../core/services/identity.service';
       
       <div style="padding: 40px;">
         <div style="display: flex; align-items: flex-end; gap: 24px;">
-          <svg width="60" height="60" viewBox="0 0 512 512" fill="#00E0FF">
+          <svg width="60" height="60" viewBox="0 0 512 512" [attr.fill]="pulseColor()">
             <path d="M366.26,256L256,56L145.74,256L35.48,456H256h220.52L366.26,256z M462.43,448.02H327.14 c-52.29-17.46-99.26-47.08-123.05-72.78c12.09,3.24,29.59,6.3,53.32,6.78c43.69,0.87,71.69-14.09,71.69-14.09s-0.04-0.49-0.13-1.36 l0.44,1.33c10.53-38.31,14.66-76.67,9.8-143.39l20.22,36.67L462.43,448.02z M255.21,246.4c0,0,17.34,12.57,41.66,53.19 c15.5,25.89,23.07,61.65,23.07,61.65s-27.12,11.27-63.76,11.1c-37.52-0.53-63.59-9.51-63.59-9.51s5.81-34.7,21.66-61.82 C230.29,270.35,255.21,246.4,255.21,246.4z M153.41,261.17L256.42,74.33l70.68,128.2c8.42,51.22,5.65,107.88-2.38,140.27 c-3.5-14.36-9.64-32.72-20.28-49.2c-28.27-43.79-47.74-58.99-47.74-58.99s-0.36,0.2-1.01,0.63 c-42.74,11.66-77.73,28.09-123.62,64.64L153.41,261.17z M50.4,448.02l69.84-126.68c39.4-37.4,94.72-65.51,118.02-70.6 c-9.71,10.52-22.24,27.08-35.09,52.2c-18.12,35.42-20.61,64.11-20.61,64.11s0.59,0.37,1.78,0.99l-1.55-0.36 c29.53,30.52,56.36,49.88,116.46,80.35h-42.83H50.4z"/>
           </svg>
 
@@ -20,7 +20,7 @@ import { IdentityService } from '../../core/services/identity.service';
             <div style="display: block; font-family: 'Inter'; font-weight: 500; font-size: 11px; letter-spacing: 0.1em; color: #666666; text-transform: uppercase; margin-bottom: 8px;">
               PROACTIVE
             </div>
-            <h1 style="font-family: 'Inter'; font-weight: 900; font-size: 60px; letter-spacing: -1.5px; color: #00E0FF; text-transform: uppercase; margin: 0; line-height: 1;">
+            <h1 [style.color]="pulseColor()" style="font-family: 'Inter'; font-weight: 900; font-size: 60px; letter-spacing: -1.5px; text-transform: uppercase; margin: 0; line-height: 1;">
               VERIFICATION
             </h1>
           </div>
@@ -116,28 +116,34 @@ import { IdentityService } from '../../core/services/identity.service';
             
             <!-- Pulse Rings -->
             <div *ngIf="status() === 'SCANNING'" 
-                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid #00E0FF; opacity: 0; animation: sovereign-pulse 3s infinite ease-out;"></div>
+                 [style.border-color]="pulseColor()"
+                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out;"></div>
             <div *ngIf="status() === 'SCANNING'" 
-                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid #00E0FF; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 1s;"></div>
+                 [style.border-color]="pulseColor()"
+                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 1s;"></div>
             <div *ngIf="status() === 'SCANNING'" 
-                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid #00E0FF; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 2s;"></div>
+                 [style.border-color]="pulseColor()"
+                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 2s;"></div>
             
             <!-- Central Core -->
-            <div style="position: absolute; width: 60px; height: 60px; background: #00E0FF; border-radius: 50%; box-shadow: 0 0 20px rgba(0, 224, 255, 0.5); display: flex; align-items: center; justify-content: center;">
+            <div [style.background]="pulseColor()" 
+                 [style.box-shadow]="'0 0 20px ' + pulseShadowColor()"
+                 style="position: absolute; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
               <span *ngIf="status() === 'COMPLETED'" style="color: #000000; font-size: 32px; font-weight: 900;">✓</span>
             </div>
           </div>
 
           <!-- Readout Overlay -->
           <div style="margin-top: 60px; text-align: center; width: 100%; max-width: 400px;">
-            <div style="font-size: 11px; color: #00E0FF; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
+            <div [style.color]="pulseColor()" style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
               {{ currentPhaseLabel() }}
             </div>
             
             <!-- Progress Bar -->
             <div style="width: 100%; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden;">
               <div [style.width.%]="(scanStep() / 3) * 100" 
-                   style="height: 100%; background: #00E0FF; transition: width 0.5s ease-out;"></div>
+                   [style.background]="pulseColor()"
+                   style="height: 100%; transition: width 0.5s ease-out;"></div>
             </div>
             
             <div *ngIf="status() === 'COMPLETED'" 
@@ -175,6 +181,16 @@ export class VerificationComponent implements OnInit {
   readonly currentPhaseLabel = computed(() => {
     const labels = ['INITIALIZING', 'IDENTITY SCAN', 'HISTORY CROSS-CHECK', 'FORENSIC VERIFICATION'];
     return labels[this.scanStep()] || 'PROCESSING';
+  });
+
+  // Pulse Scanner Color: Reactive to escalation state (Cyan ↔ Red)
+  readonly pulseColor = computed(() => {
+    return this.identity.isEscalated() ? '#FF0000' : '#00E0FF';
+  });
+
+  // Pulse Scanner Shadow Color: Reactive to escalation state
+  readonly pulseShadowColor = computed(() => {
+    return this.identity.isEscalated() ? 'rgba(255,0,0,0.5)' : 'rgba(0,224,255,0.5)';
   });
 
   ledgerData = [
