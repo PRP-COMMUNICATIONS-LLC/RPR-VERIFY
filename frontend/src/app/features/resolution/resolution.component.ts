@@ -84,15 +84,34 @@ import { IdentityService } from '../../core/services/identity.service';
             </div>
           </section>
 
-          <section style="background: rgba(255,0,0,0.05); border: 2px dashed rgba(255,0,0,0.3); height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; gap: 20px;">
-            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.3em; margin: 0;">Red-Alert Activation Zone</p>
+          <section [style.background]="identity.isEscalated() ? 'rgba(255,0,0,0.1)' : 'rgba(255,0,0,0.05)'" 
+                   [style.border]="identity.isEscalated() ? '2px solid rgba(255,0,0,0.5)' : '2px dashed rgba(255,0,0,0.3)'" 
+                   style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; gap: 20px; transition: all 0.3s ease;">
+            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.3em; margin: 0;">
+              {{ identity.isEscalated() ? 'Red-Alert Active' : 'Red-Alert Activation Zone' }}
+            </p>
+            
+            <!-- Red-Alert Button (shown when NOT escalated) -->
             <button 
+              *ngIf="!identity.isEscalated()"
               id="red-alert-button"
               (click)="triggerEscalation()" 
               style="background: #FF0000; border: none; color: #FFFFFF; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(255,0,0,0.5); transition: all 0.3s ease;">
               🚨 RED-ALERT
             </button>
-            <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.2em; margin: 0;">Click to activate global escalation state</p>
+            
+            <!-- Reset Button (shown when escalated) -->
+            <button 
+              *ngIf="identity.isEscalated()"
+              id="reset-alert-button"
+              (click)="resetEscalation()" 
+              style="background: #00E0FF; border: none; color: #000000; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(0,224,255,0.5); transition: all 0.3s ease;">
+              ✅ RESET ALERT
+            </button>
+            
+            <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.2em; margin: 0;">
+              {{ identity.isEscalated() ? 'Click to return to proactive state' : 'Click to activate global escalation state' }}
+            </p>
           </section>
         </div>
 
@@ -139,6 +158,12 @@ export class ResolutionComponent {
     console.warn("🚨 RED-ALERT BUTTON CLICKED: Activating global escalation state");
     this.identity.triggerAlert();
     alert('🚨 RED-ALERT PROTOCOL INITIATED: System state changed to ALERT_RED');
+  }
+
+  resetEscalation() {
+    console.log("✅ RESET BUTTON CLICKED: Returning to proactive state");
+    this.identity.resetAlert();
+    alert('✅ ALERT RESET: System state returned to PROACTIVE (Cyan)');
   }
 
   triggerResolution() {

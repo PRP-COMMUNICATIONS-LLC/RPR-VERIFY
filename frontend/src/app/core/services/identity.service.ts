@@ -89,4 +89,16 @@ export class IdentityService {
             this._dossier.set({ ...currentDossier, isEscalated: true });
         }
     }
+
+    // Public API for resetting Red-Alert: Returns system to Cyan (Proactive) state
+    resetAlert() {
+        console.log("✅ Sovereign Red-Alert Reset: Returning to Proactive state");
+        this._isEscalated.set(false);
+        
+        // Also update dossier for backward compatibility
+        const currentDossier = this._dossier();
+        if (currentDossier) {
+            this._dossier.set({ ...currentDossier, isEscalated: false });
+        }
+    }
 }
