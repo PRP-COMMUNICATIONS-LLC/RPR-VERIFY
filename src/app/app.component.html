@@ -1,4 +1,4 @@
-<div class="rpr-shell">
+<div class="rpr-shell" [class.sov-red-alert]="isRedAlert()">
 
   <nav style="display: flex; gap: 40px; padding: 20px 84px; border-bottom: 1px solid #1a1a1a;">
     <span (click)="setTab(1)" [style.opacity]="activeTab === 1 ? 1 : 0.5" style="cursor:pointer">INFORMATION</span>
@@ -22,16 +22,6 @@
     </div>
   </div>
 
-  <div *ngIf="activeTab === 4" class="hero-container">
-    <div style="display: flex; align-items: flex-end; gap: 24px;">
-      <svg width="60" height="60" viewBox="0 0 512 512" fill="var(--rpr-red)">
-        <path d="M366.26,256L256,56L145.74,256L35.48,456H256h220.52L366.26,256z..."/>
-      </svg>
-      <div style="display: flex; flex-direction: column;">
-        <div style="height:14px; margin-bottom:8px; font-size:11px; color:var(--rpr-ghost); letter-spacing:0.1em;">DISPUTE</div>
-        <h1 style="font-size:60px; font-weight:900; color:var(--rpr-red); margin:0; line-height:1;">RESOLUTION</h1>
-      </div>
-    </div>
-  </div>
+  <app-resolution *ngIf="activeTab === 4"></app-resolution>
 
 </div>

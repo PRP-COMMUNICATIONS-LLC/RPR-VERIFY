@@ -14,8 +14,8 @@ export class InformationComponent implements OnInit {
     this.dossierForm = this.fb.group({
       fullName: [{value: '', disabled: true}],
       systemUID: [{value: '', disabled: true}],
-      assignedIPNode: [{value: '', disabled: true}],
-      clearanceLevel: [{value: '', disabled: true}]
+      assignedIPNode: [''],
+      clearanceLevel: ['']
     });
   }
 

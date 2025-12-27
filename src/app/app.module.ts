@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms'; // CRITICAL IMPORT
 import { AppComponent } from './app.component';
 import { InformationComponent } from './features/information/information.component';
 import { TransactionsComponent } from './features/transactions/transactions.component';
+import { ResolutionComponent } from './features/resolution/resolution.component';
 import { IdentityService } from './services/identity.service';
 import { TransactionService } from './services/transaction.service';
 
@@ -13,7 +14,8 @@ import { TransactionService } from './services/transaction.service';
   declarations: [
     AppComponent,
     InformationComponent, // REGISTERING THE DOSSIER
-    TransactionsComponent
+    TransactionsComponent,
+    ResolutionComponent
   ],
   imports: [
     BrowserModule,

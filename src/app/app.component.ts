@@ -1,5 +1,5 @@
-/* src/app/app.component.ts */
-import { Component } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
+import { IdentityService } from './services/identity.service';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +8,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   activeTab: number = 1;
-
-  // Global Health State: Turns RED on Tab 4
-  getSentinelColor(): string {
-    return this.activeTab === 4 ? '#FF0000' : '#00E0FF';
-  }
+  private identityService = inject(IdentityService);
+  // Computed property for reactive UI binding
+  readonly isRedAlert = computed(() => this.identityService.isEscalated());
 
   setTab(id: number) {
     this.activeTab = id;

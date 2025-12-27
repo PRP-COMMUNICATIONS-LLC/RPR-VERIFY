@@ -1,7 +1,9 @@
-/* src/styles.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap');
 
 :root {
+  --primary-accent: #00E0FF; /* Standard Cyan */
+  --header-bg: linear-gradient(180deg, #0A192F 0%, #000000 100%);
+  --sov-border: 1px solid rgba(0, 224, 255, 0.3);
   --rpr-cyan: #00E0FF;
   --rpr-red: #FF0000;
   --rpr-white: #FFFFFF;
@@ -24,7 +26,6 @@ body {
   flex-direction: column;
 }
 
-/* Forces the 84px alignment for Tabs 1 & 2 (No Icon) */
 .ghost-offset {
   margin-left: var(--sovereign-offset);
 }
@@ -44,4 +45,24 @@ button.rpr-button {
   text-transform: uppercase;
   cursor: pointer;
   border-radius: 2px;
+}
+
+/* The Escalation Override */
+.sov-red-alert {
+  --primary-accent: #FF0000; /* Sovereign Red */
+  --header-bg: linear-gradient(180deg, #4A0000 0%, #000000 100%);
+  --sov-border: 1px solid rgba(255, 0, 0, 0.5);
+  --rpr-bg: #4A0000; /* Dark Red Background */
+
+  /* Global transition for smooth state shifting */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sov-red-alert header {
+  background: var(--header-bg);
+  border-bottom: var(--sov-border);
+}
+
+.sov-red-alert .pulse-scanner {
+  filter: drop-shadow(0 0 10px #FF0000);
 }
