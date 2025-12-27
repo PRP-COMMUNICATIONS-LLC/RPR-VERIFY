@@ -18,6 +18,14 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Forensic Secret Audit
+        run: |
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}" ]; then
+            echo "::error::MISSING CRITICAL CREDENTIAL: FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B"
+            exit 1
+          fi
+          echo "✅ Service Account detected."
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
