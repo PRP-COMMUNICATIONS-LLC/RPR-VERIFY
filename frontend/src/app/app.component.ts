@@ -65,7 +65,7 @@ import { IdentityService } from './core/services/identity.service';
     </footer>
   `
 })
-export class App {
+export class AppComponent {
   identity = inject(IdentityService);
   sentinelStatus: 'connected' | 'network_down' | 'escalate' = 'connected';
 
