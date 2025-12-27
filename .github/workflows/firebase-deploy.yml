@@ -66,9 +66,10 @@ jobs:
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}' > /tmp/gcloud-service-account.json
           chmod 600 /tmp/gcloud-service-account.json
 
-      # Deploy to Firebase (Hosting + Functions)
-      - name: Deploy to Firebase Hosting and Functions
-        run: firebase deploy --only hosting,functions --project rpr-verify-b --non-interactive
+      # Deploy to Firebase Hosting (Phase 1: Frontend Only)
+      # Phase 2: Functions will be deployed after backend dependencies are fixed
+      - name: Deploy to Firebase Hosting
+        run: firebase deploy --only hosting --project rpr-verify-b --non-interactive
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcloud-service-account.json
 
