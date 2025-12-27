@@ -84,8 +84,15 @@ import { IdentityService } from '../../core/services/identity.service';
             </div>
           </section>
 
-          <section style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-            <p style="font-size: 10px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.3em;">Dispute Resolution Timeline - Active Monitoring</p>
+          <section style="background: rgba(255,0,0,0.05); border: 2px dashed rgba(255,0,0,0.3); height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; gap: 20px;">
+            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.3em; margin: 0;">Red-Alert Activation Zone</p>
+            <button 
+              id="red-alert-button"
+              (click)="triggerEscalation()" 
+              style="background: #FF0000; border: none; color: #FFFFFF; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(255,0,0,0.5); transition: all 0.3s ease;">
+              🚨 RED-ALERT
+            </button>
+            <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.2em; margin: 0;">Click to activate global escalation state</p>
           </section>
         </div>
 
@@ -129,7 +136,9 @@ export class ResolutionComponent {
   ];
 
   triggerEscalation() {
-    alert('ESCALATION PROTOCOL INITIATED: Changing system state to ALERT_RED');
+    console.warn("🚨 RED-ALERT BUTTON CLICKED: Activating global escalation state");
+    this.identity.triggerAlert();
+    alert('🚨 RED-ALERT PROTOCOL INITIATED: System state changed to ALERT_RED');
   }
 
   triggerResolution() {

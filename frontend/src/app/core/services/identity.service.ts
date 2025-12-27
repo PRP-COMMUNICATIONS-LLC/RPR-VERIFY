@@ -77,4 +77,16 @@ export class IdentityService {
     toggleEscalation() {
         this._isEscalated.update(v => !v);
     }
+
+    // Public API for Red-Alert button: Activates global escalation state
+    triggerAlert() {
+        console.warn("🚨 Sovereign Red-Alert Activated");
+        this._isEscalated.set(true);
+        
+        // Also update dossier for backward compatibility
+        const currentDossier = this._dossier();
+        if (currentDossier) {
+            this._dossier.set({ ...currentDossier, isEscalated: true });
+        }
+    }
 }
