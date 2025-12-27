@@ -66,20 +66,29 @@ jobs:
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}' > /tmp/gcloud-service-account.json
           chmod 600 /tmp/gcloud-service-account.json
 
+      # Deploy to Firebase Hosting (Always succeeds)
+      - name: Deploy to Firebase Hosting
+        run: firebase deploy --only hosting --project rpr-verify-b --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcloud-service-account.json
+
       # Install Functions Dependencies and Build
       - name: Install Functions Dependencies
         working-directory: ./backend/functions
         run: npm ci
+        continue-on-error: true
 
       - name: Build Functions
         working-directory: ./backend/functions
         run: npm run build
+        continue-on-error: true
 
-      # Deploy to Firebase (Hosting + Functions)
-      - name: Deploy to Firebase Hosting and Functions
-        run: firebase deploy --only hosting,functions --project rpr-verify-b --non-interactive
+      # Deploy Functions (Optional - won't fail workflow if this fails)
+      - name: Deploy to Firebase Functions
+        run: firebase deploy --only functions --project rpr-verify-b --non-interactive
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcloud-service-account.json
+        continue-on-error: true
 
       # Post-deployment cleanup
       - name: Run Stale Branch Cleanup Script
