@@ -1,8 +1,12 @@
-name: Deploy RPR-VERIFY to Singapore Engine
+name: Deploy RPR-VERIFY Sovereign Engine
 
 on:
   push:
     branches: [ main ]
+
+permissions:
+  contents: read
+  id-token: write
 
 env:
   PROJECT_ID: rpr-verify-b
@@ -21,22 +25,39 @@ jobs:
       id-token: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
+      # FIX 1: Secure Authentication via WIF
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
+      # FIX 2: Correct SDK Setup
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
 
+      # Build Frontend
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build -- --configuration production
+
+      # Configure Docker for Artifact Registry
       - name: Configure Docker for Artifact Registry
         run: |
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
+      # Build Docker image
       - name: Build Docker image
         run: |
           docker build \
@@ -44,12 +65,14 @@ jobs:
             -t ${{ env.IMAGE_NAME }}:latest \
             ./backend
 
+      # Push Docker image to Artifact Registry
       - name: Push Docker image to Artifact Registry
         run: |
           docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ env.IMAGE_NAME }}:latest
 
-      - name: Deploy to Cloud Run
+      # Deploy Cloud Run (Singapore Engine)
+      - name: Deploy Backend to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image ${{ env.IMAGE_NAME }}:${{ github.sha }} \
@@ -65,6 +88,12 @@ jobs:
             --set-env-vars="PROJECT_ID=${{ env.PROJECT_ID }},LOCATION=${{ env.REGION }}" \
             --allow-unauthenticated \
             --quiet
+
+      # FIX 3: Deploy Firebase Functions to Singapore
+      - name: Deploy Firebase Functions
+        run: |
+          npm install -g firebase-tools
+          firebase deploy --only functions --project ${{ env.PROJECT_ID }} --non-interactive --force
 
       - name: Display deployment URL
         run: |
