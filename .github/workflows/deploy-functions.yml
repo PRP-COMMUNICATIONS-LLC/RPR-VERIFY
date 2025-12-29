@@ -48,4 +48,3 @@ jobs:
         run: |
           echo "✅ Backend functions deployed successfully"
           echo "Check Firebase Console for deployment status"
-
