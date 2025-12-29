@@ -1,0 +1,79 @@
+/* 1. BRAND PRIMITIVES (Antigravity Spec - Phase 4 Identity Lock) */
+$bg-layout: #020712; // Global Background (Midnight - NOT BLACK)
+$bg-pure-black: #000000;
+$bg-surface: $bg-pure-black; // CARDS ARE BLACK OR TRANSPARENT
+
+$accent-cyan: #00E0FF; // Proactive Compliance
+$accent-blue: #0099FF; // Escalation Dominance
+$accent-primary: $accent-cyan;
+$alert-primary: #FF0000;
+
+$text-white: #FFFFFF;
+$text-primary: $text-white;
+$text-light-gray: #E5E5E5; // Metadata
+$text-secondary: $text-light-gray;
+$text-muted: #808080;
+
+/* --- ANTIGRAVITY BRAND PALETTE --- */
+$antigravity-bg: #1A1F2C;
+$card-glass-bg: rgba(0, 0, 0, 0.6);
+$white-glow: 0 0 15px rgba(255, 255, 255, 0.2);
+$font-color-main: #FFFFFF;
+
+/* 2. TYPOGRAPHY (Inter Only Mandate) */
+$font-family-brand: 'Inter', sans-serif;
+$font-family-body: 'Inter', sans-serif;
+$font-family-data: 'Inter', sans-serif;
+
+$font-weight-regular: 400;
+$font-weight-strong: 600;
+$font-weight-black: 900;
+
+/* 3. TYPOGRAPHY SCALE */
+$size-page-header: 32pt;
+$size-section-header: 24pt;
+$size-body: 16pt;
+$size-label: 10pt;
+
+/* 4. LOGO SCALE (Unified Brand Mark) */
+$size-logo: 26px;
+$logo-letter-spacing: -0.05em;
+
+/* 5. SURFACE DECORATION (White Halo Doctrine) */
+$card-border: rgba(255, 255, 255, 0.1);
+$shadow-halo-white: 0 0 15px rgba(255, 255, 255, 0.15); // Critical for separation against non-black BG
+$shadow-default: $shadow-halo-white;
+
+/* 6. SPACING & RADII */
+$space-xs: 8px;
+$space-sm: 16px;
+$space-md: 24px;
+$space-lg: 32px;
+$space-xl: 48px;
+$space-2xl: 4rem; // Fixes secure-upload build error
+$space-3xl: 80px;
+$radius-md: 8px;
+
+/* 7. MIXINS (Enforcing Mixin Flexibility Law) */
+@mixin font-label($weight: $font-weight-strong, $color: $text-muted) {
+  font-family: $font-family-brand;
+  font-size: $size-label;
+  font-weight: $weight;
+  letter-spacing: 1pt;
+  text-transform: uppercase;
+  color: $color;
+}
+
+@mixin font-body($weight: $font-weight-regular, $color: $text-white) {
+  font-family: $font-family-brand;
+  font-size: 14pt;
+  font-weight: $weight;
+  color: $color;
+}
+
+@mixin glass-card($opacity: 0.8, $blur: 12px) {
+  background: rgba(0, 0, 0, $opacity); // Black/Transparent
+  backdrop-filter: blur($blur);
+  border: 1px solid $card-border;
+  box-shadow: $shadow-halo-white;
+}

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Customer Information Sheet - {{CUSTOMER_NAME}}</title>  
+<style>  
+/* ============================================  
+CIS Report Template (Individual)
+Print-Optimized for A4 Portrait  
+============================================ */  
+    @page {  
+        size: A4 portrait;  
+        margin: 0;  
+    }  
+      
+    * {  
+        margin: 0;  
+        padding: 0;  
+        box-sizing: border-box;  
+    }  
+      
+    body {  
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;  
+        font-size: 11pt;  
+        line-height: 1.5;  
+        color: #000000;  
+        background: #ffffff;  
+        padding: 20mm 15mm;  
+    }  
+      
+    /* Header Section */  
+    .report-header {  
+        text-align: center;  
+        margin-bottom: 15mm;  
+        padding-bottom: 5mm;  
+        border-bottom: 2px solid #000000;  
+    }  
+      
+    .report-header h1 {  
+        font-size: 18pt;  
+        font-weight: 700;  
+        letter-spacing: 0.5px;  
+        margin-bottom: 3mm;  
+    }  
+      
+    .report-header .report-meta {  
+        font-size: 10pt;  
+        color: #333333;  
+        margin-top: 2mm;  
+    }  
+      
+    .report-meta strong {  
+        font-weight: 600;  
+    }  
+      
+    /* Section Styling */  
+    .section {  
+        margin-bottom: 8mm;  
+        page-break-inside: avoid;  
+    }  
+      
+    .section-title {  
+        font-size: 13pt;  
+        font-weight: 700;  
+        margin-bottom: 3mm;  
+        padding-bottom: 1mm;  
+        border-bottom: 1px solid #cccccc;  
+    }  
+      
+    /* Table Styling for Data Fields */  
+    .data-table {  
+        width: 100%;  
+        border-collapse: collapse;  
+        margin-top: 2mm;  
+    }  
+      
+    .data-table td {  
+        padding: 2mm 3mm;  
+        border: 1px solid #dddddd;  
+        vertical-align: top;  
+    }  
+      
+    .data-table td:first-child {  
+        font-weight: 600;  
+        width: 40%;  
+        background: #f8f8f8;  
+    }  
+      
+    .data-table td:last-child {  
+        width: 60%;  
+    }  
+      
+    /* Verification Status Badges */  
+    .status-badge {  
+        display: inline-block;  
+        padding: 1mm 3mm;  
+        border-radius: 2mm;  
+        font-size: 9pt;  
+        font-weight: 600;  
+    }  
+      
+    .status-verified {  
+        background: #00BCD4;  
+        color: #000000;  
+    }  
+      
+    .status-pending {  
+        background: #FFC107;  
+        color: #000000;  
+    }  
+      
+    .status-flagged {  
+        background: #F44336;  
+        color: #ffffff;  
+    }  
+      
+    /* Supporting Documents Section */  
+    .supporting-docs {  
+        margin-top: 10mm;  
+    }  
+      
+    .supporting-doc {  
+        margin-bottom: 8mm;  
+        page-break-inside: avoid;  
+    }  
+      
+    .supporting-doc h3 {  
+        font-size: 11pt;  
+        font-weight: 600;  
+        margin-bottom: 2mm;  
+    }  
+      
+    .supporting-doc img {  
+        max-width: 100%;  
+        height: auto;  
+        border: 1px solid #cccccc;  
+        margin-top: 2mm;  
+    }  
+      
+    .supporting-doc .doc-meta {  
+        font-size: 8pt;  
+        color: #666666;  
+        margin-top: 1mm;  
+        font-family: 'Courier New', monospace;  
+    }  
+      
+    /* Footer Section */  
+    .report-footer {  
+        margin-top: 15mm;  
+        padding-top: 5mm;  
+        border-top: 2px solid #000000;  
+        text-align: center;  
+        font-size: 9pt;  
+        color: #333333;  
+    }  
+      
+    .report-footer .signature-hash {  
+        font-family: 'Courier New', monospace;  
+        color: #666666;  
+        margin-top: 2mm;  
+    }  
+      
+    /* Print-Specific Rules */  
+    @media print {  
+        body {  
+            print-color-adjust: exact;  
+            -webkit-print-color-adjust: exact;  
+        }  
+          
+        .page-break {  
+            page-break-after: always;  
+        }  
+    }  
+</style>  
+
+</head>  
+<body>  
+<!-- ============================================  
+REPORT HEADER  
+============================================ -->  
+<div class="report-header">  
+<h1>CUSTOMER INFORMATION SHEET (C.I.S)</h1>  
+<div class="report-meta">  
+<strong>Report ID:</strong> {{REPORT_ID}}
+
+<strong>Customer Name:</strong> {{CUSTOMER_NAME}}
+
+<strong>Date Generated:</strong> {{REPORT_DATE}}
+
+<strong>Prepared By:</strong> {{PREPARED_BY}}  
+</div>  
+</div>  
+<!-- ============================================  
+     SECTION 1: PROOF OF IDENTITY (POI)  
+     ============================================ -->  
+<div class="section">  
+    <div class="section-title">1. PROOF OF IDENTITY (POI)</div>  
+    <table class="data-table">  
+        <tr>  
+            <td>Document Type</td>  
+            <td>{{POI_DOC}}</td>  
+        </tr>  
+        <tr>  
+            <td>Licence Number</td>  
+            <td>{{POI_LICENCE}}</td>  
+        </tr>  
+        <tr>  
+            <td>Date of Birth</td>  
+            <td>{{POI_DOB}}</td>  
+        </tr>  
+        <tr>  
+            <td>Expiry Date</td>  
+            <td>{{POI_EXPIRY}}</td>  
+        </tr>  
+        <tr>  
+            <td>Verification Status</td>  
+            <td><span class="status-badge status-{{POI_STATUS_CLASS}}">{{POI_STATUS}}</span></td>  
+        </tr>  
+    </table>  
+</div>
+
+<!-- ============================================  
+     SECTION 2: PROOF OF ADDRESS (POA)  
+     ============================================ -->  
+<div class="section">  
+    <div class="section-title">2. PROOF OF ADDRESS (POA)</div>  
+    <table class="data-table">  
+        <tr>  
+            <td>Document Type</td>  
+            <td>{{POA_DOC}}</td>  
+        </tr>  
+        <tr>  
+            <td>Residential Address</td>  
+            <td>{{POA_ADDRESS}}</td>  
+        </tr>  
+        <tr>  
+            <td>Issue Date</td>  
+            <td>{{POA_ISSUE}}</td>  
+        </tr>  
+        <tr>  
+            <td>Verification Status</td>  
+            <td><span class="status-badge status-{{POA_STATUS_CLASS}}">{{POA_STATUS}}</span></td>  
+        </tr>  
+    </table>  
+</div>
+
+<!-- ============================================  
+     SECTION 3: SOURCE OF FUNDS (SOF) / BANK ACCOUNT  
+     ============================================ -->  
+<div class="section">  
+    <div class="section-title">3. SOURCE OF FUNDS (SOF) / BANK ACCOUNT VERIFICATION</div>  
+    <table class="data-table">  
+        <tr>  
+            <td>Document Type</td>  
+            <td>{{SOF_DOC}}</td>  
+        </tr>  
+        <tr>  
+            <td>Account Name</td>  
+            <td>{{SOF_ACCOUNT_NAME}}</td>  
+        </tr>  
+        <tr>  
+            <td>BSB</td>  
+            <td>{{SOF_BSB}}</td>  
+        </tr>  
+        <tr>  
+            <td>Account Number</td>  
+            <td>{{SOF_ACCOUNT_NUM}}</td>  
+        </tr>  
+        <tr>  
+            <td>Statement Period</td>  
+            <td>{{SOF_PERIOD}}</td>  
+        </tr>  
+        <tr>  
+            <td>Verification Status</td>  
+            <td><span class="status-badge status-{{SOF_STATUS_CLASS}}">{{SOF_STATUS}}</span></td>  
+        </tr>  
+    </table>  
+</div>
+
+<!-- ============================================  
+     SECTION 4: SUPPORTING DOCUMENTS  
+     ============================================ -->  
+<div class="section supporting-docs">  
+    <div class="section-title">4. SUPPORTING DOCUMENTS</div>  
+    <p style="margin-top: 2mm; font-size: 10pt; color: #666666;">  
+        The following documents are embedded as high-resolution scans for audit and compliance purposes.  
+    </p>  
+      
+    <!-- LOOP: Supporting Documents -->  
+    {{SUPPORTING_DOCUMENTS_LOOP}}  
+    <!-- END LOOP -->  
+</div>
+
+<!-- ============================================  
+     REPORT FOOTER  
+     ============================================ -->  
+<div class="report-footer">  
+    <div>Generated by: {{PREPARED_BY}}</div>  
+    <div>{{REPORT_DATE}}</div>  
+    <div class="signature-hash">Digital Signature: {{SIGNATURE_HASH}}</div>  
+</div>
+
+</body>  
+</html>

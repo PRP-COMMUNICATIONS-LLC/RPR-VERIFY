@@ -1,0 +1,62 @@
+<div class="sovereign-view fade-in">
+  <header class="view-header">
+    <h2 class="eyebrow-small">PROACTIVE</h2>
+    <div class="header-lockup">
+      <h1 class="hero-large cyan">VERIFICATION</h1>
+      <app-brand-logo [size]="38"></app-brand-logo>
+    </div>
+  </header>
+
+  <div class="sovereign-grid">
+    <section class="main-content">
+      <div class="sovereign-card halo-glow mb-lg">
+        <div class="input-lockup">
+          <input [(ngModel)]="searchId" class="sovereign-input" placeholder="ENTER COORDINATES (CUSTOMER_ID)">
+          <button (click)="callRecord()" class="btn-primary">CALL_RECORD</button>
+        </div>
+      </div>
+
+      @if (selectedUser) {
+      <div class="sovereign-grid-2col">
+        <div class="sovereign-card halo-glow">
+          <h3 class="card-subtitle">IDENTITY</h3>
+          <p class="data-value">{{ selectedUser.fullName }}</p>
+          <p class="data-ref">ID_REF: {{ selectedUser.idNumber }}</p>
+          <p class="status-marker verified">STATUS: VERIFIED_V1</p>
+        </div>
+
+        <div class="sovereign-card halo-glow">
+          <h3 class="card-subtitle">ADDRESS_VECTOR</h3>
+          <p class="data-value small">{{ selectedUser.address }}</p>
+        </div>
+
+        <div class="sovereign-card halo-glow">
+          <h3 class="card-subtitle">ENTITY_CONFIG</h3>
+          <p class="data-value small">TYPE: {{ selectedUser.entityType }}</p>
+          <p class="data-value small">ABN_ID: {{ selectedUser.abn }}</p>
+        </div>
+
+        <div class="sovereign-card halo-glow">
+          <h3 class="card-subtitle">BANK_NODE</h3>
+          <p class="data-value small">NODE: {{ selectedUser.bankName }}</p>
+          <p class="data-value small">CHANNEL: {{ selectedUser.accountType }}</p>
+        </div>
+      </div>
+
+      <div class="sovereign-card halo-glow mt-lg portrait-bridge">
+        <h3 class="card-subtitle centered">DOSSIER_GEN_v2</h3>
+        <div class="action-dock">
+          <button (click)="generateCIS()" class="btn-secondary">GENERATE_CIS_REPORT</button>
+        </div>
+      </div>
+      }
+    </section>
+
+    <aside class="utility-sidebar">
+      <div class="sovereign-card halo-glow">
+        <h3 class="card-subtitle">AUDIT_LOG</h3>
+        <div class="placeholder-content">READY_FOR_INGESTION</div>
+      </div>
+    </aside>
+  </div>
+</div>

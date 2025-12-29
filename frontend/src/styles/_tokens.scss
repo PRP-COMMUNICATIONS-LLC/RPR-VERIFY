@@ -1,0 +1,149 @@
+/* src/styles/_tokens.scss */
+
+// Forward typography mixins so they're available when @use 'tokens'
+@forward 'typography';
+
+// 1. Primitive Colors (Restored to Brand Spec)
+$color-white:      #FFFFFF;
+$color-cyan-brand: #00BCD4; // New Product Cyan
+$color-red-alert:  #FF0000; // Alert Red
+$color-black-pure: #000000; // Background Black
+
+// 2. Semantic Wordmark Tokens
+$wordmark-rpr:    $color-white;
+$wordmark-verify: $color-cyan-brand;
+$bg-app:          $color-black-pure;
+$text-main:       $color-white; // For backward compatibility
+$bg-primary:      $color-black-pure; // For backward compatibility
+$bg-secondary:    #0a0e20; // Sovereign Deep Navy (for panels/cards)
+
+// 3. Brand Typography
+$font-family-brand: 'Inter', sans-serif;
+$font-weight-black: 900; // Inter Black
+$letter-spacing-logo: -0.05em; // Spec Letter Spacing
+
+// 3. Typography
+$font-family-base: 'Inter', -apple-system, sans-serif;
+$font-family-data: 'JetBrains Mono', 'Fira Code', monospace; // Updated for data tables
+$font-family-heading: 'Inter', -apple-system, sans-serif;
+$font-weight-bold: 900;
+$font-weight-medium: 700;
+$font-body-weight-medium: 500;
+
+// 4. Component Tokens
+$card-surface: #0f0f0f;
+$card-border: #1a1a1a;
+$border-primary: $card-border;
+
+// 3. Spacing & Radius
+$space-xxs: 4px;
+$space-xs: 8px;
+$space-sm: 16px;
+$space-md: 24px;
+$space-lg: 32px;
+$space-xl: 32px;
+$space-2xl: 48px;
+$radius-sm: 6px;
+$radius-md: 4px;
+$radius-lg: 16px;
+$card-surface: #0f0f0f;
+$card-border: #1a1a1a;
+$border-primary: $card-border;
+
+// 6. Additional Colors
+$text-primary: #ffffff;
+$text-secondary: #7AB5D9;
+$text-tertiary: #00BCD4;
+$accent-primary: #00BCD4;
+$accent-brand: #00BCD4;
+$bg-black: #000000;
+$bg-navy-dark: #050815;
+$accent-teal: #008080;
+$accent-red: #FF0000;
+$text-slate: #A0AEC0;
+
+// 7. Status Colors
+$accent-success-bg: #0f4f34;
+$accent-success-text: #10b981;
+$accent-warning-bg: #5a4b16;
+$accent-warning-text: #FBC02D;
+$accent-error-bg: #2a0a0a;
+$accent-error-text: #ef4444;
+$accent-info-bg: #001a1f;
+$accent-info-text: #00BCD4;
+$accent-resolution: #ef4444;
+$resolution-red: #dc2626;
+$audit-cyan: #00BCD4;
+
+// 8. Sovereign Status Tokens
+$accent-audit-cyan: #00BCD4;
+$accent-resolution-red: #DC2626;
+$accent-warning-gold: #FBC02D;
+$accent-success-green: #10B981;
+
+// 9. Background Tints
+$bg-cyan-tint: rgba(0, 188, 212, 0.1);
+$bg-red-tint: rgba(220, 38, 38, 0.1);
+$bg-gold-tint: rgba(251, 192, 45, 0.1);
+
+// 10. Layout
+$grid-primary: 70%;
+$grid-sidebar: 30%;
+
+// 11. Border Radius & Shadows
+$radius-sm: 6px;
+$radius-md: 4px;
+$radius-lg: 16px;
+$shadow-default: 0px 1px 3px rgba(0, 0, 0, 0.4);
+
+// 12. Typography Variables (for mixins)
+$font-eyebrow-size: 12px;
+$font-eyebrow-weight: 700;
+$font-eyebrow-line-height: 16px;
+$font-eyebrow-letter-spacing: 0.05em;
+
+$font-body-size: 14px;
+$font-body-weight-regular: 400;
+$font-body-weight-medium: 500;
+$font-body-line-height: 21px;
+
+$font-section-size: 18px;
+$font-section-weight: 700;
+$font-section-line-height: 23px;
+
+$font-hero-size: 36px;
+$font-hero-weight: 900;
+$font-hero-line-height: 43px;
+$font-hero-letter-spacing: -0.033em;
+
+// 13. Mixins
+@mixin font-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: $font-eyebrow-size;
+  font-weight: $font-eyebrow-weight;
+  line-height: $font-eyebrow-line-height;
+  letter-spacing: $font-eyebrow-letter-spacing;
+  text-transform: uppercase;
+}
+
+@mixin font-body($weight: $font-body-weight-regular) {
+  font-family: 'Inter', sans-serif;
+  font-size: $font-body-size;
+  font-weight: $weight;
+  line-height: $font-body-line-height;
+}
+
+@mixin font-section {
+  font-family: 'Inter', sans-serif;
+  font-size: $font-section-size;
+  font-weight: $font-section-weight;
+  line-height: $font-section-line-height;
+}
+
+@mixin font-hero {
+  font-family: 'Inter', sans-serif;
+  font-size: $font-hero-size;
+  font-weight: $font-hero-weight;
+  line-height: $font-hero-line-height;
+  letter-spacing: $font-hero-letter-spacing;
+}
