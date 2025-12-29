@@ -28,11 +28,13 @@ const corsHandler = cors(corsOptions);
 
 // Helper to wrap functions with CORS
 function withCors(handler: (req: functions.Request, res: functions.Response) => void | Promise<void>) {
-  return functions.https.onRequest((request, response) => {
-    corsHandler(request, response, () => {
-      handler(request, response);
+  return functions
+    .region('asia-southeast1') // FIX: Explicitly set region to asia-southeast1 for the Singapore Engine
+    .https.onRequest((request, response) => {
+      corsHandler(request, response, () => {
+        handler(request, response);
+      });
     });
-  });
 }
 
 // Proxy function for CIS Reports
