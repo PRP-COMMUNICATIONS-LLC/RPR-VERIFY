@@ -1,4 +1,4 @@
-from firebase_admin import auth
+# LAZY IMPORT: Import firebase_admin.auth only when needed to prevent boot-time OOM
 from functools import wraps
 from flask import request, jsonify
 import logging
@@ -8,59 +8,31 @@ logger = logging.getLogger(__name__)
 def require_rpr_admin(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Ensure Firebase Admin is initialized
-        try:
-            from flask_app import get_firebase_app
-            firebase_app = get_firebase_app()
-            if not firebase_app:
-                logger.error("Firebase Admin not initialized")
-                return jsonify({
-                    'error': 'Authentication service unavailable',
-                    'message': 'Firebase Admin not initialized'
-                }), 503
-        except Exception as e:
-            logger.error(f"Failed to initialize Firebase Admin: {e}")
-            return jsonify({
-                'error': 'Authentication service unavailable',
-                'message': str(e)
-            }), 503
-        
+        # [cite_start]Verify Authorization header exists [cite: 8, 9]
         auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
-            return jsonify({
-                'error': 'Authentication failed',
-                'message': 'Missing or invalid Authorization header'
-            }), 401
+            return jsonify({'error': 'Unauthorized', 'message': 'Missing or invalid token'}), 401
         
         id_token = auth_header.split('Bearer ')[1]
-        
         try:
+            # LAZY IMPORT: Import auth only when actually verifying a token
+            from firebase_admin import auth
+            # [cite_start]Verify the Firebase ID token [cite: 9]
             decoded_token = auth.verify_id_token(id_token)
+            email = decoded_token.get('email', '')
+            email_verified = decoded_token.get('email_verified', False)
             
-            email = decoded_token.get('email')
-            email_verified = decoded_token.get('email_verified')
+            # [cite_start]Restrict access to verified RPR administrators [cite: 10]
+            if not email.endswith('@rprcomms.com') or not email_verified:
+                logger.warning(f"Access denied for user: {email}")
+                return jsonify({'error': 'Forbidden', 'message': 'Access restricted to verified administrators'}), 403
             
-            if not email or not email_verified or not email.endswith('@rprcomms.com'):
-                logger.warning(f"Unauthorized access attempt by {email}")
-                return jsonify({
-                    'error': 'Authentication failed',
-                    'message': 'Access restricted to verified @rprcomms.com administrators'
-                }), 403
-            
+            # [cite_start]Attach admin email for downstream audit logging [cite: 11]
             request.rpr_admin_email = email
             return f(*args, **kwargs)
             
-        except auth.InvalidIdTokenError:
-            logger.error("Invalid ID token")
-            return jsonify({
-                'error': 'Authentication failed',
-                'message': 'Invalid ID token'
-            }), 401
         except Exception as e:
-            logger.error(f"Authentication error: {str(e)}")
-            return jsonify({
-                'error': 'Authentication failed',
-                'message': 'Authentication error occurred'
-            }), 401
-
+            logger.error(f"Authentication failure: {str(e)}")
+            return jsonify({'error': 'Unauthorized', 'message': 'The provided token is invalid'}), 401
+            
     return decorated_function

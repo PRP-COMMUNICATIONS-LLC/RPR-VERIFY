@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EscalationService } from '../../services/escalation.service';
+import { EscalationService } from '../../core/services/escalation.service';
 import { Observable } from 'rxjs';
 
 @Component({
