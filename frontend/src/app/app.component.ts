@@ -1,7 +1,8 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, Renderer2, ElementRef } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IdentityService } from './core/services/identity.service';
+import { VerificationService } from './core/services/verification.service';
 
 @Component({
   selector: 'app-root',
@@ -67,20 +68,35 @@ import { IdentityService } from './core/services/identity.service';
 })
 export class AppComponent {
   identity = inject(IdentityService);
+  vService = inject(VerificationService);
   sentinelStatus: 'connected' | 'network_down' | 'escalate' = 'connected';
 
   getSentinelColor(): string {
-    // Dual-state color map: Cyan for proactive, Red for escalation
-    return this.identity.isEscalated() ? '#FF0000' : '#00E0FF';
+    // Use VerificationService systemColor as primary source, fallback to IdentityService
+    return this.vService.systemColor();
   }
 
-  constructor() {
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef
+  ) {
     // Auto-update Sentinel status based on IdentityService escalation state
     effect(() => {
       if (this.identity.isEscalated()) {
         this.sentinelStatus = 'escalate';
       } else {
         this.sentinelStatus = 'connected';
+      }
+    });
+
+    // Identity-Driven Logic: Reactive Color Shift
+    // Bridge VerificationService to global shell for reactive color propagation
+    effect(() => {
+      const color = this.vService.systemColor();
+      this.renderer.setStyle(document.documentElement, '--system-primary', color);
+      
+      if (color === '#FF0000') {
+        console.warn('SYSTEM_STATUS: WARTIME_ESCALATION_DOMINANCE');
       }
     });
   }
