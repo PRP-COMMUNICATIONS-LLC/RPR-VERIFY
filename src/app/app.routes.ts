@@ -32,6 +32,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/secure-upload/secure-upload.component').then(m => m.SecureUploadComponent),
         title: 'RPR Verify | Secure Ingestion'
       },
+      {
+        path: 'upload/:reportId',
+        loadComponent: () => import('./features/secure-upload/secure-upload.component').then(m => m.SecureUploadComponent),
+        title: 'RPR Verify | Secure Ingestion'
+      },
       // Placeholder for future features
       {
         path: 'cases',
