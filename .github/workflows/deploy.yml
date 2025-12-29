@@ -1,0 +1,72 @@
+name: Deploy RPR-VERIFY to Singapore Engine
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: rpr-verify-b
+  PROJECT_NUMBER: 794095666194
+  REGION: asia-southeast1
+  SERVICE_NAME: rpr-verify-backend
+  REPOSITORY: asia-southeast1-docker
+  IMAGE_NAME: asia-southeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -t ${{ env.IMAGE_NAME }}:latest \
+            ./backend
+
+      - name: Push Docker image to Artifact Registry
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ env.IMAGE_NAME }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }} \
+            --port 5001 \
+            --memory 2Gi \
+            --cpu 2 \
+            --timeout 120 \
+            --service-account jules-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
+            --set-secrets="GEMINI_API_KEY=gemini-api-key:latest" \
+            --set-env-vars="PROJECT_ID=${{ env.PROJECT_ID }},LOCATION=${{ env.REGION }}" \
+            --allow-unauthenticated \
+            --quiet
+
+      - name: Display deployment URL
+        run: |
+          echo "🚀 Deployment complete!"
+          echo "📍 Service URL: $(gcloud run services describe ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --project=${{ env.PROJECT_ID }} --format='value(status.url)')"
