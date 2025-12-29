@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Information Sheet - INDIVIDUAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --border-color: #CCCCCC;
+            --bg-light: #F5F5F5;
+            --bg-highlight: #F9F9F9;
+            --screen-bg: #525659;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: var(--primary-color);
+            background: var(--screen-bg);
+        }
+
+        .page-container {
+            width: 210mm;
+            height: 297mm;
+            margin: 20px auto;
+            background: white;
+            padding: 15mm;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+            break-after: page;
+        }
+
+        .page-content {
+            flex: 1;
+        }
+
+        .page-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin-top: 20px;
+            font-size: 8pt;
+            text-align: center;
+            color: var(--secondary-color);
+            page-break-inside: avoid;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 4px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0;
+            font-family: 'League Spartan', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .customer-type-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 13pt;
+            font-weight: 600;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            background-color: var(--bg-light);
+            padding: 5px 10px;
+            border-left: 5px solid var(--primary-color);
+            font-family: 'League Spartan', sans-serif;
+            text-transform: uppercase;
+        }
+
+        h2.doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0;
+        }
+
+        .doc-section-label {
+            font-size: 9pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--secondary-color);
+        }
+
+        h3 {
+            font-size: 11pt;
+            font-weight: 600;
+            margin: 10px 0 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 9pt;
+        }
+
+        th {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: left;
+            padding: 8px;
+            border: 1px solid var(--primary-color);
+            text-transform: uppercase;
+            width: 50%;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .document-image {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            border: 1px solid var(--border-color);
+            margin: 10px 0;
+            width: 170mm;
+        }
+
+        .caption {
+            font-size: 8pt;
+            color: var(--secondary-color);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .metadata {
+            font-size: 8pt;
+            color: var(--secondary-color);
+            margin-top: 10px;
+            padding: 8px;
+            background-color: var(--bg-highlight);
+            border-left: 3px solid var(--border-color);
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+
+            body {
+                background: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-container {
+                margin: 0;
+                padding: 15mm;
+                box-shadow: none;
+                border: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- PAGE 1: INDIVIDUAL VERIFICATION SUMMARY -->
+    <div class="page-container">
+        <div class="page-content">
+            <div class="header">
+                <h1>CUSTOMER INFORMATION SHEET (C.I.S)</h1>
+                <div class="customer-type-label">INDIVIDUAL</div>
+            </div>
+
+            <!-- PROOF OF IDENTITY -->
+            <h2>Proof of Identity</h2>
+            <table>
+                <tr>
+                    <th>Head</th>
+                    <th>Particulars</th>
+                </tr>
+                <tr>
+                    <td>Primary Identification Document</td>
+                    <td><span id="val-identity-doc">Australian Driver's License</span></td>
+                </tr>
+                <tr>
+                    <td>Document Number</td>
+                    <td><span id="val-identity-number">350015</span></td>
+                </tr>
+                <tr>
+                    <td>Date of Birth</td>
+                    <td><span id="val-identity-dob">11 JAN 1955</span></td>
+                </tr>
+                <tr>
+                    <td>Expiry Date</td>
+                    <td><span id="val-identity-expiry">11 JAN 2030</span></td>
+                </tr>
+            </table>
+
+            <!-- PROOF OF RESIDENCE -->
+            <h2>Proof of Residence</h2>
+            <table>
+                <tr>
+                    <th>Head</th>
+                    <th>Particulars</th>
+                </tr>
+                <tr>
+                    <td>Primary Document Type</td>
+                    <td><span id="val-residence-doc">Utility Bill</span></td>
+                </tr>
+                <tr>
+                    <td>Issue Date</td>
+                    <td><span id="val-residence-date">20 SEP 2025</span></td>
+                </tr>
+                <tr>
+                    <td>Residential Address</td>
+                    <td><span id="val-residence-address">15 BUCHANAN RISE, COOGEE WA 6166</span></td>
+                </tr>
+            </table>
+
+            <!-- BANK ACCOUNT VERIFICATION -->
+            <h2>Bank Account Verification</h2>
+            <table>
+                <tr>
+                    <th>Head</th>
+                    <th>Particulars</th>
+                </tr>
+                <tr>
+                    <td>Bank Name</td>
+                    <td><span id="val-bank-name">National Australia Bank</span></td>
+                </tr>
+                <tr>
+                    <td>Account Name</td>
+                    <td><span id="val-bank-account-name">GAVRIL VASILE POP</span></td>
+                </tr>
+                <tr>
+                    <td>BSB</td>
+                    <td><span id="val-bank-bsb">086-217</span></td>
+                </tr>
+                <tr>
+                    <td>Account Number</td>
+                    <td><span id="val-bank-number">63-533-7192</span></td>
+                </tr>
+                <tr>
+                    <td>Statement Period</td>
+                    <td><span id="val-bank-period">20 SEP 2025 – 19 OCT 2025</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="page-footer">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- PAGE 2: PROOF OF IDENTITY DOCUMENT -->
+    <div class="page-container">
+        <div class="page-content">
+            <h2 class="doc-header">
+                <span>Proof of Identity</span>
+                <span class="doc-section-label">Supporting Documents</span>
+            </h2>
+
+            <h3>Australian Driver's License</h3>
+            <table>
+                <tr>
+                    <th>Head</th>
+                    <th>Particulars</th>
+                </tr>
+                <tr>
+                    <td>Document Type</td>
+                    <td>Australian Driver's License</td>
+                </tr>
+                <tr>
+                    <td>Date</td>
+                    <td>02 December 2025</td>
+                </tr>
+                <tr>
+                    <td>Document Scale</td>
+                    <td>1:1 (Actual Size)</td>
+                </tr>
+                <tr>
+                    <td>Metadata Source</td>
+                    <td>Canon Scanner Model TS8520</td>
+                </tr>
+            </table>
+
+            <img id="img-proof-identity" src="" alt="Proof of Identification Document" class="document-image">
+            <p class="caption">Scanned Document: Australian Driver's License (Reproduced to actual scale)</p>
+        </div>
+
+        <div class="page-footer">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- PAGE 3: PROOF OF RESIDENCE DOCUMENT -->
+    <div class="page-container">
+        <div class="page-content">
+            <h2 class="doc-header">
+                <span>Proof of Residence</span>
+                <span class="doc-section-label">Supporting Documents</span>
+            </h2>
+
+            <h3>Utility Bill / Proof of Address</h3>
+            <table>
+                <tr>
+                    <th>Head</th>
+                    <th>Particulars</th>
+                </tr>
+                <tr>
+                    <td>Document Type</td>
+                    <td>Utility Bill / Proof of Address</td>
+                </tr>
+                <tr>
+                    <td>Date</td>
+                    <td>02 December 2025</td>
+                </tr>
+                <tr>
+                    <td>Document Scale</td>
+                    <td>1:1 (Actual Size)</td>
+                </tr>
+                <tr>
+                    <td>Metadata Source</td>
+                    <td>Canon Scanner Model TS8520</td>
+                </tr>
+            </table>
+
+            <img id="img-proof-residence" src="" alt="Proof of Address Document" class="document-image">
+            <p class="caption">Scanned Document: Utility Bill / Proof of Address (Reproduced to actual scale)</p>
+        </div>
+
+        <div class="page-footer">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+
+    <!-- PAGE 4: BANK STATEMENT DOCUMENT -->
+    <div class="page-container">
+        <div class="page-content">
+            <h2 class="doc-header">
+                <span>Bank Account Verification</span>
+                <span class="doc-section-label">Supporting Documents</span>
+            </h2>
+
+            <h3>Bank Statement</h3>
+            <table>
+                <tr>
+                    <th>Head</th>
+                    <th>Particulars</th>
+                </tr>
+                <tr>
+                    <td>Document Type</td>
+                    <td>Bank Statement</td>
+                </tr>
+                <tr>
+                    <td>Date</td>
+                    <td>02 December 2025</td>
+                </tr>
+                <tr>
+                    <td>Document Scale</td>
+                    <td>1:1 (Actual Size)</td>
+                </tr>
+                <tr>
+                    <td>Metadata Source</td>
+                    <td>PDF Bank Statement</td>
+                </tr>
+            </table>
+
+            <img id="img-bank-statement" src="" alt="Bank Statement Document" class="document-image">
+            <p class="caption">Scanned Document: Bank Statement (Reproduced to actual scale)</p>
+        </div>
+
+        <div class="page-footer">
+            CONFIDENTIAL - This document contains sensitive information and is intended solely for verification purposes
+            only
+        </div>
+    </div>
+</body>
+<script>
+    // Base64 Image Data
+    const BASE64_IMAGES = {
+        "PROOF-OF-IDENTIFICATION": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w==",
+        "PROOF-OF-ADDRESS": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w==",
+        "BANK-ACCOUNT-VERIFICATION": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2w=="
+    };
+
+    // Sample Data (matching original hardcoded values)
+    const REPORT_DATA = {
+        identity: {
+            doc: "Australian Driver's License",
+            number: "350015",
+            dob: "11 JAN 1955",
+            expiry: "11 JAN 2030"
+        },
+        residence: {
+            doc: "Utility Bill",
+            date: "20 SEP 2025",
+            address: "15 BUCHANAN RISE, COOGEE WA 6166"
+        },
+        bank: {
+            name: "National Australia Bank",
+            accountName: "GAVRIL VASILE POP",
+            bsb: "086-217",
+            number: "63-533-7192",
+            period: "20 SEP 2025 – 19 OCT 2025"
+        }
+    };
+
+    function renderReport() {
+        // Populate Text Fields
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        };
+
+        set('val-identity-doc', REPORT_DATA.identity.doc);
+        set('val-identity-number', REPORT_DATA.identity.number);
+        set('val-identity-dob', REPORT_DATA.identity.dob);
+        set('val-identity-expiry', REPORT_DATA.identity.expiry);
+
+        set('val-residence-doc', REPORT_DATA.residence.doc);
+        set('val-residence-date', REPORT_DATA.residence.date);
+        set('val-residence-address', REPORT_DATA.residence.address);
+
+        set('val-bank-name', REPORT_DATA.bank.name);
+        set('val-bank-account-name', REPORT_DATA.bank.accountName);
+        set('val-bank-bsb', REPORT_DATA.bank.bsb);
+        set('val-bank-number', REPORT_DATA.bank.number);
+        set('val-bank-period', REPORT_DATA.bank.period);
+
+        // Populate Images
+        const imgIdentity = document.getElementById('img-proof-identity');
+        if (imgIdentity) imgIdentity.src = BASE64_IMAGES["PROOF-OF-IDENTIFICATION"];
+
+        const imgResidence = document.getElementById('img-proof-residence');
+        if (imgResidence) imgResidence.src = BASE64_IMAGES["PROOF-OF-ADDRESS"];
+
+        const imgBank = document.getElementById('img-bank-statement');
+        if (imgBank) imgBank.src = BASE64_IMAGES["BANK-ACCOUNT-VERIFICATION"];
+    }
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', renderReport);
+</script>
+
+</html>

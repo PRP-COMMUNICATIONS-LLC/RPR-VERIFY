@@ -1,0 +1,28 @@
+{
+  "projects": {
+    "default": "rpr-verify-b"
+  },
+  "hosting": {
+    "site": "rpr-verify-b",
+    "public": "frontend/dist/rpr-verify",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "functions": {
+    "source": "backend/functions",
+    "predeploy": []
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

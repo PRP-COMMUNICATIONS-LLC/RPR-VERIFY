@@ -1,0 +1,66 @@
+{
+  "test_documents": [
+    {
+      "filename": "PROOF-OF-IDENTIFICATION.jpg",
+      "type": "identity_document",
+      "subtype": "drivers_license",
+      "category": "identity",
+      "expected_data": {
+        "name": "GAVRIL VASILE",
+        "address": "15 BUCHANAN RISE, COOGEE WA 6166",
+        "dob": "11 Jan 1955",
+        "expiry": "18 Apr 2026",
+        "document_number": "3554361"
+      },
+      "test_cases": ["E2E-001", "OCR-001", "FRAUD-001"]
+    },
+    {
+      "filename": "PROOF-OF-ADDRESS.jpg",
+      "type": "proof_of_address",
+      "subtype": "utility_bill",
+      "category": "proof-of-address",
+      "expected_data": {
+        "name": "G & DM POP",
+        "address": "15 BUCHANAN RISE, COOGEE WA 6166",
+        "date": "20 JAN 2025",
+        "account_number": "90 00411 52 1",
+        "amount": "$489.15",
+        "due_date": "5 Feb 2025"
+      },
+      "test_cases": ["E2E-002", "OCR-002", "ADDRESS-001"]
+    },
+    {
+      "filename": "ABN-VERIFICATION.jpg",
+      "type": "business_verification",
+      "subtype": "abn_lookup",
+      "category": "business",
+      "expected_data": {
+        "entity_name": "The Trustee for THE ARDEAL TRADING TRUST",
+        "abn": "16 920 472 163",
+        "trading_name": "ARDEAL CONCRETE CONTRACTORS",
+        "status": "Active"
+      },
+      "test_cases": ["E2E-003", "OCR-003", "BUSINESS-001"]
+    },
+    {
+      "filename": "BANK-ACCOUNT-VERIFICATION.jpg",
+      "type": "bank_statement",
+      "subtype": "transaction_summary",
+      "category": "business",
+      "expected_data": {
+        "bank": "Commonwealth Bank",
+        "account_holder": "Mr John Doe",
+        "address": "522 Flinders St, Melbourne VIC 3000",
+        "account_number": "123 456 12345678",
+        "closing_balance": "$11,709.75"
+      },
+      "test_cases": ["E2E-004", "OCR-004", "FINANCIAL-001"]
+    }
+  ],
+  "test_scenarios": {
+    "positive": ["E2E-001", "E2E-002", "E2E-003", "E2E-004"],
+    "negative": ["NEG-001", "NEG-002", "NEG-003"],
+    "performance": ["LOAD-001"]
+  }
+}
+

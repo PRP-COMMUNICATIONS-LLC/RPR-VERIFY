@@ -1,0 +1,61 @@
+<!-- CORRECTED: main-layout.component.html -->
+<!-- Location: src/app/core/layout/main-layout.component.html -->
+<!-- NOTE: Adjust routerLink paths based on your actual app routing -->
+
+<div class="sovereign-header" [class.dispute-mode]="isResolutionActive()">
+  <div class="brand-container">
+    <!-- Brand SVG Icon (replace with your logo path) -->
+    <svg class="tri-icon" viewBox="0 0 56 56" fill="currentColor">
+      <path d="M28 4 L52 48 L4 48 Z" />
+    </svg>
+    <h1 class="logo">
+      <span class="verify-text">RPR</span>-VERIFY
+    </h1>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="main-nav">
+    <a 
+      routerLink="/upload" 
+      routerLinkActive="active" 
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-tab"
+    >
+      INFORMATION
+    </a>
+    <a 
+      routerLink="/transactions" 
+      routerLinkActive="active" 
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-tab"
+    >
+      TRANSACTIONS
+    </a>
+    <a 
+      routerLink="/verification" 
+      routerLinkActive="active" 
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-tab"
+    >
+      VERIFICATION
+    </a>
+    <a 
+      routerLink="/resolution" 
+      routerLinkActive="active resolution" 
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-tab resolution"
+    >
+      RESOLUTION
+    </a>
+  </nav>
+</div>
+
+<!-- Company Bar -->
+<div class="company-bar">
+  RPR COMMUNICATIONS LLC | FINANCIAL FORENSICS & DISPUTE RESOLUTION
+</div>
+
+<!-- Main Content Area -->
+<div class="content-area">
+  <router-outlet></router-outlet>
+</div>

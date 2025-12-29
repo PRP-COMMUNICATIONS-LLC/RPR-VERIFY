@@ -1,0 +1,35 @@
+/* RPR-KONTROL Risk Level Indicators */
+.status-pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .material-icons {
+    font-size: 1rem;
+  }
+
+  // Level 3: Critical (Forensic Red / Absolute Black)
+  &.risk-3 {
+    background-color: #000000;
+    color: #FF4D4D;
+    border: 1px solid #FF4D4D;
+  }
+
+  // Level 1-2: Warning (Highlight Blue)
+  &.risk-1, &.risk-2 {
+    background-color: #7AB5D9;
+    color: #000000;
+  }
+
+  // Level 0: Verified (Audit Cyan)
+  &.risk-0 {
+    background-color: rgba(0, 188, 212, 0.1);
+    color: #00BCD4;
+    border: 1px solid #00BCD4;
+  }
+}

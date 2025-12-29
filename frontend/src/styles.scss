@@ -1,0 +1,71 @@
+/* Ensure Inter is the Sovereign Standard */
+@import "tailwindcss";
+
+/* Force Tailwind v4 to scan the features directory - path relative to this file location */
+@source "./app/**/*.{html,ts}";
+
+/* ==========================================================================
+   FORENSIC BRANDING STANDARDS - Pillar 3 Color Governance
+   ========================================================================== */
+:root {
+  /* Dynamic Pillar 3 Variables */
+  --system-primary: #00E0FF; /* Proactive Cyan */
+  --system-midnight: #020712;
+  --system-ink: #050815;
+  --forensic-white: #FFFFFF;
+  --governance-grey: #666666;
+  
+  /* Geometric Mandate */
+  --hero-offset: 84px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, var(--system-midnight) 0%, var(--system-ink) 100%);
+  color: var(--forensic-white);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Pillar 1: Monolithic Structural Physics */
+.governance-row {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  color: var(--governance-grey);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* Tab Hero Text: 84px horizontal offset */
+.hero-text {
+  padding-left: var(--hero-offset);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Global utility for the frosted effect */
+.glass-header {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Active Navigation States - Brand Playbook Colors */
+.active-info, .active-verify {
+  color: #00E0FF !important;
+  border-bottom: 2px solid #00E0FF !important;
+}
+
+.active-trans {
+  color: #FFFFFF !important;
+  border-bottom: 2px solid #FFFFFF !important;
+}
+
+.active-reso {
+  color: #FF0000 !important;
+  border-bottom: 2px solid #FF0000 !important;
+}

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPR VERIFY | Brand Playbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --midnight: #000000;
+            --ink: #050815;
+            --teal: #008080;
+            --alert-red: #FF0000;
+            --white: #FFFFFF;
+            --slate-400: #A0AEC0;
+            --slate-500: #64748B;
+            --slate-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--midnight);
+            color: var(--white);
+            margin: 0;
+            overflow-x: hidden;
+            letter-spacing: -0.01em;
+        }
+
+        .sovereign-heading {
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            line-height: 0.85;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* TAB NAVIGATION BUTTONS */
+        .tab-btn {
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--slate-400);
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab-btn.active::after { width: 80%; }
+        
+        /* Default Active State: White */
+        .tab-btn.active { 
+            color: var(--white); 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+
+        /* Verification Tab Active State: Teal */
+        .tab-btn.verification-active.active { 
+            color: var(--teal); 
+        }
+        .tab-btn.verification-active.active::after { 
+            background: var(--teal); 
+        }
+
+        /* Resolution Tab Active State: Red */
+        .tab-btn.resolution-active.active { 
+            color: var(--alert-red); 
+        }
+        .tab-btn.resolution-active.active::after { 
+            background: var(--alert-red); 
+        }
+
+        .mode-verification-text { color: var(--teal); }
+        .mode-resolution-text { color: var(--alert-red); }
+
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 128, 128, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            pointer-events: none;
+            animation: scan 6s linear infinite;
+        }
+
+        @keyframes scan { 0% { top: -2%; } 100% { top: 100%; } }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            background: var(--teal);
+            color: white;
+            font-weight: 900;
+            font-size: 12px;
+            text-transform: uppercase;
+            transform: translateY(200%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        .copy-toast.show { transform: translateY(0); }
+
+        .logic-gate {
+            border-left: 2px solid rgba(255,255,255,0.1);
+            padding-left: 1rem;
+        }
+        .logic-gate[data-status="pass"] { border-left-color: var(--teal); }
+        .logic-gate[data-status="fail"] { border-left-color: var(--alert-red); }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--midnight); }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        .text-header-logo-verify {
+            color: var(--teal);
+            transition: color 0.5s ease;
+        }
+
+        .brand-wordmark {
+            white-space: nowrap;
+        }
+
+        /* Generation States */
+        .loading-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="scanline"></div>
+
+    <div id="toast" class="copy-toast">Command Copied to Clipboard</div>
+
+    <!-- STICKY HEADER -->
+    <header class="border-b border-white/5 bg-black/80 backdrop-blur-xl sticky top-0 z-[60]">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-6 w-full lg:w-auto">
+                <svg class="w-14 h-14 shrink-0 fill-[#008080] transition-colors duration-500" viewBox="0 0 512 512" id="header-icon">
+                    <path d="M366.26,256L256,56L145.74,256L35.48,456H256h220.52L366.26,256z M462.43,448.02H327.14 c-52.29-17.46-99.26-47.08-123.05-72.78c12.09,3.24,29.59,6.3,53.32,6.78c43.69,0.87,71.69-14.09,71.69-14.09s-0.04-0.49-0.13-1.36 l0.44,1.33c10.53-38.31,14.66-76.67,9.8-143.39l20.22,36.67L462.43,448.02z M255.21,246.4c0,0,17.34,12.57,41.66,53.19 c15.5,25.89,23.07,61.65,23.07,61.65s-27.12,11.27-63.76,11.1c-37.52-0.53-63.59-9.51-63.59-9.51s5.81-34.7,21.66-61.82 C230.29,270.35,255.21,246.4,255.21,246.4z M153.41,261.17L256.42,74.33l70.68,128.2c8.42,51.22,5.65,107.88-2.38,140.27 c-3.5-14.36-9.64-32.72-20.28-49.2c-28.27-43.79-47.74-58.99-47.74-58.99s-0.36,0.2-1.01,0.63 c-42.74,11.66-77.73,28.09-123.62,64.64L153.41,261.17z M50.4,448.02l69.84-126.68c39.4-37.4,94.72-65.51,118.02-70.6 c-9.71,10.52-22.24,27.08-35.09,52.2c-18.12,35.42-20.61,64.11-20.61,64.11s0.59,0.37,1.78,0.99l-1.55-0.36 c29.53,30.52,56.36,49.88,116.46,80.35h-42.83H50.4z"/>
+                </svg>
+                <div class="sovereign-heading text-3xl tracking-tighter brand-wordmark">
+                    <span class="text-white">RPR</span> <span class="text-header-logo-verify">VERIFY</span>
+                </div>
+            </div>
+
+            <nav class="flex items-center gap-1 overflow-x-auto no-scrollbar scroll-smooth">
+                <button onclick="switchTab('foundations')" id="btn-foundations" class="tab-btn active px-4 py-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">Foundations</button>
+                <button onclick="switchTab('labs')" id="btn-labs" class="tab-btn px-4 py-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">Intelligence Labs</button>
+                <button onclick="switchTab('verification')" id="btn-verification" class="tab-btn verification-active px-4 py-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap border-l border-white/10 ml-2 pl-4">Verification</button>
+                <button onclick="switchTab('resolution')" id="btn-resolution" class="tab-btn resolution-active px-4 py-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">Resolution</button>
+                <button onclick="switchTab('assets')" id="btn-assets" class="tab-btn px-4 py-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap border-l border-white/10 ml-2 pl-4">Assets</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- BANNER: COMPANY ONLY -->
+    <div class="bg-[#050815] border-b border-white/5 py-3">
+        <div class="max-w-[1600px] mx-auto px-6 text-center">
+            <p class="text-[11px] text-slate-500 uppercase tracking-[0.4em] font-black">
+                RPR COMMUNICATIONS, LLC
+            </p>
+        </div>
+    </div>
+
+    <main class="max-w-[1400px] mx-auto px-6 py-12">
+
+        <!-- TAB 0: FOUNDATIONS -->
+        <div id="foundations" class="tab-content">
+            <header class="mb-16">
+                <h2 class="sovereign-heading text-6xl text-white uppercase tracking-tighter leading-none mb-2">Foundations</h2>
+                <p class="text-slate-400 text-sm uppercase tracking-widest font-bold">System architecture, narrative, and verification methodology</p>
+                <div class="h-px w-full bg-gradient-to-r from-white/20 via-white/10 to-transparent mt-8"></div>
+            </header>
+
+            <!-- 0.2 System Architecture Panel -->
+            <section class="mb-24">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">System Architecture: RADAR–PROCESSOR–ENGINE</h3>
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Layer 1 -->
+                    <div class="glass p-8 border-t-2 border-white/10">
+                        <h4 class="font-black text-white text-sm mb-4 uppercase tracking-widest">LAYER 1: RADAR</h4>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-4 italic">Detection & Monitoring</p>
+                        <ul class="text-[11px] text-slate-400 space-y-3 mb-8">
+                            <li>• Continuous monitoring for algorithmic triggers</li>
+                            <li>• Detection of false positive patterns (95%+)</li>
+                            <li>• Early warning system for account freezes</li>
+                            <li>• Real-time forensic logging and data capture</li>
+                            <li>• Evidence preservation before escalation</li>
+                        </ul>
+                        <div class="pt-4 border-t border-white/5 text-[9px] text-slate-500 uppercase font-bold space-y-1">
+                            <div class="mode-verification-text">Mode: Proactive Verification (3P)</div>
+                            <div>Timeline: Continuous</div>
+                            <div>SLA: Real-time response</div>
+                        </div>
+                    </div>
+                    <!-- Layer 2 -->
+                    <div class="glass p-8 border-t-2 border-white/10">
+                        <h4 class="font-black text-white text-sm mb-4 uppercase tracking-widest">LAYER 2: PROCESSOR</h4>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-4 italic">Analysis & Synthesis</p>
+                        <ul class="text-[11px] text-slate-400 space-y-3 mb-8">
+                            <li>• Root cause analysis and processor reverse-engineering</li>
+                            <li>• Evidence synthesis into regulatory formats</li>
+                            <li>• Direct mapping to AFCA and Banking Code</li>
+                            <li>• Forensic package assembly (20–30 pages)</li>
+                            <li>• Proof-of-breach consolidation</li>
+                        </ul>
+                        <div class="pt-4 border-t border-white/5 text-[9px] text-slate-500 uppercase font-bold space-y-1">
+                            <div class="mode-resolution-text">Mode: Dispute Resolution (3D)</div>
+                            <div>Timeline: 0H → 24H critical window</div>
+                            <div>SLA: 24-hour evidence delivery</div>
+                        </div>
+                    </div>
+                    <!-- Layer 3 -->
+                    <div class="glass p-8 border-t-2 border-white/10">
+                        <h4 class="font-black text-white text-sm mb-4 uppercase tracking-widest">LAYER 3: ENGINE</h4>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-4 italic">Executive Resolution</p>
+                        <ul class="text-[11px] text-slate-400 space-y-3 mb-8">
+                            <li>• Executive channel escalation protocol</li>
+                            <li>• Regulatory authority engagement (AFCA direct)</li>
+                            <li>• Legal demand generation and filing</li>
+                            <li>• Timeline reset and restoration</li>
+                            <li>• Ongoing monitoring and preservation</li>
+                        </ul>
+                        <div class="pt-4 border-t border-white/5 text-[9px] text-slate-500 uppercase font-bold space-y-1">
+                            <div class="mode-resolution-text">Mode: Disarm & Resolution (3D)</div>
+                            <div>Timeline: 48H+ execution</div>
+                            <div>SLA: Resolution within 10-day window</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 0.3 Dual-Mode Operational Diagram -->
+            <section class="mb-24">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">Operational Modes: Proactive (3P) vs Crisis (3D)</h3>
+                <div class="grid lg:grid-cols-2 gap-4">
+                    <div class="p-8 border border-teal/20 bg-teal/5 rounded-sm">
+                        <span class="text-[10px] font-black text-teal uppercase tracking-widest mb-1 block">Mode 1</span>
+                        <h4 class="sovereign-heading text-2xl text-white mb-2">Proactive Verification (3P)</h4>
+                        <p class="text-[10px] text-slate-400 mb-6 uppercase font-bold tracking-widest">PREVENT → PROTECT → PROVE</p>
+                        <ul class="text-[11px] text-slate-400 space-y-2 uppercase font-bold">
+                            <li>• RADAR: Algorithms, triggers, logging</li>
+                            <li>• PROCESSOR: Pattern analysis, root causes</li>
+                            <li>• ENGINE: Monitoring & Proof records</li>
+                        </ul>
+                        <p class="text-[9px] text-slate-500 mt-6 font-black">SLA: 10-DAY ENGAGEMENT</p>
+                    </div>
+                    <div class="p-8 border border-red-600/20 bg-red-950/10 rounded-sm">
+                        <span class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1 block">Mode 2</span>
+                        <h4 class="sovereign-heading text-2xl text-white mb-2">Dispute Resolution (3D)</h4>
+                        <p class="text-[10px] text-slate-400 mb-6 uppercase font-bold tracking-widest">DETECT → DEFEND → DISARM</p>
+                        <ul class="text-[11px] text-slate-400 space-y-2 uppercase font-bold">
+                            <li>• RADAR: Trigger ID, Crisis detection</li>
+                            <li>• PROCESSOR: AFCA-ready evidence, Code mapping</li>
+                            <li>• ENGINE: Executive filing & Legal demand</li>
+                        </ul>
+                        <p class="text-[9px] text-slate-500 mt-6 font-black">TIMELINE: 0H → 24H → 48H+</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 0.4 Narrative Panel -->
+            <section class="mb-24">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">The Narrative: 4-Step Framework</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-6 glass border-l border-white/5">
+                        <h4 class="text-xs font-black text-white uppercase mb-3">1. The Adorable Fantasy</h4>
+                        <p class="text-[11px] text-slate-400 mb-4 leading-relaxed italic">"Institutions know what they're doing."</p>
+                        <p class="text-[9px] text-slate-500 uppercase font-black">Primary Wound: Incompetence</p>
+                    </div>
+                    <div class="p-6 glass border-l border-white/5">
+                        <h4 class="text-xs font-black text-white uppercase mb-3">2. Welcome to the Parade</h4>
+                        <p class="text-[11px] text-slate-400 mb-4 leading-relaxed italic">"A vertical cascade of systemic failure."</p>
+                        <p class="text-[9px] text-slate-500 uppercase font-black">Institutional Cascades</p>
+                    </div>
+                    <div class="p-6 glass border-l border-white/5">
+                        <h4 class="text-xs font-black text-white uppercase mb-3">3. Your Guess Is Good</h4>
+                        <p class="text-[11px] text-slate-400 mb-4 leading-relaxed italic">"Quietly guessing to minimize liability."</p>
+                        <p class="text-[9px] text-slate-500 uppercase font-black">Horizontal Guessing</p>
+                    </div>
+                    <div class="p-6 glass border-l border-white/5">
+                        <h4 class="text-xs font-black text-white uppercase mb-3">4. You Only Have 1 Job</h4>
+                        <p class="text-[11px] text-slate-400 mb-4 leading-relaxed italic">"Evidence-based correction."</p>
+                        <p class="text-[9px] text-slate-500 uppercase font-black">Hope in Reality</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 0.5 Methodology Panel -->
+            <section class="mb-12">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">The Methodology: Verification Standards</h3>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h4 class="text-xs font-black text-white uppercase mb-4 tracking-widest border-b border-white/10 pb-4">Horizontal Verification</h4>
+                        <ul class="text-[11px] text-slate-400 space-y-4 uppercase font-bold tracking-tight">
+                            <li>• APRA SPG 223 Protocol Audit</li>
+                            <li>• AUSTRAC Compliance Verification</li>
+                            <li>• Banking Code Standard Alignment</li>
+                            <li>• Evidence of Systemic Institutional failure</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-white uppercase mb-4 tracking-widest border-b border-white/10 pb-4">Internal Escalation</h4>
+                        <ul class="text-[11px] text-slate-400 space-y-4 uppercase font-bold tracking-tight">
+                            <li>• Level 1: Forensic Evidence Package</li>
+                            <li>• Level 2: Compliance Breach Notice</li>
+                            <li>• Level 3: Regulatory Internal Escalation</li>
+                            <li>• Force Accountability through Hierarchy</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 1: INTELLIGENCE LABS -->
+        <div id="labs" class="tab-content hidden">
+            <div class="max-w-[1400px] mx-auto">
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-8 mb-16 relative">
+                    <div class="flex items-center gap-8 lg:absolute lg:left-0">
+                        <svg class="w-24 h-24 fill-[#008080] transition-colors duration-500" viewBox="0 0 512 512">
+                            <path d="M366.26,256L256,56L145.74,256L35.48,456H256h220.52L366.26,256z M462.43,448.02H327.14 c-52.29-17.46-99.26-47.08-123.05-72.78c12.09,3.24,29.59,6.3,53.32,6.78c43.69,0.87,71.69-14.09,71.69-14.09s-0.04-0.49-0.13-1.36 l0.44,1.33c10.53-38.31,14.66-76.67,9.8-143.39l20.22,36.67L462.43,448.02z M255.21,246.4c0,0,17.34,12.57,41.66,53.19 c15.5,25.89,23.07,61.65,23.07,61.65s-27.12,11.27-63.76,11.1c-37.52-0.53-63.59-9.51-63.59-9.51s5.81-34.7,21.66-61.82 C230.29,270.35,255.21,246.4,255.21,246.4z M153.41,261.17L256.42,74.33l70.68,128.2c8.42,51.22,5.65,107.88-2.38,140.27 c-3.5-14.36-9.64-32.72-20.28-49.2c-28.27-43.79-47.74-58.99-47.74-58.99s-0.36,0.2-1.01,0.63 c-42.74,11.66-77.73,28.09-123.62,64.64L153.41,261.17z M50.4,448.02l69.84-126.68c39.4-37.4,94.72-65.51,118.02-70.6 c-9.71,10.52-22.24,27.08-35.09,52.2c-18.12,35.42-20.61,64.11-20.61,64.11s0.59,0.37,1.78,0.99l-1.55-0.36 c29.53,30.52,56.36,49.88,116.46,80.35h-42.83H50.4z"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col items-center text-center mx-auto space-y-1">
+                        <h2 class="sovereign-heading text-6xl text-white tracking-tighter leading-none">THE SENTINEL</h2>
+                        <h3 class="sovereign-heading text-2xl text-teal tracking-[0.4em] leading-none uppercase">AI Intelligence Lab</h3>
+                    </div>
+                    <div class="lg:absolute lg:right-0">
+                        <div class="inline-flex items-center gap-3 px-5 py-2.5 border border-teal/40 bg-teal/10 rounded-sm">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-teal"></i>
+                            <span class="text-[11px] font-black text-teal uppercase tracking-[0.2em]">Powered by Gemini</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto space-y-16">
+                    <p class="text-slate-300 text-sm leading-relaxed border-y border-white/5 py-10 text-center italic max-w-3xl mx-auto">
+                        Guardian of structural asset integrity. The Sentinel enforces clinical messaging architecture and prevents brand drift. It serves as the active logic gate between raw forensic data and sovereign brand output.
+                    </p>
+
+                    <div class="space-y-8">
+                        <div>
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6 text-center">1. Select Format</h4>
+                            <div id="format-grid" class="grid grid-cols-2 md:grid-cols-5 gap-3 text-[9px] font-black uppercase">
+                                <button onclick="selectFormat('LinkedIn Post')" class="format-btn p-4 border border-white/10 bg-white/[0.02] hover:border-teal/50 hover:bg-teal/5 transition-all">LinkedIn</button>
+                                <button onclick="selectFormat('Email Sequence')" class="format-btn p-4 border border-white/10 bg-white/[0.02] hover:border-teal/50 hover:bg-teal/5 transition-all">Email</button>
+                                <button onclick="selectFormat('Case Study')" class="format-btn p-4 border border-white/10 bg-white/[0.02] hover:border-teal/50 hover:bg-teal/5 transition-all">Case Study</button>
+                                <button onclick="selectFormat('Flyer')" class="format-btn p-4 border border-white/10 bg-white/[0.02] hover:border-teal/50 hover:bg-teal/5 transition-all">Flyer</button>
+                                <button onclick="selectFormat('Pitch Deck')" class="format-btn p-4 border border-white/10 bg-white/[0.02] hover:border-teal/50 hover:bg-teal/5 transition-all">Pitch Deck</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 text-center">2. Description</h4>
+                            <textarea id="ai-input" placeholder="Describe format, topic, audience, and intent..." class="w-full h-32 bg-black/40 border border-white/10 p-6 text-sm text-slate-300 focus:border-teal outline-none rounded-sm transition-colors"></textarea>
+                            <div class="flex justify-center gap-4 mt-6">
+                                <button onclick="generateContent()" id="gen-btn" class="px-12 py-4 bg-teal text-black font-black text-[10px] uppercase tracking-[0.2em]">✨ Generate Content</button>
+                                <button onclick="clearAI()" class="px-12 py-4 border border-white/10 text-slate-500 font-black text-[10px] uppercase tracking-[0.2em]">Clear</button>
+                            </div>
+                        </div>
+
+                        <div id="ai-output-container" class="hidden space-y-6 pt-12 border-t border-white/5">
+                            <div id="ai-output-text" class="p-8 glass border-white/10 text-slate-300 text-sm leading-relaxed whitespace-pre-wrap"></div>
+                            <button onclick="runSentinelScan()" id="scan-btn" class="w-full py-4 border border-teal/30 bg-teal/5 text-teal font-black text-[10px] uppercase tracking-widest hover:bg-teal/10 transition-all">✨ Run Sentinel Logic Scan</button>
+                            <div id="sentinel-report" class="hidden p-6 bg-teal/5 border border-teal/20 italic text-[11px] text-slate-400 whitespace-pre-wrap"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: VERIFICATION (PROACTIVE 3P) -->
+        <div id="verification" class="tab-content hidden">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16">
+                <div class="flex items-center gap-6">
+                    <svg class="w-20 h-20 shrink-0 fill-[#008080]" viewBox="0 0 512 512">
+                        <path d="M366.26,256L256,56L145.74,256L35.48,456H256h220.52L366.26,256z M462.43,448.02H327.14 c-52.29-17.46-99.26-47.08-123.05-72.78c12.09,3.24,29.59,6.3,53.32,6.78c43.69,0.87,71.69-14.09,71.69-14.09s-0.04-0.49-0.13-1.36 l0.44,1.33c10.53-38.31,14.66-76.67,9.8-143.39l20.22,36.67L462.43,448.02z M255.21,246.4c0,0,17.34,12.57,41.66,53.19 c15.5,25.89,23.07,61.65,23.07,61.65s-27.12,11.27-63.76,11.1c-37.52-0.53-63.59-9.51-63.59-9.51s5.81-34.7,21.66-61.82 C230.29,270.35,255.21,246.4,255.21,246.4z M153.41,261.17L256.42,74.33l70.68,128.2c8.42,51.22,5.65,107.88-2.38,140.27 c-3.5-14.36-9.64-32.72-20.28-49.2c-28.27-43.79-47.74-58.99-47.74-58.99s-0.36,0.2-1.01,0.63 c-42.74,11.66-77.73,28.09-123.62,64.64L153.41,261.17z M50.4,448.02l69.84-126.68c39.4-37.4,94.72-65.51,118.02-70.6 c-9.71,10.52-22.24,27.08-35.09,52.2c-18.12,35.42-20.61,64.11-20.61,64.11s0.59,0.37,1.78,0.99l-1.55-0.36 c29.53,30.52,56.36,49.88,116.46,80.35h-42.83H50.4z"/>
+                    </svg>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-slate-500 uppercase tracking-[0.2em] mb-1 leading-none">Proactive</span>
+                        <h2 class="sovereign-heading text-7xl text-white uppercase leading-none tracking-tighter"><span class="mode-verification-text">VERIFICATION</span></h2>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-16">
+                <div class="glass p-8 border-t-2 border-teal relative">
+                    <span class="text-[10px] font-black text-teal uppercase absolute top-4 right-6 tracking-widest">Pillar 1</span>
+                    <h4 class="font-black text-white uppercase text-sm mb-4 tracking-widest">PREVENT</h4>
+                    <p class="text-[10px] text-teal uppercase font-bold mb-4">Problem Identification</p>
+                    <ul class="text-[11px] text-white space-y-2 uppercase font-bold leading-relaxed">
+                        <li>• 95% false positive detection</li>
+                        <li>• Algorithm trigger identification</li>
+                        <li>• Root cause analysis</li>
+                    </ul>
+                </div>
+                <div class="glass p-8 border-t-2 border-teal relative">
+                    <span class="text-[10px] font-black text-teal uppercase absolute top-4 right-6 tracking-widest">Pillar 2</span>
+                    <h4 class="font-black text-white uppercase text-sm mb-4 tracking-widest">PROTECT</h4>
+                    <p class="text-[10px] text-teal uppercase font-bold mb-4">Evidence Preservation</p>
+                    <ul class="text-[11px] text-white space-y-2 uppercase font-bold leading-relaxed">
+                        <li>• Secure artifact vault</li>
+                        <li>• Real-time logging</li>
+                        <li>• Immutable records</li>
+                    </ul>
+                </div>
+                <div class="glass p-8 border-t-2 border-teal relative">
+                    <span class="text-[10px] font-black text-teal uppercase absolute top-4 right-6 tracking-widest">Pillar 3</span>
+                    <h4 class="font-black text-white uppercase text-sm mb-4 tracking-widest">PROVE</h4>
+                    <p class="text-[10px] text-teal uppercase font-bold mb-4">Regulatory Proof</p>
+                    <ul class="text-[11px] text-white space-y-2 uppercase font-bold leading-relaxed">
+                        <li>• AFCA-ready documentation</li>
+                        <li>• Banking Code citations</li>
+                        <li>• Proof of breach</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <section class="p-8 border border-white/10 bg-white/[0.02] mb-12">
+                <h3 class="text-[10px] font-black text-teal uppercase tracking-widest mb-4">10-Day Engagement Window</h3>
+                <p class="text-sm italic text-slate-300">PREVENT (Discovery) → PROTECT (Documentation) → PROVE (Monitoring & Evidence Pre-Population)</p>
+            </section>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-6 border border-white/5 bg-white/[0.02] space-y-4 hover:border-teal/30 transition-colors cursor-pointer group">
+                    <div class="flex justify-between items-start">
+                        <i data-lucide="file-text" class="text-slate-600 group-hover:text-teal transition-colors"></i>
+                        <span class="px-2 py-0.5 bg-white/5 text-[8px] font-black text-slate-500 uppercase">Draft v1.0</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-white uppercase tracking-wider mb-1">Product Flyer</h4>
+                        <p class="text-[9px] text-teal uppercase font-bold">Prevent | Protect | Prove</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: RESOLUTION (DISPUTE 3D) -->
+        <div id="resolution" class="tab-content hidden">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16">
+                <div class="flex items-center gap-6">
+                    <svg class="w-20 h-20 shrink-0 fill-[#FF0000]" viewBox="0 0 512 512">
+                        <path d="M366.26,256L256,56L145.74,256L35.48,456H256h220.52L366.26,256z M462.43,448.02H327.14 c-52.29-17.46-99.26-47.08-123.05-72.78c12.09,3.24,29.59,6.3,53.32,6.78c43.69,0.87,71.69-14.09,71.69-14.09s-0.04-0.49-0.13-1.36 l0.44,1.33c10.53-38.31,14.66-76.67,9.8-143.39l20.22,36.67L462.43,448.02z M255.21,246.4c0,0,17.34,12.57,41.66,53.19 c15.5,25.89,23.07,61.65,23.07,61.65s-27.12,11.27-63.76,11.1c-37.52-0.53-63.59-9.51-63.59-9.51s5.81-34.7,21.66-61.82 C230.29,270.35,255.21,246.4,255.21,246.4z M153.41,261.17L256.42,74.33l70.68,128.2c8.42,51.22,5.65,107.88-2.38,140.27 c-3.5-14.36-9.64-32.72-20.28-49.2c-28.27-43.79-47.74-58.99-47.74-58.99s-0.36,0.2-1.01,0.63 c-42.74,11.66-77.73,28.09-123.62,64.64L153.41,261.17z M50.4,448.02l69.84-126.68c39.4-37.4,94.72-65.51,118.02-70.6 c-9.71,10.52-22.24,27.08-35.09,52.2c-18.12,35.42-20.61,64.11-20.61,64.11s0.59,0.37,1.78,0.99l-1.55-0.36 c29.53,30.52,56.36,49.88,116.46,80.35h-42.83H50.4z"/>
+                    </svg>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-slate-500 uppercase tracking-[0.2em] mb-1 leading-none">Dispute</span>
+                        <h2 class="sovereign-heading text-7xl text-white uppercase leading-none tracking-tighter"><span class="mode-resolution-text">RESOLUTION</span></h2>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-8 border border-red-600 bg-red-950/10 mb-20 uppercase font-black">
+                <h4 class="text-[10px] text-red-600 tracking-[0.4em] mb-4">Strategic Asset: Time</h4>
+                <ul class="text-[11px] text-slate-300 space-y-2 tracking-tight">
+                    <li>• Banking Code hard timeframes mandate immediate response</li>
+                    <li>• AFCA complaints trigger 21-day institutional response deadlines</li>
+                    <li>• Cash-flow crisis peaks at 7–10 days</li>
+                </ul>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-16">
+                <div class="glass p-8 border-t-2 border-red-600 relative">
+                    <span class="text-[10px] font-black text-red-600 uppercase absolute top-4 right-6 tracking-widest">Pillar 1</span>
+                    <h4 class="font-black text-white uppercase text-sm mb-4 tracking-widest">DETECT</h4>
+                    <p class="text-[10px] text-red-600 uppercase font-bold mb-4">Intake & Detection</p>
+                    <ul class="text-[11px] text-white space-y-2 uppercase font-bold leading-relaxed">
+                        <li>• Crisis mobilization</li>
+                        <li>• Processor reverse-eng</li>
+                        <li>• Root cause identification</li>
+                    </ul>
+                </div>
+                <div class="glass p-8 border-t-2 border-red-600 relative">
+                    <span class="text-[10px] font-black text-red-600 uppercase absolute top-4 right-6 tracking-widest">Pillar 2</span>
+                    <h4 class="font-black text-white uppercase text-sm mb-4 tracking-widest">DEFEND</h4>
+                    <p class="text-[10px] text-red-600 uppercase font-bold mb-4">Evidence Synthesis</p>
+                    <ul class="text-[11px] text-white space-y-2 uppercase font-bold leading-relaxed">
+                        <li>• AFCA evidence assembly</li>
+                        <li>• Direct breach mapping</li>
+                        <li>• Regulatory citations</li>
+                    </ul>
+                </div>
+                <div class="glass p-8 border-t-2 border-red-600 relative">
+                    <span class="text-[10px] font-black text-red-600 uppercase absolute top-4 right-6 tracking-widest">Pillar 3</span>
+                    <h4 class="font-black text-white uppercase text-sm mb-4 tracking-widest">DISARM</h4>
+                    <p class="text-[10px] text-red-600 uppercase font-bold mb-4">Escalation Execution</p>
+                    <ul class="text-[11px] text-white space-y-2 uppercase font-bold leading-relaxed">
+                        <li>• Executive escalation</li>
+                        <li>• Legal demand deploy</li>
+                        <li>• Timeline reset</li>
+                    </ul>
+                </div>
+            </div>
+
+            <section class="p-8 border border-red-900/30 bg-red-950/10 mb-12 uppercase font-black">
+                <h3 class="text-[10px] text-red-600 tracking-widest mb-4">Disarm Protocol: 10-Day Window</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div><span class="text-[9px] text-white block mb-1">0H (DETECT)</span><p class="text-[10px] text-slate-400 uppercase font-bold">Processor reverse-engineers trigger</p></div>
+                    <div><span class="text-[9px] text-white block mb-1">24H (DEFEND)</span><p class="text-[10px] text-slate-400 uppercase font-bold">AFCA-ready evidence (20-30 pages)</p></div>
+                    <div><span class="text-[9px] text-white block mb-1">48H+ (DISARM)</span><p class="text-[10px] text-slate-400 uppercase font-bold">Executive escalation & timeline reset</p></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 4: ASSETS -->
+        <div id="assets" class="tab-content hidden">
+            <header class="mb-16">
+                <h2 class="sovereign-heading text-6xl text-white uppercase tracking-tighter leading-none mb-2">Collateral Inventory</h2>
+                <p class="text-slate-400 text-sm uppercase tracking-widest font-bold">Master index of forensic artifacts</p>
+            </header>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                <div class="glass p-6 text-center"><span class="text-3xl font-black text-white block">27</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Total Assets</span></div>
+                <div class="glass p-6 text-center border-b-2 border-teal"><span class="text-3xl font-black text-teal block">9</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Proactive</span></div>
+                <div class="glass p-6 text-center border-b-2 border-red-600"><span class="text-3xl font-black text-red-600 block">5</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Resolve</span></div>
+                <div class="glass p-6 text-center"><span class="text-3xl font-black text-yellow-500 block">3</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Review</span></div>
+            </div>
+
+            <!-- Sticky Filters -->
+            <div class="glass p-6 sticky top-20 z-40 mb-8 border-white/10 flex flex-wrap gap-4 items-center">
+                <div class="relative grow max-w-md">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600"></i>
+                    <input type="text" placeholder="Filter inventory..." class="w-full bg-black/40 border border-white/10 rounded-sm py-2 pl-10 pr-4 text-[10px] uppercase tracking-widest focus:border-teal outline-none transition-colors">
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 border border-white/10 text-[9px] uppercase font-bold text-slate-500 hover:bg-white/5">Categories ▼</button>
+                    <button class="px-4 py-2 border border-white/10 text-[9px] uppercase font-bold text-slate-500 hover:bg-white/5">Modes ▼</button>
+                    <button class="px-4 py-2 border border-white/10 text-[9px] uppercase font-bold text-slate-500 hover:bg-white/5">Status ▼</button>
+                </div>
+                <button class="px-4 py-2 bg-white/5 text-[9px] uppercase font-bold text-slate-400 hover:text-white ml-auto">Clear Filters</button>
+            </div>
+
+            <div class="rpr-card p-0 overflow-hidden border-white/10">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-black/40 border-b border-white/5 text-[9px] uppercase font-bold tracking-widest text-slate-500">
+                            <th class="p-4">Title</th>
+                            <th class="p-4">Mode</th>
+                            <th class="p-4">Format</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Creator</th>
+                            <th class="p-4">Ver</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-[11px] text-slate-400 font-medium uppercase font-bold tracking-tight">
+                        <tr class="border-b border-white/5 hover:bg-white/[0.02] group">
+                            <td class="p-4 text-white uppercase">Product Flyer v1.0</td>
+                            <td class="p-4"><span class="text-teal">Proactive (3P)</span></td>
+                            <td class="p-4">PDF</td>
+                            <td class="p-4 text-slate-500">Draft</td>
+                            <td class="p-4 text-slate-500">Designer</td>
+                            <td class="p-4 text-slate-500">1.0</td>
+                            <td class="p-4 text-right"><button class="px-3 py-1 border border-white/10 hover:bg-teal hover:text-black transition-colors">OPEN</button></td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/[0.02] group">
+                            <td class="p-4 text-white uppercase">Emergency Response Brief</td>
+                            <td class="p-4"><span class="text-red-600">Resolution (3D)</span></td>
+                            <td class="p-4">PDF</td>
+                            <td class="p-4 text-slate-500">Draft</td>
+                            <td class="p-4 text-slate-500">RPR-AI</td>
+                            <td class="p-4 text-slate-500">1.0</td>
+                            <td class="p-4 text-right"><button class="px-3 py-1 border border-white/10 hover:bg-red-600 hover:text-white transition-colors">OPEN</button></td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/[0.02] group">
+                            <td class="p-4 text-white uppercase">3P Framework Guide</td>
+                            <td class="p-4"><span class="text-teal">Proactive (3P)</span></td>
+                            <td class="p-4">PDF</td>
+                            <td class="p-4 text-yellow-500">In Review</td>
+                            <td class="p-4 text-slate-500">Writer</td>
+                            <td class="p-4 text-slate-500">0.9</td>
+                            <td class="p-4 text-right"><button class="px-3 py-1 border border-white/10 hover:bg-teal hover:text-black transition-colors">OPEN</button></td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02] group">
+                            <td class="p-4 text-white uppercase">Regulatory Roadmap</td>
+                            <td class="p-4"><span class="text-red-600">Resolution (3D)</span></td>
+                            <td class="p-4">PDF</td>
+                            <td class="p-4 text-green-500">Approved</td>
+                            <td class="p-4 text-slate-500">Legal</td>
+                            <td class="p-4 text-slate-500">2.1</td>
+                            <td class="p-4 text-right"><button class="px-3 py-1 border border-white/10 hover:bg-red-600 hover:text-white transition-colors">OPEN</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-white/5 bg-black/80 backdrop-blur-md sticky bottom-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">© 2025 RPR COMMUNICATIONS LLC</span>
+            <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+                <span class="text-[9px] font-black text-white uppercase tracking-widest">SENTINEL_ACTIVE_AUTH</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const apiKey = "";
+        let selectedFormat = "LinkedIn Post";
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+
+            const headerVerify = document.querySelector('.text-header-logo-verify');
+            const headerIcon = document.getElementById('header-icon');
+            
+            if (tabId === 'resolution') {
+                document.documentElement.style.setProperty('--teal', '#FF0000');
+                headerVerify.style.color = '#FF0000';
+                headerIcon.style.fill = '#FF0000';
+            } else {
+                document.documentElement.style.setProperty('--teal', '#008080');
+                headerVerify.style.color = '#008080';
+                headerIcon.style.fill = '#008080';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectFormat(format) {
+            selectedFormat = format;
+            document.querySelectorAll('.format-btn').forEach(btn => {
+                btn.classList.remove('border-teal', 'text-white');
+                if(btn.innerText.toLowerCase() === format.toLowerCase() || (btn.innerText === "Brief" && format === "Regulatory Brief") || (btn.innerText === "Email" && format === "Email Sequence")) {
+                    btn.classList.add('border-teal', 'text-white');
+                }
+            });
+        }
+
+        async function fetchGemini(prompt, systemInstruction) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('API Error');
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text;
+                } catch (e) {
+                    await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+                }
+            }
+            throw new Error("Failed after 5 retries.");
+        }
+
+        async function generateContent() {
+            const input = document.getElementById('ai-input').value;
+            const btn = document.getElementById('gen-btn');
+            if(!input) return;
+
+            btn.disabled = true;
+            btn.classList.add('loading-pulse');
+            btn.innerText = "✨ GENERATING ARCHITECTURE...";
+
+            const systemPrompt = `You are THE SENTINEL, the AI Intelligence Lab for RPR VERIFY. Your voice is FORENSIC, PRIMITIVE, SOVEREIGN, and EMPATHETIC. You write about institutional algorithm failure and de-banking. Format: ${selectedFormat}.`;
+            const prompt = `Generate brand-aligned content for a ${selectedFormat} based on this description: ${input}. Lead with the problem and provide clinical correction.`;
+
+            try {
+                const result = await fetchGemini(prompt, systemPrompt);
+                document.getElementById('ai-output-text').innerText = result;
+                document.getElementById('ai-output-container').classList.remove('hidden');
+            } catch (e) {
+                alert("The Sentinel encountered a logic error.");
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading-pulse');
+                btn.innerText = "✨ GENERATE CONTENT";
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        async function runSentinelScan() {
+            const content = document.getElementById('ai-output-text').innerText;
+            const scanBtn = document.getElementById('scan-btn');
+            scanBtn.disabled = true;
+            scanBtn.innerText = "✨ ANALYZING LOGIC GATES...";
+
+            const systemPrompt = `Analyze the provided content against these 4 Logic Gates: 1. ALIGNMENT (strategy), 2. MANDATE (structure), 3. VISUAL (clinical tone), 4. PERSONA (forensic voice). Output a bulleted report.`;
+            const prompt = `Scan this content for brand compliance: ${content}`;
+
+            try {
+                const report = await fetchGemini(prompt, systemPrompt);
+                document.getElementById('sentinel-report').innerText = report;
+                document.getElementById('sentinel-report').classList.remove('hidden');
+            } catch (e) {
+                alert("Scan failed.");
+            } finally {
+                scanBtn.disabled = false;
+                scanBtn.innerText = "✨ RUN SENTINEL LOGIC SCAN";
+            }
+        }
+
+        function clearAI() {
+            document.getElementById('ai-input').value = "";
+            document.getElementById('ai-output-container').classList.add('hidden');
+            document.getElementById('sentinel-report').classList.add('hidden');
+        }
+
+        function copyCode(text) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>
