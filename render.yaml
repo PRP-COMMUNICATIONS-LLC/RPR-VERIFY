@@ -1,31 +1,32 @@
 services:
-  # Sentinel Core: Frontend (Static Site)
+  # Sentinel Core: Frontend (Angular)
   - type: web
     name: sentinel-core-frontend
-    env: static
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build -- --configuration production
-    # Path corrected to match typical Angular 'dist' structure
-    staticPublishPath: ./dist/frontend/browser
+    staticPublishPath: ./dist/rpr-verify # Verified output path
+    pullRequestPreviewsEnabled: true
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
 
-  # Sentinel Core: Backend (Python Engine)
+  # Sentinel Core: Backend (Python)
   - type: web
     name: sentinel-core-backend
-    env: python
+    runtime: python
     rootDir: backend
-    plan: starter # Ensures high-end forensic performance
-    region: singapore # Data residency lock
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn flask_app:app
+    plan: starter
+    region: singapore
+    # Create necessary directories during build
+    buildCommand: mkdir -p uploads generated_reports && pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --timeout 120 --workers 4 app:app
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11
+      - key: PORT
+        value: "5001"
       - key: NOTION_TOKEN
-        sync: false # Must be set manually in Render Dashboard for security
+        sync: false # Set manually in Render Dashboard
       - key: VERITAS_THRESHOLD
         value: "0.011"
       - key: ALLOWED_ORIGINS
