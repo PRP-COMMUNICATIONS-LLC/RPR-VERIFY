@@ -5,10 +5,13 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch: # Added to allow manual smoke tests
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      RUN_SMOKE_TEST: ${{ github.event.inputs.smoke_test || 'false' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +20,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: package-lock.json # Correct root path
 
       - name: Install & Build
         run: |
@@ -26,9 +30,8 @@ jobs:
       - name: Veritas Smoke Test (Puppeteer)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.smoke_test == 'true'
         run: |
-          cd ../tests/browser
+          cd tests/browser # Adjusted path based on your root structure
           npm ci
-          # Updated to target the Sentinel Core production URL
           FRONTEND_URL=https://rpr-verify-b.web.app \
           BACKEND_IDENTIFIER=sentinel-core-7kzxnscuuq-as.a.run.app \
           node verify_frontend.js
