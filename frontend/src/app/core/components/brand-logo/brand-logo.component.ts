@@ -20,7 +20,7 @@ import { IdentityService } from '../../services/identity.service';
   `
 })
 export class BrandLogoComponent {
-  @Input() size: number = 34;
+  @Input() size = 34;
   private idService = inject(IdentityService);
   color = computed(() => this.idService.isEscalated() ? '#FF0000' : '#00E0FF');
   toggle() { this.idService.toggleEscalation(); }

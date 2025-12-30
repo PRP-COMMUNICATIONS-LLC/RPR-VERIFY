@@ -32,13 +32,14 @@ import { VerificationService } from './core/services/verification.service';
 
         <div style="display: flex; align-items: center; gap: 32px;">
           
-          <div *ngIf="identity.currentUserId()" 
-               style="display: flex; flex-direction: column; align-items: flex-end;">
-            <span style="font-size: 8px; color: #666666; letter-spacing: 0.2em; text-transform: uppercase;">Monitored Subject</span>
-            <span style="font-size: 12px; font-weight: 700; color: #00E0FF; letter-spacing: 0.1em; font-family: monospace;">
-              {{ identity.currentUserId() }}
-            </span>
-          </div>
+          @if (identity.currentUserId()) {
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+              <span style="font-size: 8px; color: #666666; letter-spacing: 0.2em; text-transform: uppercase;">Monitored Subject</span>
+              <span style="font-size: 12px; font-weight: 700; color: #00E0FF; letter-spacing: 0.1em; font-family: monospace;">
+                {{ identity.currentUserId() }}
+              </span>
+            </div>
+          }
 
           <div style="display: flex; align-items: center; gap: 12px; padding-left: 32px; border-left: 1px solid #1a1a1a;">
             <span style="color: #FFFFFF; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;">ADMIN</span>
@@ -69,6 +70,8 @@ import { VerificationService } from './core/services/verification.service';
 export class AppComponent {
   identity = inject(IdentityService);
   vService = inject(VerificationService);
+  renderer = inject(Renderer2);
+  el = inject(ElementRef);
   sentinelStatus: 'connected' | 'network_down' | 'escalate' = 'connected';
 
   getSentinelColor(): string {
@@ -76,10 +79,7 @@ export class AppComponent {
     return this.vService.systemColor();
   }
 
-  constructor(
-    private renderer: Renderer2,
-    private el: ElementRef
-  ) {
+  constructor() {
     // Auto-update Sentinel status based on IdentityService escalation state
     effect(() => {
       if (this.identity.isEscalated()) {
@@ -101,4 +101,3 @@ export class AppComponent {
     });
   }
 }
-

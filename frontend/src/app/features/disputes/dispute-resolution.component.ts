@@ -59,7 +59,7 @@ export class DisputeResolutionComponent implements OnInit {
     }
   ];
 
-  activeCaseId: string = 'CASE-2025-001';
+  activeCaseId = 'CASE-2025-001';
   selectedCase: CaseData | null = null;
 
   ngOnInit() {
