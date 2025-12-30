@@ -1,53 +1,38 @@
-name: rpr-verify CI
+name: Sentinel Core Frontend CI
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      smoke_test:
-        description: 'Run smoke test against https://rpr-verify-b.web.app (true/false)'
-        required: false
-        default: 'false'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend
-    env:
-      RUN_SMOKE_TEST: ${{ github.event.inputs.smoke_test || 'false' }}
+        working-directory: frontend # Path alignment
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js (cache npm)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build (Phase 4.1)
-        run: bash scripts/phase4-1-build.sh
-
-      - name: Upload build artifacts (dist)
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      - name: Smoke test (Puppeteer)
-        if: env.RUN_SMOKE_TEST == 'true'
+      - name: Install & Build
         run: |
-          cd tests/browser
           npm ci
+          npm run build -- --configuration=production
+
+      - name: Veritas Smoke Test (Puppeteer)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.smoke_test == 'true'
+        run: |
+          cd ../tests/browser
+          npm ci
+          # Updated to target the Sentinel Core production URL
           FRONTEND_URL=https://rpr-verify-b.web.app \
-          BACKEND_IDENTIFIER=rpr-verify-7kzxnscuuq-as.a.run.app \
+          BACKEND_IDENTIFIER=sentinel-core-7kzxnscuuq-as.a.run.app \
           node verify_frontend.js
