@@ -8,7 +8,7 @@ steps:
       - rpr-verify
       - --source=./backend
       - --region=asia-southeast1
-      - --memory=2Gi
+      - --memory=4Gi
       - --timeout=60s
       - --allow-unauthenticated
       - --set-secrets=GEMINI_API_KEY=gemini-api-key:latest

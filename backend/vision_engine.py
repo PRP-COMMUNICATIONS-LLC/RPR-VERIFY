@@ -7,7 +7,8 @@ import os
 # Default to Singapore (asia-southeast1) for RPR sovereignty
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "rpr-verify-b")
 LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "asia-southeast1")
-MODEL_ID = "gemini-1.5-flash-001" 
+MODEL_ID = "gemini-1.5-flash-001"
+FORENSIC_THRESHOLD = 0.011  # 1.1% Threshold for alerts
 
 class VisionEngine:
     def __init__(self):
@@ -19,14 +20,33 @@ class VisionEngine:
             print(f"⚠️ VisionEngine Init Failed: {e}")
             self.model = None
 
-    def scan_slip(self, file_bytes, mime_type, forensic_metadata=None):
+    def analyze_forensic_markers(self, extracted_data, expected_data):
+        """
+        Compares extracted data against expected data to generate a risk score.
+        """
+        mismatches = 0
+        total_fields = len(expected_data)
+
+        for key, expected_value in expected_data.items():
+            if str(extracted_data.get(key)) != str(expected_value):
+                mismatches += 1
+        
+        risk_score = (mismatches / total_fields) if total_fields > 0 else 0
+
+        if risk_score > FORENSIC_THRESHOLD:
+            status = "🔴 URGENT AUDIT"
+        else:
+            status = "✅ VERIFIED"
+
+        return {
+            "risk_score": risk_score,
+            "mismatches": mismatches,
+            "status": status
+        }
+
+    def scan_slip(self, file_bytes, mime_type, forensic_metadata=None, expected_data=None):
         """
         Analyzes a bank slip image/PDF to extract forensic metadata.
-        
-        Args:
-            file_bytes: Binary file data
-            mime_type: MIME type of the file
-            forensic_metadata: Optional dict with caseId, analystId, documentType, priority, reportId
         """
         if not self.model:
             return {"error": "Vision Engine not initialized", "success": False}
@@ -34,7 +54,6 @@ class VisionEngine:
         try:
             image_part = Part.from_data(file_bytes, mime_type=mime_type)
             
-            # Enhanced prompt with forensic context
             metadata_context = ""
             if forensic_metadata:
                 metadata_context = f"""
@@ -43,7 +62,6 @@ class VisionEngine:
                 - Analyst ID: {forensic_metadata.get('analystId', 'N/A')}
                 - Document Type: {forensic_metadata.get('documentType', 'BANK_SLIP')}
                 - Priority: {forensic_metadata.get('priority', 'MEDIUM')}
-                
                 """
             
             prompt = f"""
@@ -65,15 +83,12 @@ class VisionEngine:
             }}
             """
 
-            # Strict generation config for JSON
             response = self.model.generate_content(
                 [image_part, prompt],
                 generation_config={"response_mime_type": "application/json"}
             )
             
-            # Clean and parse response
             text = response.text.strip()
-            # Remove potential markdown code blocks if the model ignores the instruction
             if text.startswith("```json"):
                 text = text[7:-3]
             elif text.startswith("```"):
@@ -81,14 +96,15 @@ class VisionEngine:
             
             extracted_data = json.loads(text)
             
-            # Return in expected format with success flag
+            forensic_analysis = {}
+            if expected_data:
+                forensic_analysis = self.analyze_forensic_markers(extracted_data, expected_data)
+
             return {
                 "success": True,
                 "status": "success",
                 "extractedMetadata": extracted_data,
-                "risk_level": 0,  # Default, can be computed based on mismatches
-                "matchScore": 100.0,  # Default, can be computed
-                "riskMarker": 0  # Default, can be computed
+                **forensic_analysis
             }
 
         except json.JSONDecodeError as e:
