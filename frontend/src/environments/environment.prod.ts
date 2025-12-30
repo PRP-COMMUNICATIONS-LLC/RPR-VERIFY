@@ -19,5 +19,6 @@ export const environment = {
       'https://www.googleapis.com/auth/drive.file',
       'https://www.googleapis.com/auth/drive.appdata'
     ]
-  }
+  },
+  notionTaskDbId: '2d0883cd4fa18107ad7be91ceabcbd79'
 };
