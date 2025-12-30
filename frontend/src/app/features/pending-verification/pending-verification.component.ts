@@ -15,7 +15,7 @@ import { BrandLogoComponent } from '../../core/components/brand-logo/brand-logo.
 export class PendingVerificationComponent implements OnInit {
   private cisDataService = inject(CisDataService);
 
-  searchId: string = 'SMITH/2025/52';
+  searchId = 'SMITH/2025/52';
   selectedUser: any = null;
 
   ngOnInit(): void {

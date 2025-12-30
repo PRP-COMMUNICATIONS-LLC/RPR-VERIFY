@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Exit on any failure
+set -e
+
+# 1. Run linting on staged files only
+npx lint-staged
+
+# 2. Run critical unit tests in headless mode
+npm run test:ci
