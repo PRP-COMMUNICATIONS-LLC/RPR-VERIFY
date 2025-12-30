@@ -11,7 +11,7 @@ export const routes: Routes = [
     title: 'RPR Verify | Login'
   },
 
-  // 2. Protected Routes (Inside the Sovereign Shell)
+  // 2. Protected Routes (Inside the Sentinel Shell)
   {
     path: '',
     component: MainLayoutComponent,

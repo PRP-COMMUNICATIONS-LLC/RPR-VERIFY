@@ -1,7 +1,7 @@
 # 🛡️ RPR-VERIFY | COPILOT REPO GUARDRAILS
 
 **Authority:** RPR-KONTROL [v1.0]
-**Context:** Strict Sovereign Identity Architecture.
+**Context:** Strict Sentinel Core Identity Architecture.
 
 ## 🟢 Allowed Actions
 VS Copilot is authorized to:
