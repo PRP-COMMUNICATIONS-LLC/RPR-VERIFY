@@ -5,7 +5,7 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
-import { GcloudAuthInterceptor } from './core/interceptors/gcloud-auth.interceptor';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: GcloudAuthInterceptor,
+      useClass: AuthInterceptor,
       multi: true
     },
     provideFirebaseApp(() => initializeApp(environment.firebase)),

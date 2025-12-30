@@ -8,22 +8,6 @@ import os
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "rpr-verify-b")
 LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "asia-southeast1")
 MODEL_ID = "gemini-1.5-flash-001"
-FORENSIC_THRESHOLD = 0.011  # 1.1% Threshold for alerts
-
-# Forensic Marker Lock-In for Gavril Vasile Pop case
-FORENSIC_SCHEMA = {
-    "bank_name": "NAB",
-    "bsb": "086-217",
-    "account": "7192",
-    "owner_pattern": "ARDEAL|POP"
-}
-
-def validate_real_case(extracted_data):
-    if extracted_data.get('bsb') != FORENSIC_SCHEMA['bsb']:
-        return "🔴 RED ALERT: BSB Mismatch"
-    if not any(x in extracted_data.get('owner', '') for x in ["ARDEAL", "POP"]):
-        return "🔴 RED ALERT: Identity Mismatch"
-    return "✅ VERIFIED: Real Case Aligned"
 
 class VisionEngine:
     def __init__(self):
@@ -35,33 +19,14 @@ class VisionEngine:
             print(f"⚠️ VisionEngine Init Failed: {e}")
             self.model = None
 
-    def analyze_forensic_markers(self, extracted_data, expected_data):
-        """
-        Compares extracted data against expected data to generate a risk score.
-        """
-        mismatches = 0
-        total_fields = len(expected_data)
-
-        for key, expected_value in expected_data.items():
-            if str(extracted_data.get(key)) != str(expected_value):
-                mismatches += 1
-
-        risk_score = (mismatches / total_fields) if total_fields > 0 else 0
-
-        if risk_score > FORENSIC_THRESHOLD:
-            status = "🔴 URGENT AUDIT"
-        else:
-            status = "✅ VERIFIED"
-
-        return {
-            "risk_score": risk_score,
-            "mismatches": mismatches,
-            "status": status
-        }
-
-    def scan_slip(self, file_bytes, mime_type, forensic_metadata=None, expected_data=None):
+    def scan_slip(self, file_bytes, mime_type, forensic_metadata=None):
         """
         Analyzes a bank slip image/PDF to extract forensic metadata.
+
+        Args:
+            file_bytes: Binary file data
+            mime_type: MIME type of the file
+            forensic_metadata: Optional dict with caseId, analystId, documentType, priority, reportId
         """
         if not self.model:
             return {"error": "Vision Engine not initialized", "success": False}
@@ -69,6 +34,7 @@ class VisionEngine:
         try:
             image_part = Part.from_data(file_bytes, mime_type=mime_type)
             
+            # Enhanced prompt with forensic context
             metadata_context = ""
             if forensic_metadata:
                 metadata_context = f"""
@@ -77,6 +43,7 @@ class VisionEngine:
                 - Analyst ID: {forensic_metadata.get('analystId', 'N/A')}
                 - Document Type: {forensic_metadata.get('documentType', 'BANK_SLIP')}
                 - Priority: {forensic_metadata.get('priority', 'MEDIUM')}
+
                 """
             
             prompt = f"""
@@ -84,8 +51,8 @@ class VisionEngine:
             1. Amount (number only, remove currency symbols)
             2. Transaction Date (ISO 8601 format YYYY-MM-DD)
             3. Recipient Account Number (digits only, remove spaces/dashes)
-            4. BSB (digits and dashes only)
-            5. Owner name (if visible)
+            4. Institution Name (Bank)
+            5. Reference ID (if visible)
             
             Return ONLY valid JSON. No markdown formatting.
             Schema:
@@ -93,17 +60,20 @@ class VisionEngine:
                 "amount": float,
                 "date": "string",
                 "accountNumber": "string",
-                "bsb": "string",
-                "owner": "string"
+                "institution": "string",
+                "referenceId": "string"
             }}
             """
 
+            # Strict generation config for JSON
             response = self.model.generate_content(
                 [image_part, prompt],
                 generation_config={"response_mime_type": "application/json"}
             )
             
+            # Clean and parse response
             text = response.text.strip()
+            # Remove potential markdown code blocks if the model ignores the instruction
             if text.startswith("```json"):
                 text = text[7:-3]
             elif text.startswith("```"):
@@ -111,18 +81,14 @@ class VisionEngine:
             
             extracted_data = json.loads(text)
             
-            # Perform real case validation
-            validation_status = validate_real_case(extracted_data)
-
-            forensic_analysis = {}
-            if expected_data:
-                forensic_analysis = self.analyze_forensic_markers(extracted_data, expected_data)
-
+            # Return in expected format with success flag
             return {
                 "success": True,
-                "status": validation_status,
+                "status": "success",
                 "extractedMetadata": extracted_data,
-                **forensic_analysis
+                "risk_level": 0,  # Default, can be computed based on mismatches
+                "matchScore": 100.0,  # Default, can be computed
+                "riskMarker": 0  # Default, can be computed
             }
 
         except json.JSONDecodeError as e:

@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
   oauthClientId: '794095666194-j1jl81fks7pl6a5v2mv557cs16hpsmkg.apps.googleusercontent.com',
-  apiBaseUrl: 'https://rpr-verify-backend-794095666194.asia-southeast1.run.app',
-  apiUrl: 'https://rpr-verify-backend-794095666194.asia-southeast1.run.app',
+  apiBaseUrl: 'https://api.verify.rprcomms.com',
+  apiUrl: 'https://api.verify.rprcomms.com',
   firebase: {
     projectId: 'rpr-verify-b',
     apiKey: 'AIzaSyC9yImskFScuBxHyPHpCYvwr_A3CpvLR90',
@@ -19,6 +19,5 @@ export const environment = {
       'https://www.googleapis.com/auth/drive.file',
       'https://www.googleapis.com/auth/drive.appdata'
     ]
-  },
-  notionTaskDbId: '2d0883cd4fa18107ad7be91ceabcbd79'
+  }
 };

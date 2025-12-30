@@ -18,7 +18,6 @@ export const environment = {
       'https://www.googleapis.com/auth/drive.appdata'
     ]
   },
-  notionTaskDbId: '2d0883cd4fa18107ad7be91ceabcbd79',
   // Dev toggle to disable Firebase auth guard for quick local UI development
   disableAuth: true
 };

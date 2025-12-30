@@ -2,13 +2,8 @@
 from functools import wraps
 from flask import request, jsonify
 import logging
-import os
 
 logger = logging.getLogger(__name__)
-
-# Load the authorized emails from the environment variable
-# This is set by operations/load_secrets.sh
-AUTHORIZED_EMAILS = os.environ.get('AUTH_EMAILS', '').split(',')
 
 def require_rpr_admin(f):
     @wraps(f)
@@ -27,10 +22,10 @@ def require_rpr_admin(f):
             email = decoded_token.get('email', '')
             email_verified = decoded_token.get('email_verified', False)
             
-            # [cite_start]Restrict access to verified Sovereign administrators [cite: 10]
-            if not email in AUTHORIZED_EMAILS or not email_verified:
+            # [cite_start]Restrict access to verified RPR administrators [cite: 10]
+            if not email.endswith('@rprcomms.com') or not email_verified:
                 logger.warning(f"Access denied for user: {email}")
-                return jsonify({'error': 'Forbidden', 'message': 'Access restricted to Sovereign Gatekeeper verified administrators'}), 403
+                return jsonify({'error': 'Forbidden', 'message': 'Access restricted to verified administrators'}), 403
             
             # [cite_start]Attach admin email for downstream audit logging [cite: 11]
             request.rpr_admin_email = email

@@ -1,1 +1,0 @@
-Context: Sovereign Engine Active | Memory: 4Gi | Region: Singapore
