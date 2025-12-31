@@ -1,49 +1,36 @@
-name: Deploy Backend Functions
+name: Deploy Sentinel Core Functions
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths:
-      - 'backend/**'
+      - 'backend/**' # Sentinel Backend Logic
       - 'firebase.json'
-      - '.firebaserc'
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+          # Path corrected for Sentinel structure
           cache-dependency-path: backend/package-lock.json
       
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
+      - name: Install Firebase & Sentinel Deps
+        run: |
+          npm install -g firebase-tools
+          cd backend && npm ci
       
-      - name: Install function dependencies
-        working-directory: ./backend
-        run: npm ci
-      
-      - name: Build functions
-        working-directory: ./backend
-        run: npm run build
-      
-      - name: Deploy to Firebase
-        run: firebase deploy --only functions --non-interactive
+      - name: Build & Deploy Evidence Seal
+        run: |
+          cd backend && npm run build
+          firebase deploy --only functions --non-interactive
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-      
-      - name: Deployment Summary
-        if: success()
-        run: |
-          echo "✅ Backend functions deployed successfully"
-          echo "Check Firebase Console for deployment status"
+          # Ensure Veritas environment variables are set in Firebase Console

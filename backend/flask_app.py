@@ -24,17 +24,13 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# CORS Configuration (environment-driven)
-# Read allowed origins from ALLOWED_ORIGINS env var (CSV). Default to localhost for local dev/testing.
-origins_env = os.environ.get("ALLOWED_ORIGINS", "").strip()
-if origins_env:
-    ALLOWED_ORIGINS = [o.strip() for o in origins_env.split(",") if o.strip()]
-else:
-    ALLOWED_ORIGINS = ["http://localhost:4200"]
+# Secure CORS Implementation for Sentinel Core
+allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:4200')
+origins_list = [origin.strip() for origin in allowed_origins.split(',') if origin.strip()]
 
-logger.info("🔒 CORS allowed origins: %s", ALLOWED_ORIGINS)
-
-CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
+# Apply restricted CORS policy
+CORS(app, origins=origins_list, supports_credentials=True)
+app.logger.info(f"🔒 Sentinel Core: CORS authorized for {origins_list}")
 
 # Logging already configured above for startup visibility
 
@@ -471,6 +467,7 @@ def update_escalation(report_id):
         }), 500
 
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host='0.0.0.0', port=port, debug=True)
+if __name__ == "__main__":
+    # Render binds to $PORT; default to 5001 for local development
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host='0.0.0.0', port=port)

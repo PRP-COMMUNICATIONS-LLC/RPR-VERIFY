@@ -8,7 +8,6 @@ import { EscalationService } from '../../services/escalation.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './secure-upload.html',
-  styles: [], // No external CSS
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecureUploadComponent {
@@ -17,50 +16,26 @@ export class SecureUploadComponent {
   
   isUploading = signal(false);
   isSuccess = signal(false);
-  reportId: string | null = null;
-
-  ngOnInit() {
-    this.reportId = this.route.snapshot.paramMap.get('reportId');
-  }
-
-  simulateUpload() {
-    this.isUploading.set(true);
-    this.isSuccess.set(false);
-
-    // Simulate backend interaction
-    setTimeout(() => {
-      this.isUploading.set(false);
-      this.isSuccess.set(true);
-    }, 2000);
-  }
+  isVeritasVerified = signal(false); // New: Veritas Logic Check
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
+    if (input.files?.[0]) {
       const file = input.files[0];
+      const reportId = this.route.snapshot.paramMap.get('reportId');
+
+      if (!reportId) return;
 
       this.isUploading.set(true);
-      this.isSuccess.set(false);
 
-      const reportId = this.reportId;
-      if (!reportId) {
-        console.error('Report ID is missing');
-        this.isUploading.set(false);
-        return;
-      }
-
+      // Execute Evidence Seal Handshake
       this.escalationService.uploadDocument(reportId, file).subscribe({
         next: (res) => {
-          if (res.success) {
-            this.isUploading.set(false);
-            this.isSuccess.set(true);
-          } else {
-            this.isUploading.set(false);
-            this.isSuccess.set(false);
-          }
+          this.isUploading.set(false);
+          this.isSuccess.set(res.success);
+          this.isVeritasVerified.set(res.veritasStatus === 'pass');
         },
-        error: (err) => {
-          console.error('Upload failed', err);
+        error: () => {
           this.isUploading.set(false);
           this.isSuccess.set(false);
         }
