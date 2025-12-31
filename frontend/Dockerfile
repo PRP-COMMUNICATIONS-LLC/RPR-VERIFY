@@ -1,14 +1,10 @@
-# Stage 1: Build the Angular application
-FROM node:20 as build
-
+FROM node:20-alpine as build
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm ci
-
 COPY . .
 
-# ARG and ENV for Firebase secrets
+# Declare Render Build Arguments
 ARG FIREBASE_API_KEY
 ARG FIREBASE_PROJECT_ID
 ARG FIREBASE_AUTH_DOMAIN
@@ -17,7 +13,7 @@ ARG FIREBASE_STORAGE_BUCKET
 ARG FIREBASE_MESSAGING_SENDER_ID
 ARG FIREBASE_APP_ID
 
-# Replace placeholders in environment.prod.ts
+# Secure Secret Injection
 RUN sed -i "s|PLACEHOLDER_API_KEY|$FIREBASE_API_KEY|g" src/environments/environment.prod.ts && \
     sed -i "s|PLACEHOLDER_PROJECT_ID|$FIREBASE_PROJECT_ID|g" src/environments/environment.prod.ts && \
     sed -i "s|PLACEHOLDER_AUTH_DOMAIN|$FIREBASE_AUTH_DOMAIN|g" src/environments/environment.prod.ts && \
@@ -28,9 +24,9 @@ RUN sed -i "s|PLACEHOLDER_API_KEY|$FIREBASE_API_KEY|g" src/environments/environm
 
 RUN npm run build -- --configuration production
 
-# Stage 2: Serve the application from a lightweight server
-FROM nginx:alpine
-
-COPY --from=build /app/dist/rpr-verify /usr/share/nginx/html
-
+FROM nginx:stable-alpine
+COPY --from=build /app/dist/rpr-verify/browser /usr/share/nginx/html
+# Standard Nginx configuration for Angular routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
