@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EscalationService } from '../../core/services/escalation.service';
+import { EscalationService, EscalationState } from '../../core/services/escalation.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -16,10 +16,10 @@ import { Observable } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
   private escalationService = inject(EscalationService);
-  public stats$: Observable<any> | undefined;
+  public stats$: Observable<EscalationState | null> | undefined;
 
   ngOnInit() {
-    // Fixed: Using 'getStatus' which the compiler confirmed exists 
+    // Fixed: Using 'getStatus' which the compiler confirmed exists
     this.stats$ = this.escalationService.getStatus('CURRENT_SESSION');
   }
 }

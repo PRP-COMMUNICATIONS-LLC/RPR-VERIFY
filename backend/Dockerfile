@@ -1,35 +1,41 @@
-# STAGE 1: Build dependencies
-FROM python:3.11-slim AS builder
-WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends gcc build-essential
-COPY requirements.txt .
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+# --- STAGE 1: BUILDER ---
+FROM python:3.11-slim-bookworm AS builder
 
-# STAGE 2: Runtime environment
-FROM python:3.11-slim
+ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
-# Install system-level OCR and Graphics dependencies
-# Updated for Debian 13 Trixie compatibility
+# Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    tesseract-ocr \
-    libgl1 \
-    libglx-mesa0 \
-    libglib2.0-0 \
-    poppler-utils \
+    build-essential ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Install Python packages and download browser binaries
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    playwright install chromium
+
+# --- STAGE 2: RUNNER ---
+FROM python:3.11-slim-bookworm AS runner
+
+ENV PYTHONUNBUFFERED=1 PORT=8080 \
+    PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright/
+WORKDIR /app
+
+# Install only the runtime libraries required for Chromium and Postgres
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libnss3 libgbm1 libasound2 libatk-bridge2.0-0 libgtk-3-0 \
+    libpq5 ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy binaries and app code
-COPY --from=builder /install /usr/local
+# Transfer executables and packages from builder stage
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+COPY --from=builder /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
+COPY --from=builder /root/.cache/ms-playwright/ /root/.cache/ms-playwright/
+
+# Copy application source code
 COPY . .
 
-# Initialize state directories
-RUN mkdir -p uploads generated_reports
-
-EXPOSE 5001
-
-# Healthcheck for the Singapore Engine Dashboard
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python3 -c "import requests; requests.get('http://localhost:5001/api/health')" || exit 1
-
-CMD ["gunicorn", "-c", "gunicorn_config.py", "app:app"]
+EXPOSE 8080
+# Run using Gunicorn with SINGLE WORKER to prevent memory racing
+# WEB_CONCURRENCY=1 ensures only 1 worker spawns, preventing OOM during boot
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 1 --threads 1 flask_app:app"]

@@ -5,18 +5,20 @@
     </div>
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-bottom: 48px;">
-      <div *ngFor="let layer of [
+      @for (layer of [
       {id: 'RADAR', label: 'LAYER_01', status: 'RADAR_NOMINAL'},
       {id: 'PROCESSOR', label: 'LAYER_02', status: 'PROCESSOR_SYNC_OK'},
       {id: 'ENGINE', label: 'LAYER_03', status: 'ENGINE_RDY'}
-    ]" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 32px; backdrop-filter: blur(20px); border-radius: 12px;">
-      <span style="font-size: 10px; font-weight: 700; color: #00E0FF; letter-spacing: 0.2em;">{{layer.label}}</span>
-      <h2 style="font-size: 24px; font-weight: 900; color: white; margin-top: 8px; margin-bottom: 16px;">{{layer.id}}</h2>
-      <p style="color: rgba(255,255,255,0.5); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">Sovereign {{layer.id}} telemetry protocol active.</p>
-      <div style="display: inline-block; padding: 4px 12px; border: 1px solid rgba(0,224,255,0.3); color: #00E0FF; font-size: 10px; font-weight: 700; border-radius: 9999px; background: rgba(0,224,255,0.05);">
-          {{layer.status}}
+    ]; track layer.id) {
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 32px; backdrop-filter: blur(20px); border-radius: 12px;">
+        <span style="font-size: 10px; font-weight: 700; color: #00E0FF; letter-spacing: 0.2em;">{{layer.label}}</span>
+        <h2 style="font-size: 24px; font-weight: 900; color: white; margin-top: 8px; margin-bottom: 16px;">{{layer.id}}</h2>
+        <p style="color: rgba(255,255,255,0.5); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">Sovereign {{layer.id}} telemetry protocol active.</p>
+        <div style="display: inline-block; padding: 4px 12px; border: 1px solid rgba(0,224,255,0.3); color: #00E0FF; font-size: 10px; font-weight: 700; border-radius: 9999px; background: rgba(0,224,255,0.05);">
+            {{layer.status}}
+          </div>
         </div>
-      </div>
+      }
     </div>
 
   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; backdrop-filter: blur(20px);">
@@ -35,18 +37,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let tx of transactions()" style="border-top: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;" 
-            onmouseover="this.style.background='rgba(255,255,255,0.05)'" 
-            onmouseout="this.style.background='transparent'">
-          <td style="padding: 16px; font-family: monospace; font-size: 12px; opacity: 0.6;">{{ tx.date | date:'short' }}</td>
-          <td style="padding: 16px; font-weight: 700; letter-spacing: -0.02em;">{{ tx.ref }}</td>
-          <td style="padding: 16px; text-align: right; font-family: monospace; color: #00E0FF; font-weight: 700;">{{ tx.amount | number:'1.2-2' }}</td>
-          <td style="padding: 16px;">
-            <span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 9px; font-weight: 900; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);">
-              {{ tx.status }}
-            </span>
-          </td>
-        </tr>
+        @for (tx of transactions(); track tx.id) {
+          <tr style="border-top: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;"
+              onmouseover="this.style.background='rgba(255,255,255,0.05)'"
+              onmouseout="this.style.background='transparent'">
+            <td style="padding: 16px; font-family: monospace; font-size: 12px; opacity: 0.6;">{{ tx.date | date:'short' }}</td>
+            <td style="padding: 16px; font-weight: 700; letter-spacing: -0.02em;">{{ tx.ref }}</td>
+            <td style="padding: 16px; text-align: right; font-family: monospace; color: #00E0FF; font-weight: 700;">{{ tx.amount | number:'1.2-2' }}</td>
+            <td style="padding: 16px;">
+              <span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 9px; font-weight: 900; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);">
+                {{ tx.status }}
+              </span>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
