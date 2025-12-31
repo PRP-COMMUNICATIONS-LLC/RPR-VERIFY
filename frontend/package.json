@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky frontend/.husky",
     "lint": "ng lint",
     "format": "prettier --write .",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless"
