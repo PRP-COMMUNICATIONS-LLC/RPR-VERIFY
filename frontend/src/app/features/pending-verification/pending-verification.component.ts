@@ -1,13 +1,23 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { CisDataService } from '../../core/services/cis-data.service';
 import { BrandLogoComponent } from '../../core/components/brand-logo/brand-logo.component';
 
+export interface SelectedUser {
+  fullName: string;
+  idNumber: string;
+  address: string;
+  abn: string;
+  entityType: string;
+  bankName: string;
+  accountType: string;
+}
+
 @Component({
   selector: 'app-pending-verification',
   standalone: true,
-  imports: [CommonModule, FormsModule, BrandLogoComponent],
+  imports: [FormsModule, BrandLogoComponent],
   templateUrl: './pending-verification.component.html',
   styleUrls: ['./pending-verification.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -16,10 +26,11 @@ export class PendingVerificationComponent implements OnInit {
   private cisDataService = inject(CisDataService);
 
   searchId = 'SMITH/2025/52';
-  selectedUser: any = null;
+  selectedUser: SelectedUser | null = null;
 
   ngOnInit(): void {
     // Initial state per v1.1 spec
+    console.log('PendingVerificationComponent initialized');
   }
 
   // Functional "CALL RECORD" per User Guide

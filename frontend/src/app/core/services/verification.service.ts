@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -11,6 +11,8 @@ export interface VerificationReport {
 
 @Injectable({ providedIn: 'root' })
 export class VerificationService {
+  private http = inject(HttpClient);
+
   private readonly API_URL = `${environment.apiUrl}/api/reports/verification`;
   
   // ID Genesis Signal
@@ -19,8 +21,6 @@ export class VerificationService {
   // State Management: Peacetime vs Wartime
   escalationLevel = signal<number>(0); 
   systemColor = computed(() => this.escalationLevel() > 1 ? '#FF0000' : '#00E0FF');
-
-  constructor(private http: HttpClient) {}
 
   async generateForensicDossier(type: 'VERIFIED' | 'FLAGGED'): Promise<VerificationReport> {
     const reportId = this.currentReportId();

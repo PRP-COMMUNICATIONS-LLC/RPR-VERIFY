@@ -12,5 +12,5 @@ TestBed.initTestEnvironment(
 
 // Mocks for globals often required by Angular testing setup
 if (typeof globalThis !== 'undefined') {
-  globalThis.ngDevMode = (typeof process === 'undefined' || process.env.NODE_ENV === 'development') as any;
+  (globalThis as { ngDevMode?: boolean }).ngDevMode = (typeof process === 'undefined' || process.env.NODE_ENV === 'development');
 }
