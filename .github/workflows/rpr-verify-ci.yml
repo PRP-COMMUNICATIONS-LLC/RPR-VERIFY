@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: package-lock.json # Correct root path
+          cache-dependency-path: package-lock.json
 
       - name: Install & Build
         run: |

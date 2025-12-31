@@ -9,36 +9,34 @@ from datetime import datetime
 
 # 1. Your Notion Integration Token
 #    NOTE: Ensure this bot is connected to the target page via the "..." menu in Notion.
-NOTION_TOKEN = "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"
+#    SECURITY: Never hardcode secrets in the repo. Provide via environment variable.
+NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
 
 # 2. The Page ID of your "Triad Dashboard"
 #    Target: https://www.notion.so/RPR-VERIFY-2d0883cd4fa18107ad7be91ceabcbd79
-PARENT_PAGE_ID = "2d0883cd4fa18107ad7be91ceabcbd79"
+PARENT_PAGE_ID = os.environ.get("NOTION_PARENT_PAGE_ID", "2d0883cd4fa18107ad7be91ceabcbd79")
 
 # 3. Path to your Google Cloud Key (Must be in the same folder)
 GCP_KEY_PATH = "key-notion-bot.json"
 
 # ==========================================
 
-def install_package():
-    """Auto-installs the required library if missing."""
-    print("📦 Installing notion-client library...")
-    try:
-        os.system(f"{sys.executable} -m pip install notion-client")
-        print("✅ Library installed.")
-    except Exception as e:
-        print(f"❌ Failed to install library: {e}")
-        sys.exit(1)
-
-# Try importing the library, otherwise install it
 try:
     from notion_client import Client
 except ImportError:
-    install_package()
-    from notion_client import Client
+    raise SystemExit(
+        "Missing dependency: notion-client.\n"
+        "Install it with:\n"
+        f"  {sys.executable} -m pip install notion-client\n"
+    )
 
 def create_triad_job(job_name):
     print(f"🚀 Starting Triad Automation for: {job_name}")
+
+    if not NOTION_TOKEN:
+        print("❌ ERROR: NOTION_TOKEN environment variable is not set.")
+        print("   Set it with: export NOTION_TOKEN='secret_xxx'")
+        return
 
     # --- STEP 1: Verify GCP Key (Security Check) ---
     if not os.path.exists(GCP_KEY_PATH):
