@@ -4,9 +4,9 @@ export const environment = {
   apiBaseUrl: 'https://api.verify.rprcomms.com',
   apiUrl: 'https://api.verify.rprcomms.com',
   firebase: {
-    projectId: 'PLACEHOLDER_PROJECT_ID',
     apiKey: 'PLACEHOLDER_API_KEY',
     authDomain: 'PLACEHOLDER_AUTH_DOMAIN',
+    projectId: 'PLACEHOLDER_PROJECT_ID',
     databaseURL: 'PLACEHOLDER_DATABASE_URL',
     storageBucket: 'PLACEHOLDER_STORAGE_BUCKET',
     messagingSenderId: 'PLACEHOLDER_MESSAGING_SENDER_ID',
