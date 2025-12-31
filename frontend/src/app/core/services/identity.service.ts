@@ -1,5 +1,13 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
 
+export interface Dossier {
+  userId: string;
+  lastName: string;
+  year: number;
+  week: number;
+  isEscalated: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class IdentityService {
     private readonly STORAGE_KEY = 'RPR_ACTIVE_ID';
@@ -15,7 +23,7 @@ export class IdentityService {
     readonly isEscalated = this._isEscalated.asReadonly();
 
     // Core Identity Logic (backward compatibility)
-    private _dossier = signal<any>(null);
+    private _dossier = signal<Dossier | null>(null);
     readonly currentDossier = this._dossier.asReadonly();
     readonly currentId = computed(() => this._currentUserId() ?? 'NO_ID');
 
@@ -59,8 +67,8 @@ export class IdentityService {
     }
 
     // Backward compatibility methods
-    updateDossier(data: any) {
-        this._dossier.set(data);
+    updateDossier(data: Partial<Dossier>) {
+        this._dossier.update(d => ({ ...d, ...data } as Dossier));
         if (data?.userId) {
             this._currentUserId.set(data.userId);
         }
@@ -69,7 +77,7 @@ export class IdentityService {
         }
     }
 
-    setDossier(data: any) {
+    setDossier(data: Dossier) {
         this.updateDossier(data);
     }
 

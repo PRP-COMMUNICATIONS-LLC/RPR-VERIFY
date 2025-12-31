@@ -6,7 +6,17 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "prepare": "cd .. && husky frontend/.husky",
+    "lint": "ng lint",
+    "format": "prettier --write .",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,html,css}": [
+      "npm run format",
+      "npm run lint"
+    ]
   },
   "dependencies": {
     "@angular/animations": "^19.2.17",
@@ -30,8 +40,14 @@
     "@angular/cli": "^19.2.19",
     "@angular/compiler-cli": "^19.2.17",
     "@tailwindcss/postcss": "^4.1.18",
+    "angular-eslint": "21.0.1",
     "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.0",
     "postcss": "^8.5.6",
-    "typescript": "~5.8.3"
+    "prettier": "^3.2.5",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "8.46.4"
   }
 }

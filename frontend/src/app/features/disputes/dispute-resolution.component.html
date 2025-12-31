@@ -23,7 +23,7 @@
           </div>
           <div class="table-body">
             @for (case of caseData; track case.id) {
-            <div class="table-row" [class.active]="activeCaseId === case.id" (click)="selectCase(case.id)">
+            <div class="table-row" [class.active]="activeCaseId === case.id" (click)="selectCase(case.id)" (keydown.enter)="selectCase(case.id)" role="button" tabindex="0">
               <span class="uid">{{ case.id }}</span>
               <span>{{ case.customerId }}</span>
               <span>{{ case.caseType }}</span>

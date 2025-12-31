@@ -6,7 +6,7 @@ export interface EscalationState {
   clientUid?: string;
   status: 'PENDING' | 'VERIFIED' | 'ESCALATED' | 'RESOLVED' | 'ACTIVE';
   riskScore?: number;
-  extractedMetadata?: any;
+  extractedMetadata?: Record<string, unknown>;
   timestamp?: string;
   escalationLevel?: number;
   lastCheckTimestamp?: string;
@@ -56,7 +56,7 @@ export class EscalationService {
    * Kept for backward compatibility
    */
   getStatus(reportId: string): Observable<EscalationState | null> {
+    console.log('reportId', reportId);
     return of(null);
   }
 }
-

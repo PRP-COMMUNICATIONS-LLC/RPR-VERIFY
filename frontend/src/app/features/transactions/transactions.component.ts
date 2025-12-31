@@ -1,19 +1,19 @@
 import { Component, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
-      
+
       <div style="padding: 40px; display: flex; flex-direction: column;">
         <div style="margin-left: 84px; display: flex; flex-direction: column;">
           <div style="display: block !important; visibility: visible !important; font-family: 'Inter'; font-weight: 500; font-size: 11px; letter-spacing: 0.1em; color: #666666; text-transform: uppercase; margin-bottom: 8px;">
             WEEKLY
           </div>
-          
+
           <h1 style="font-family: 'Inter'; font-weight: 900; font-size: 60px; letter-spacing: -1.5px; color: #FFFFFF; text-transform: uppercase; margin: 0; line-height: 1;">
             TRANSACTIONS
           </h1>
@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
 
       <div style="padding: 0 40px 40px;">
         <section style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 30px rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; width: 100%;">
-          
+
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
             <div style="margin-left: 84px; display: flex; align-items: center; gap: 12px;">
               <span style="font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">
@@ -48,7 +48,7 @@ import { CommonModule } from '@angular/common';
               </button>
             </div>
           </div>
-          
+
           <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">
             <thead>
               <tr style="background: #1A1A1A; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.2);">
@@ -63,20 +63,22 @@ import { CommonModule } from '@angular/common';
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let row of globalLedger.slice(0, 10)" style="border-bottom: 1px solid rgba(255,255,255,0.03); color: #ffffff;">
-                <td style="padding: 20px;">{{ row.week }}</td>
-                <td style="padding: 20px; font-family: monospace; opacity: 0.6;">{{ row.userId }}</td>
-                <td style="padding: 20px;">{{ row.bank }}</td>
-                <td style="padding: 20px; opacity: 0.5;">{{ row.accNo }}</td>
-                <td style="padding: 20px;">{{ row.type }}</td>
-                <td style="padding: 20px;">{{ row.date }}</td>
-                <td style="padding: 20px; font-weight: 700;">
-                  {{ row.clearance ? 'VERIFIED' : 'PENDING' }}
-                </td>
-                <td style="padding: 20px; font-weight: 900; text-align: right;">
-                  $ {{ row.amount.toLocaleString() }}
-                </td>
-              </tr>
+              @for (row of globalLedger.slice(0, 10); track row) {
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); color: #ffffff;">
+                  <td style="padding: 20px;">{{ row.week }}</td>
+                  <td style="padding: 20px; font-family: monospace; opacity: 0.6;">{{ row.userId }}</td>
+                  <td style="padding: 20px;">{{ row.bank }}</td>
+                  <td style="padding: 20px; opacity: 0.5;">{{ row.accNo }}</td>
+                  <td style="padding: 20px;">{{ row.type }}</td>
+                  <td style="padding: 20px;">{{ row.date }}</td>
+                  <td style="padding: 20px; font-weight: 700;">
+                    {{ row.clearance ? 'VERIFIED' : 'PENDING' }}
+                  </td>
+                  <td style="padding: 20px; font-weight: 900; text-align: right;">
+                    $ {{ row.amount.toLocaleString() }}
+                  </td>
+                </tr>
+              }
             </tbody>
             <tfoot>
               <tr style="background: rgba(255, 255, 255, 0.05);">
@@ -92,7 +94,7 @@ import { CommonModule } from '@angular/common';
         </section>
       </div>
     </div>
-  `
+    `
 })
 export class TransactionsComponent {
   currentWeek = signal('WK-52');

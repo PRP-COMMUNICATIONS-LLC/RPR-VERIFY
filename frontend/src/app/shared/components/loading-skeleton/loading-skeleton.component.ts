@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-loading-skeleton',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="skeleton-container" [style.width]="width" [style.height]="height">
       <div class="skeleton" [class]="variant"></div>
