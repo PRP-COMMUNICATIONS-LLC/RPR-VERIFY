@@ -14,8 +14,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/information/information').then(m => m.InformationComponent)
   },
   {
-    path: 'transactions',
-    loadComponent: () => import('./features/transactions/transactions.component').then(m => m.TransactionsComponent)
+    // path: 'transactions',
+    // loadComponent: () => import('./features/transactions/transactions.component').then(m => m.TransactionsComponent)
   },
   {
     path: 'resolution',
