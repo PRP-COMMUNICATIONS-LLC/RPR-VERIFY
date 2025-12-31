@@ -4,13 +4,13 @@ export const environment = {
   apiBaseUrl: 'https://api.verify.rprcomms.com',
   apiUrl: 'https://api.verify.rprcomms.com',
   firebase: {
-    projectId: 'rpr-verify-b',
-    apiKey: 'AIzaSyC9yImskFScuBxHyPHpCYvwr_A3CpvLR90',
-    authDomain: 'rpr-verify-b.firebaseapp.com',
-    databaseURL: 'https://rpr-verify-b.firebaseio.com',
-    storageBucket: 'rpr-verify-b.appspot.com',
-    messagingSenderId: '794095666194',
-    appId: '1:794095666194:web:53d30da820b709635844cb'
+    projectId: 'PLACEHOLDER_PROJECT_ID',
+    apiKey: 'PLACEHOLDER_API_KEY',
+    authDomain: 'PLACEHOLDER_AUTH_DOMAIN',
+    databaseURL: 'PLACEHOLDER_DATABASE_URL',
+    storageBucket: 'PLACEHOLDER_STORAGE_BUCKET',
+    messagingSenderId: 'PLACEHOLDER_MESSAGING_SENDER_ID',
+    appId: 'PLACEHOLDER_APP_ID'
   },
   googleDrive: {
     clientId: "794095666194-fimj7pc39nmugc4rqt7bd3k490mrsu3q.apps.googleusercontent.com",
