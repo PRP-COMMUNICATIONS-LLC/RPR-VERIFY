@@ -42,7 +42,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Execute Veritas Smoke Test
-        run: npm test -- --no-watch --no-progress --browsers=ChromeHeadless
+        run: npm test
         working-directory: ./frontend
 
       - name: Security Audit
