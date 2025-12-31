@@ -1,33 +1,20 @@
-flask==2.3.3
+# --- Web & Infrastructure ---
+flask==3.0.0
 flask-cors==4.0.0
-google-generativeai>=0.3.0
-google-genai>=0.2.0
-google-cloud-secret-manager>=2.16.0
-google-cloud-firestore>=2.11.0
-firebase-admin>=6.2.0
-pytesseract==0.3.10
-pillow==10.0.1
-reportlab==4.0.7
-PyPDF2==3.0.1
-pandas==2.1.1
-opencv-python-headless==4.8.1.78
-Werkzeug==2.3.7
-pdf2image==1.17.0
-numpy==1.24.3
-gunicorn>=21.2.0
+gunicorn==21.2.0
+werkzeug>=3.0.0
 requests>=2.31.0
 
-# Python 3.9 compatibility
-importlib-metadata>=6.0.0
+# --- Firebase & GCP Persistence ---
+firebase-admin==6.4.0
+google-cloud-firestore==2.14.0
+google-cloud-storage==2.13.0
 
-# Advanced Image Processing
-opencv-contrib-python>=4.8.0
-scikit-image>=0.21.0
+# --- Google Drive & Auth Handshake ---
+google-api-python-client==2.111.0
+google-auth==2.25.0
 
-# Professional PDF Generation
-img2pdf>=0.5.0
-matplotlib>=3.7.0
-plotly>=5.17.0
-
-# Image Optimization
-imageio>=2.31.0
+# --- PDF Generation & Vision ---
+playwright==1.40.0
+greenlet==3.0.1
+opencv-python-headless>=4.8.0
