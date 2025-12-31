@@ -85,7 +85,7 @@ jobs:
 
       # Deploy Functions (Optional - won't fail workflow if this fails)
       - name: Deploy to Firebase Functions
-        run: firebase deploy --only functions --project rpr-verify-b --non-interactive
+        run: firebase deploy --only functions --project rpr-verify-b --non-interactive --force
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcloud-service-account.json
         continue-on-error: true
