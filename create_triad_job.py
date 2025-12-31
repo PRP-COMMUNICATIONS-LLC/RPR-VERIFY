@@ -9,34 +9,21 @@ from datetime import datetime
 
 # 1. Your Notion Integration Token
 #    NOTE: Ensure this bot is connected to the target page via the "..." menu in Notion.
-#    SECURITY: Never hardcode secrets in the repo. Provide via environment variable.
-NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
+NOTION_TOKEN = os.environ.get('NOTION_TOKEN')
 
 # 2. The Page ID of your "Triad Dashboard"
 #    Target: https://www.notion.so/RPR-VERIFY-2d0883cd4fa18107ad7be91ceabcbd79
-PARENT_PAGE_ID = os.environ.get("NOTION_PARENT_PAGE_ID", "2d0883cd4fa18107ad7be91ceabcbd79")
+PARENT_PAGE_ID = "2d0883cd4fa18107ad7be91ceabcbd79"
 
 # 3. Path to your Google Cloud Key (Must be in the same folder)
 GCP_KEY_PATH = "key-notion-bot.json"
 
 # ==========================================
 
-try:
-    from notion_client import Client
-except ImportError:
-    raise SystemExit(
-        "Missing dependency: notion-client.\n"
-        "Install it with:\n"
-        f"  {sys.executable} -m pip install notion-client\n"
-    )
+from notion_client import Client
 
 def create_triad_job(job_name):
     print(f"🚀 Starting Triad Automation for: {job_name}")
-
-    if not NOTION_TOKEN:
-        print("❌ ERROR: NOTION_TOKEN environment variable is not set.")
-        print("   Set it with: export NOTION_TOKEN='secret_xxx'")
-        return
 
     # --- STEP 1: Verify GCP Key (Security Check) ---
     if not os.path.exists(GCP_KEY_PATH):

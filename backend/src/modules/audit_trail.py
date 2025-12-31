@@ -130,11 +130,9 @@ class AuditTrail:
             if filename.endswith('.audit'):
                 filepath = os.path.join(self.audit_folder, filename)
                 temp_entries = []
-                original_count = 0
                 
                 with open(filepath, 'r') as f:
                     for line in f:
-                        original_count += 1
                         try:
                             entry = json.loads(line.strip())
                             if entry['timestamp'] >= cutoff_str:
@@ -143,11 +141,11 @@ class AuditTrail:
                             continue
                 
                 # Rewrite file with only non-expired entries
-                if len(temp_entries) < original_count:
+                if len(temp_entries) < self._count_lines(filepath):
                     with open(filepath, 'w') as f:
                         for entry in temp_entries:
                             f.write(entry + '\n')
-                    removed_count += (original_count - len(temp_entries))
+                    removed_count += (self._count_lines(filepath) - len(temp_entries))
         
         return removed_count
     

@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch: # Added to allow manual smoke tests
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          # Fixed: Points to root package-lock.json to avoid "missing directory" errors
           cache-dependency-path: package-lock.json
 
       - name: Install & Build
@@ -30,7 +31,8 @@ jobs:
       - name: Veritas Smoke Test (Puppeteer)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.smoke_test == 'true'
         run: |
-          cd tests/browser # Adjusted path based on your root structure
+          # Aligned with your actual project structure
+          cd tests/browser
           npm ci
           FRONTEND_URL=https://rpr-verify-b.web.app \
           BACKEND_IDENTIFIER=sentinel-core-7kzxnscuuq-as.a.run.app \
