@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export interface KpiData {
   title: string;
@@ -14,7 +14,7 @@ export interface KpiData {
 @Component({
   selector: 'app-kpi-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="kpi-card" [style.border-left-color]="data.color || '#00d4aa'">
       <div class="kpi-header">

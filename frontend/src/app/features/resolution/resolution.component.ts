@@ -1,14 +1,14 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+
 import { IdentityService } from '../../core/services/identity.service';
 
 @Component({
   selector: 'app-resolution',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
-      
+
       <div style="padding: 40px;">
         <div style="display: flex; align-items: flex-end; gap: 24px;">
           <svg width="60" height="60" viewBox="0 0 512 512" fill="#FF0000">
@@ -31,23 +31,23 @@ import { IdentityService } from '../../core/services/identity.service';
       </div>
 
       <div style="padding: 0 40px 40px; display: grid; grid-template-columns: 7fr 3fr; gap: 40px; align-items: start;">
-        
+
         <div style="display: flex; flex-direction: column; gap: 40px;">
-          
+
           <section style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 30px rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
               <h3 style="font-size: 11px; letter-spacing: 0.15em; color: #FFFFFF; text-transform: uppercase; margin: 0;">
                 DISPUTE CASE #{{ identity.currentUserId() || 'PENDING' }}
               </h3>
 
               <div style="display: flex; gap: 16px;">
-                <button (click)="triggerResolution()" 
-                        style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
+                <button (click)="triggerResolution()"
+                  style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                   Final Resolution
                 </button>
-                <button (click)="downloadCase()" 
-                        style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
+                <button (click)="downloadCase()"
+                  style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                   Download Case
                 </button>
               </div>
@@ -55,60 +55,64 @@ import { IdentityService } from '../../core/services/identity.service';
 
             <div style="padding: 40px;">
               <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div *ngFor="let case of caseData" style="padding: 24px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;">
-                  <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-                    <div>
-                      <h4 style="font-size: 12px; color: #FFFFFF; letter-spacing: 0.1em; margin-bottom: 8px; text-transform: uppercase;">{{ case.id }}</h4>
-                      <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 0;">Customer: <strong style="color: #fff;">{{ case.customerId }}</strong></p>
+                @for (case of caseData; track case) {
+                  <div style="padding: 24px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                      <div>
+                        <h4 style="font-size: 12px; color: #FFFFFF; letter-spacing: 0.1em; margin-bottom: 8px; text-transform: uppercase;">{{ case.id }}</h4>
+                        <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 0;">Customer: <strong style="color: #fff;">{{ case.customerId }}</strong></p>
+                      </div>
+                      <div style="text-align: right;">
+                        <span style="font-size: 9px; color: #FFFFFF; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">{{ case.status }}</span>
+                      </div>
                     </div>
-                    <div style="text-align: right;">
-                      <span style="font-size: 9px; color: #FFFFFF; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">{{ case.status }}</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; font-size: 11px; color: rgba(255,255,255,0.7);">
+                      <div>
+                        <span style="color: rgba(255,255,255,0.4);">TYPE:</span>
+                        <strong style="color: #fff; margin-left: 8px;">{{ case.caseType }}</strong>
+                      </div>
+                      <div>
+                        <span style="color: rgba(255,255,255,0.4);">PRIORITY:</span>
+                        <strong style="color: #FFFFFF; margin-left: 8px;">{{ case.priority }}</strong>
+                      </div>
+                      <div>
+                        <span style="color: rgba(255,255,255,0.4);">AMOUNT:</span>
+                        <strong style="color: #fff; margin-left: 8px;">$ {{ case.amount.toLocaleString() }}</strong>
+                      </div>
                     </div>
                   </div>
-                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; font-size: 11px; color: rgba(255,255,255,0.7);">
-                    <div>
-                      <span style="color: rgba(255,255,255,0.4);">TYPE:</span>
-                      <strong style="color: #fff; margin-left: 8px;">{{ case.caseType }}</strong>
-                    </div>
-                    <div>
-                      <span style="color: rgba(255,255,255,0.4);">PRIORITY:</span>
-                      <strong style="color: #FFFFFF; margin-left: 8px;">{{ case.priority }}</strong>
-                    </div>
-                    <div>
-                      <span style="color: rgba(255,255,255,0.4);">AMOUNT:</span>
-                      <strong style="color: #fff; margin-left: 8px;">$ {{ case.amount.toLocaleString() }}</strong>
-                    </div>
-                  </div>
-                </div>
+                }
               </div>
             </div>
           </section>
 
-          <section [style.background]="identity.isEscalated() ? 'rgba(255,0,0,0.1)' : 'rgba(255,0,0,0.05)'" 
-                   [style.border]="identity.isEscalated() ? '2px solid rgba(255,0,0,0.5)' : '2px dashed rgba(255,0,0,0.3)'" 
-                   style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; gap: 20px; transition: all 0.3s ease;">
+          <section [style.background]="identity.isEscalated() ? 'rgba(255,0,0,0.1)' : 'rgba(255,0,0,0.05)'"
+            [style.border]="identity.isEscalated() ? '2px solid rgba(255,0,0,0.5)' : '2px dashed rgba(255,0,0,0.3)'"
+            style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; gap: 20px; transition: all 0.3s ease;">
             <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.3em; margin: 0;">
               {{ identity.isEscalated() ? 'Red-Alert Active' : 'Red-Alert Activation Zone' }}
             </p>
-            
+
             <!-- Red-Alert Button (shown when NOT escalated) -->
-            <button 
-              *ngIf="!identity.isEscalated()"
-              id="red-alert-button"
-              (click)="triggerEscalation()" 
-              style="background: #FF0000; border: none; color: #FFFFFF; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(255,0,0,0.5); transition: all 0.3s ease;">
-              🚨 RED-ALERT
-            </button>
-            
+            @if (!identity.isEscalated()) {
+              <button
+                id="red-alert-button"
+                (click)="triggerEscalation()"
+                style="background: #FF0000; border: none; color: #FFFFFF; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(255,0,0,0.5); transition: all 0.3s ease;">
+                🚨 RED-ALERT
+              </button>
+            }
+
             <!-- Reset Button (shown when escalated) -->
-            <button 
-              *ngIf="identity.isEscalated()"
-              id="reset-alert-button"
-              (click)="resetEscalation()" 
-              style="background: #00E0FF; border: none; color: #000000; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(0,224,255,0.5); transition: all 0.3s ease;">
-              ✅ RESET ALERT
-            </button>
-            
+            @if (identity.isEscalated()) {
+              <button
+                id="reset-alert-button"
+                (click)="resetEscalation()"
+                style="background: #00E0FF; border: none; color: #000000; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(0,224,255,0.5); transition: all 0.3s ease;">
+                ✅ RESET ALERT
+              </button>
+            }
+
             <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.2em; margin: 0;">
               {{ identity.isEscalated() ? 'Click to return to proactive state' : 'Click to activate global escalation state' }}
             </p>
@@ -130,7 +134,7 @@ import { IdentityService } from '../../core/services/identity.service';
         </aside>
       </div>
     </div>
-  `
+    `
 })
 export class ResolutionComponent {
   identity = inject(IdentityService);
@@ -176,4 +180,3 @@ export class ResolutionComponent {
     alert('CASE DOWNLOAD INITIATED: Preparing dispute case documentation package');
   }
 }
-

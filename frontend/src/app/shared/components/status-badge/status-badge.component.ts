@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export type StatusType = 'verified' | 'pending' | 'critical' | 'high' | 'medium' | 'low' | 'in_progress' | 'resolved' | 'flagged' | 'success' | 'warning' | 'error' | 'info' | 'approved' | 'rejected' | 'review';
 
 @Component({
   selector: 'app-status-badge',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <span class="status-badge" [class]="getStatusClass()">
       @if (showIcon) {

@@ -1,15 +1,15 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IdentityService } from '../../core/services/identity.service';
 
 @Component({
   selector: 'app-verification',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
-      
+
       <div style="padding: 40px;">
         <div style="display: flex; align-items: flex-end; gap: 24px;">
           <svg width="60" height="60" viewBox="0 0 512 512" [attr.fill]="pulseColor()">
@@ -32,21 +32,21 @@ import { IdentityService } from '../../core/services/identity.service';
       </div>
 
       <div style="padding: 0 40px 40px; display: grid; grid-template-columns: 7fr 3fr; gap: 40px; align-items: stretch;">
-        
+
         <section style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden;">
-          
+
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
             <h3 style="font-size: 11px; letter-spacing: 0.15em; color: #FFFFFF; text-transform: uppercase; margin: 0;">
               CIS Document #{{ identity.currentUserId() || 'PENDING' }}
             </h3>
 
             <div style="display: flex; gap: 16px;">
-              <button (click)="triggerVerificationReport()" 
-                      style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
+              <button (click)="triggerVerificationReport()"
+                style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                 Verification Report
               </button>
-              <button (click)="generateCIS()" 
-                      style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
+              <button (click)="generateCIS()"
+                style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                 Generate Report
               </button>
             </div>
@@ -93,43 +93,53 @@ import { IdentityService } from '../../core/services/identity.service';
 
         <aside style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 24px;">
           <h3 style="font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.3); margin-bottom: 32px; text-transform: uppercase;">Customer Ledger</h3>
-          <div *ngFor="let row of ledgerData" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px;">
-              <span style="color: rgba(255,255,255,0.4);">{{ row.date }}</span>
-              <span style="color: #FFFFFF; font-weight: 900;">$ {{ row.amount }}</span>
+          @for (row of ledgerData; track row) {
+            <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px;">
+                <span style="color: rgba(255,255,255,0.4);">{{ row.date }}</span>
+                <span style="color: #FFFFFF; font-weight: 900;">$ {{ row.amount }}</span>
+              </div>
+              <div style="font-size: 10px; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">{{ row.bank }}</div>
             </div>
-            <div style="font-size: 10px; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">{{ row.bank }}</div>
-          </div>
+          }
         </aside>
       </div>
 
       <!-- VERIFICATION PULSE SCANNER SECTION -->
       <div style="padding: 0 40px 40px;">
         <section style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 4px; width: 100%; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
-          
+
           <div style="position: absolute; top: 20px; right: 32px; color: rgba(255,255,255,0.3); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;">
             Forensic Scanner: {{ currentPhaseLabel() }}
           </div>
 
           <!-- Pulse Scanner Container -->
           <div style="position: relative; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center;">
-            
+
             <!-- Pulse Rings -->
-            <div *ngIf="status() === 'SCANNING'" 
-                 [style.border-color]="pulseColor()"
-                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out;"></div>
-            <div *ngIf="status() === 'SCANNING'" 
-                 [style.border-color]="pulseColor()"
-                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 1s;"></div>
-            <div *ngIf="status() === 'SCANNING'" 
-                 [style.border-color]="pulseColor()"
-                 style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 2s;"></div>
-            
+            @if (status() === 'SCANNING') {
+              <div
+                [style.border-color]="pulseColor()"
+              style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out;"></div>
+            }
+            @if (status() === 'SCANNING') {
+              <div
+                [style.border-color]="pulseColor()"
+              style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 1s;"></div>
+            }
+            @if (status() === 'SCANNING') {
+              <div
+                [style.border-color]="pulseColor()"
+              style="position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; opacity: 0; animation: sovereign-pulse 3s infinite ease-out; animation-delay: 2s;"></div>
+            }
+
             <!-- Central Core -->
-            <div [style.background]="pulseColor()" 
-                 [style.box-shadow]="'0 0 20px ' + pulseShadowColor()"
-                 style="position: absolute; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-              <span *ngIf="status() === 'COMPLETED'" style="color: #000000; font-size: 32px; font-weight: 900;">✓</span>
+            <div [style.background]="pulseColor()"
+              [style.box-shadow]="'0 0 20px ' + pulseShadowColor()"
+              style="position: absolute; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              @if (status() === 'COMPLETED') {
+                <span style="color: #000000; font-size: 32px; font-weight: 900;">✓</span>
+              }
             </div>
           </div>
 
@@ -138,37 +148,39 @@ import { IdentityService } from '../../core/services/identity.service';
             <div [style.color]="pulseColor()" style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
               {{ currentPhaseLabel() }}
             </div>
-            
+
             <!-- Progress Bar -->
             <div style="width: 100%; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden;">
-              <div [style.width.%]="(scanStep() / 3) * 100" 
-                   [style.background]="pulseColor()"
-                   style="height: 100%; transition: width 0.5s ease-out;"></div>
+              <div [style.width.%]="(scanStep() / 3) * 100"
+                [style.background]="pulseColor()"
+              style="height: 100%; transition: width 0.5s ease-out;"></div>
             </div>
-            
-            <div *ngIf="status() === 'COMPLETED'" 
-                 style="margin-top: 24px; font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.2em; text-transform: uppercase;">
-              VERIFICATION COMPLETE
-            </div>
+
+            @if (status() === 'COMPLETED') {
+              <div
+                style="margin-top: 24px; font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.2em; text-transform: uppercase;">
+                VERIFICATION COMPLETE
+              </div>
+            }
           </div>
 
           <!-- CSS Keyframes inline -->
           <style>
             @keyframes sovereign-pulse {
-              0% { 
-                transform: scale(0.5); 
-                opacity: 0.8; 
-              }
-              100% { 
-                transform: scale(2.5); 
-                opacity: 0; 
-              }
-            }
-          </style>
-        </section>
-      </div>
+            0% {
+            transform: scale(0.5);
+            opacity: 0.8;
+          }
+          100% {
+          transform: scale(2.5);
+          opacity: 0;
+        }
+      }
+    </style>
+    </section>
     </div>
-  `
+    </div>
+    `
 })
 export class VerificationComponent implements OnInit {
   identity = inject(IdentityService);

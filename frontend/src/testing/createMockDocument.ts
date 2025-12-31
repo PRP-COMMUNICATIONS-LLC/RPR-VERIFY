@@ -4,8 +4,6 @@
  * Date: December 16, 2025
  */
 
-import { InjectionToken } from '@angular/core';
-
 // ============================================================================
 // Type Definitions
 // ============================================================================
@@ -151,10 +149,24 @@ function getQualityPresets(quality: QualityLevel): QualityPreset {
 
 function generateSampleText(type: DocumentType): string {
   const samples: Record<DocumentType, string> = {
-    'drivers-license': 'DRIVER LICENSE\nNAME: John Smith\nLICENSE NO: D1234567\nEXPIRES: 2026-12-31',
-    'passport': 'PASSPORT\nSurname: SMITH\nGiven Names: JOHN ROBERT\nNationality: AUSTRALIAN\nPassport No: N1234567',
-    'bank-statement': 'COMMONWEALTH BANK\nAccount Statement\nAccount Holder: John Smith\nBSB: 062-000\nAccount: 12345678',
-    'abn': 'AUSTRALIAN BUSINESS NUMBER\nABN: 12 345 678 901\nEntity Name: SMITH ENTERPRISES PTY LTD\nStatus: Active',
+    'drivers-license': `DRIVER LICENSE
+NAME: John Smith
+LICENSE NO: D1234567
+EXPIRES: 2026-12-31`,
+    'passport': `PASSPORT
+Surname: SMITH
+Given Names: JOHN ROBERT
+Nationality: AUSTRALIAN
+Passport No: N1234567`,
+    'bank-statement': `COMMONWEALTH BANK
+Account Statement
+Account Holder: John Smith
+BSB: 062-000
+Account: 12345678`,
+    'abn': `AUSTRALIAN BUSINESS NUMBER
+ABN: 12 345 678 901
+Entity Name: SMITH ENTERPRISES PTY LTD
+Status: Active`,
   };
   return samples[type];
 }
@@ -261,13 +273,13 @@ export function createMockAPIResponse<T>(
   return { status, data, message };
 }
 
-export const MOCK_API_ERROR_RESPONSE: MockAPIResponse = {
+export const MOCK_API_ERROR_RESPONSE: MockAPIResponse<unknown> = {
   status: 500,
   data: null,
   message: 'Internal server error',
 };
 
-export const MOCK_API_UNAUTHORIZED_RESPONSE: MockAPIResponse = {
+export const MOCK_API_UNAUTHORIZED_RESPONSE: MockAPIResponse<unknown> = {
   status: 401,
   data: null,
   message: 'Unauthorized: Invalid or missing token',
