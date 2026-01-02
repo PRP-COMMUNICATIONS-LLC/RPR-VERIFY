@@ -20,7 +20,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/rpr-verify'),
+      dir: require('path').join(__dirname, './coverage'),
       subdir: '.',
       reporters: [
         { type: 'html' },
@@ -28,9 +28,12 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: false, // Set to false for CI/CD
     browsers: ['ChromeHeadless'],
-    restartOnFileChange: true,
     singleRun: true, // Set to true for CI/CD
-    autoWatch: false // Set to false for CI/CD
+    restartOnFileChange: true
   });
 };
