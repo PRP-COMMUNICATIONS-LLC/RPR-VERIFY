@@ -12,6 +12,9 @@ from datetime import datetime, timezone
 import vertexai
 from vertexai.generative_models import GenerativeModel, SafetySetting, HarmCategory, HarmBlockThreshold
 from tenacity import retry, stop_after_attempt, wait_exponential
+import firebase_admin
+from dateutil.parser import parse as parse_date
+
 
 # --- STEP 1: Error Topology ---
 class VisionEngineError(Exception):
@@ -122,3 +125,78 @@ Schema:
         if "429" in str(e):
             raise RateLimitError()
         raise DocumentParseError(str(e))
+
+
+def normalize_date(date_string):
+    """Normalize date strings to ISO 8601 format."""
+    try:
+        return parse_date(date_string).strftime('%Y-%m-%d')
+    except (ValueError, TypeError):
+        return None
+
+
+def mask_account_number(account_number):
+    """Mask account number, showing only the last 4 digits."""
+    if not isinstance(account_number, str):
+        return account_number
+    if len(account_number) <= 4:
+        return "*" * len(account_number)
+    return f"****-{account_number[-4:]}"
+
+
+def compute_risk_score(declared_metadata, extracted_metadata):
+    """Compute risk score based on metadata mismatch."""
+    score = 100
+    risk_marker = 0
+
+    # Amount mismatch
+    amount_diff = abs(declared_metadata.get('amount', 0) - extracted_metadata.get('amount', 0))
+    if amount_diff > 0.05 * declared_metadata.get('amount', 0):
+        score -= 50
+        risk_marker = 3
+    elif amount_diff > 0.01 * declared_metadata.get('amount', 0):
+        score -= 20
+        risk_marker = 2
+
+    # Date mismatch
+    if normalize_date(declared_metadata.get('date')) != normalize_date(extracted_metadata.get('date')):
+        score -= 25
+        risk_marker = max(risk_marker, 1)
+
+    return {"matchScore": score, "riskMarker": risk_marker}
+
+
+class VisionAuditEngine:
+    def __init__(self):
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app()
+        self.db = firebase_admin.firestore.client()
+
+    def audit_slip(self, drive_file_id, file_bytes, declared_metadata, report_id, admin_email):
+        """Orchestrate the vision audit process."""
+        # 1. Forensic Extraction
+        extracted_data = extract_document_data(file_bytes, report_id)
+
+        # 2. Risk Scoring
+        risk_result = compute_risk_score(declared_metadata, extracted_data['data'])
+
+        # 3. PII Masking
+        if 'accountNumber' in extracted_data['data']:
+            extracted_data['data']['accountNumber'] = mask_account_number(extracted_data['data']['accountNumber'])
+
+        # 4. Final Report
+        final_report = {
+            "status": "success",
+            "driveFileId": drive_file_id,
+            "reportId": report_id,
+            "adminEmail": admin_email,
+            "declaredMetadata": declared_metadata,
+            "extractedMetadata": extracted_data['data'],
+            "forensicMetadata": extracted_data['forensic_metadata'],
+            **risk_result
+        }
+
+        # 5. Firestore Persistence
+        self.db.collection('rpr_vision_audit_reports').document(report_id).set(final_report)
+
+        return final_report

@@ -63,13 +63,43 @@ sys.modules['google.cloud.secretmanager'].SecretManagerServiceClient = MockSecre
 sys.modules['firebase_admin'] = mock.MagicMock()
 sys.modules['firebase_admin'].firestore = MockFirestore()
 
+import pytest
 # Now import vision engine
 from vision_engine import (
     VisionAuditEngine,
     compute_risk_score,
     normalize_date,
-    mask_account_number
+    mask_account_number,
+    VisionEngineError,
+    RateLimitError,
+    DocumentParseError,
+    RegionalLockError,
+    ForensicMetadataError,
+    extract_document_data,
+    REGION
 )
+
+
+def test_error_topology_integrity():
+    """Verify that all RPR-VERIFY specific error classes inherit from the base."""
+    assert issubclass(RateLimitError, VisionEngineError)
+    assert issubclass(DocumentParseError, VisionEngineError)
+    assert issubclass(RegionalLockError, VisionEngineError)
+    assert issubclass(ForensicMetadataError, VisionEngineError)
+
+
+def test_forensic_metadata_requirement():
+    """Step 3: Ensure logic fails if Case ID is missing."""
+    with pytest.raises(ForensicMetadataError) as excinfo:
+        # Pass None as case_id - should raise ForensicMetadataError
+        extract_document_data("dummy_image", None)
+
+    assert excinfo.value.error_code == "AUDIT_TRAIL_BROKEN"
+
+
+def test_regional_lock_constant():
+    """Verify that the engine is locked to asia-southeast1."""
+    assert REGION == "asia-southeast1"
 
 
 def load_test_image(image_path: str) -> bytes:
