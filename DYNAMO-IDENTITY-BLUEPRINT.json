@@ -1,0 +1,23 @@
+{
+  "project": "RPR-VERIFY",
+  "governance": "RPR-KONTROL-v1.0",
+  "posture": "SENTINEL_ACTIVE",
+  "schema": {
+    "identity_poi": {
+      "required_headers": ["Document ID Number", "Expiry Date", "Full Legal Name"],
+      "source_variable": "issuing_authority_poi"
+    },
+    "address_poa": {
+      "required_headers": ["Account Number", "Service Address", "Issue Date"],
+      "source_variable": "issuing_authority_poa"
+    },
+    "business_abn": {
+      "required_headers": ["Entity Name", "ABN Status", "GST Registration"],
+      "source_variable": "registry_type"
+    },
+    "bank_ownership": {
+      "required_headers": ["BSB", "Account Number", "Closing Balance", "Account Holder Name"],
+      "source_variable": "financial_institution"
+    }
+  }
+}

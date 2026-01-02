@@ -1,48 +1,21 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Core Collections - accessible by authenticated users
-    
-    // CASES: Users can read/write cases they own or participate in
-    match /cases/{caseId} {
-      allow read, write: if request.auth != null; // Refine to owner-only later
-    }
-    
-    // DISPUTES: Users can read/write disputes they are involved in
-    match /disputes/{disputeId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // NOTES: Private notes for users
-    match /notes/{noteId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // DOCUMENTS: Metadata for uploaded files
-    match /documents/{docId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // System & Processing (Backend Only)
-    match /processing/{processId} {
+    // RPR-VERIFY Forensic Bridge: Allows customer intake for authorized onboarding only
+    match /customer_intake/{docId} {
+      allow create: if request.auth != null && request.resource.data.audit_metadata.posture == 'SENTINEL_ACTIVE';
       allow read: if request.auth != null;
-      allow write: if false; // Only backend (service account) can write
     }
-    
-    match /system/{document=**} {
-      allow read: if request.auth != null;
-      allow write: if false; // Only backend (service account) can write
+    // RPR-VERIFY Audit Trail: Allows audit log creation
+    match /audit_logs/{docId} {
+      allow create: if request.auth != null;
     }
-    
-    // User Profiles
-    match /users/{userId} {
-      allow read, write: if request.auth.uid == userId;
-    }
-    
-    // Deny all other access
+    // RPR-VERIFY Sentinel Posture (Global Lockdown)
+    // Rejects all other writes to protect the RPR-VERIFY environment.
     match /{document=**} {
-      allow read, write: if false;
+      allow read: if request.auth != null;
+      allow write: if false;
     }
   }
 }

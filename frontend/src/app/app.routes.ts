@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/verification/verification.component').then(m => m.VerificationComponent)
   },
   {
+    path: 'intake',
+    loadComponent: () => import('./features/verification/dynamic-intake-bridge.component').then(m => m.DynamicIntakeBridgeComponent)
+  },
+  {
     path: 'information',
     loadComponent: () => import('./features/information/information').then(m => m.InformationComponent)
   },

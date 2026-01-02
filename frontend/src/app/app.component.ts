@@ -27,6 +27,7 @@ import { VerificationService } from './core/services/verification.service';
           <a routerLink="/information" routerLinkActive="active-info" style="text-decoration: none; color: #999999; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 8px 16px;">INFORMATION</a>
           <a routerLink="/transactions" routerLinkActive="active-trans" style="text-decoration: none; color: #999999; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 8px 16px;">TRANSACTIONS</a>
           <a routerLink="/verification" routerLinkActive="active-verify" style="text-decoration: none; color: #999999; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 8px 16px;">VERIFICATION</a>
+          <a routerLink="/intake" routerLinkActive="active-intake" style="text-decoration: none; color: #00E0FF; font-size: 11px; font-weight: 900; letter-spacing: 0.1em; padding: 8px 16px;">INTAKE (TAB 1)</a>
           <a routerLink="/resolution" routerLinkActive="active-reso" style="text-decoration: none; color: #999999; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; padding: 8px 16px;">RESOLUTION</a>
         </nav>
 
