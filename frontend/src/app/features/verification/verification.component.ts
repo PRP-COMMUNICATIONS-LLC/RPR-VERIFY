@@ -1,11 +1,18 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
-
+import { CommonModule } from '@angular/common';
 import { IdentityService } from '../../core/services/identity.service';
+import { VerificationService, VisionScanResult } from '../../core/services/verification.service';
+
+interface LedgerEntry {
+  date: string;
+  amount: string;
+  bank: string;
+}
 
 @Component({
   selector: 'app-verification',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
@@ -93,7 +100,7 @@ import { IdentityService } from '../../core/services/identity.service';
 
         <aside style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 24px;">
           <h3 style="font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.3); margin-bottom: 32px; text-transform: uppercase;">Customer Ledger</h3>
-          @for (row of ledgerData; track row) {
+          @for (row of ledgerData(); track row) {
             <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
               <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px;">
                 <span style="color: rgba(255,255,255,0.4);">{{ row.date }}</span>
@@ -108,6 +115,14 @@ import { IdentityService } from '../../core/services/identity.service';
       <!-- VERIFICATION PULSE SCANNER SECTION -->
       <div style="padding: 0 40px 40px;">
         <section style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); border-radius: 4px; width: 100%; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+
+          <input type="file" (change)="onFileSelect($event)" style="display: none;" #fileInput>
+          <button
+            (click)="fileInput.click()"
+            style="position: absolute; top: 20px; left: 20px; background: #333; border: 1px solid #555; color: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;"
+          >
+            Upload Bank Slip
+          </button>
 
           <div style="position: absolute; top: 20px; right: 32px; color: rgba(255,255,255,0.3); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;">
             Forensic Scanner: {{ currentPhaseLabel() }}
@@ -184,13 +199,16 @@ import { IdentityService } from '../../core/services/identity.service';
 })
 export class VerificationComponent implements OnInit {
   identity = inject(IdentityService);
+  verificationService = inject(VerificationService);
 
   // Sovereign State Machine for Pulse Scanner
   readonly scanStep = signal<number>(0);
-  readonly status = signal<'SCANNING' | 'COMPLETED'>('SCANNING');
+  readonly status = signal<'IDLE' | 'SCANNING' | 'COMPLETED' | 'ERROR'>('IDLE');
+  readonly scanResult = signal<VisionScanResult | null>(null);
 
   // Derived metadata for display
   readonly currentPhaseLabel = computed(() => {
+    if (this.status() === 'ERROR') return 'ERROR';
     const labels = ['INITIALIZING', 'IDENTITY SCAN', 'HISTORY CROSS-CHECK', 'FORENSIC VERIFICATION'];
     return labels[this.scanStep()] || 'PROCESSING';
   });
@@ -205,33 +223,52 @@ export class VerificationComponent implements OnInit {
     return this.identity.isEscalated() ? 'rgba(255,0,0,0.5)' : 'rgba(0,224,255,0.5)';
   });
 
-  ledgerData = [
-    { date: '2025-12-15', amount: '15,540.00', bank: 'CBA AU' },
-    { date: '2025-12-18', amount: '1,250.50', bank: 'WESTPAC' },
-    { date: '2025-12-20', amount: '3,200.75', bank: 'NAB' }
-  ];
+  ledgerData = signal<LedgerEntry[]>([]);
 
   ngOnInit() {
-    this.runForensicSequence();
+    // Initial data can be loaded here if needed
   }
 
-  private runForensicSequence() {
-    const sequence = [
-      { step: 1, delay: 1000 },
-      { step: 2, delay: 2500 },
-      { step: 3, delay: 4000 },
-      { step: 4, delay: 5500 }
-    ];
+  onFileSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.runForensicSequence(file);
+    }
+  }
 
-    sequence.forEach(phase => {
-      setTimeout(() => {
-        if (phase.step <= 3) {
-          this.scanStep.set(phase.step);
-        } else {
+  private runForensicSequence(file: File) {
+    this.status.set('SCANNING');
+    this.scanStep.set(1); // Start the visual sequence
+
+    this.verificationService.scanBankSlip(file).subscribe({
+      next: (result) => {
+        this.scanResult.set(result);
+        if (result.success && result.extractedMetadata) {
+          // Add extracted data to the ledger
+          const newEntry: LedgerEntry = {
+            date: result.extractedMetadata.date,
+            amount: result.extractedMetadata.amount.toFixed(2),
+            bank: result.extractedMetadata.institution,
+          };
+          this.ledgerData.update(current => [newEntry, ...current]);
           this.status.set('COMPLETED');
+        } else {
+          this.status.set('ERROR');
         }
-      }, phase.delay);
+        this.scanStep.set(4); // Final step
+      },
+      error: (err) => {
+        console.error('Forensic scan failed:', err);
+        this.scanResult.set({ success: false, error: 'Network or server error' });
+        this.status.set('ERROR');
+        this.scanStep.set(4); // Final step
+      }
     });
+
+    // Simulate visual progression
+    setTimeout(() => this.scanStep.set(2), 1500);
+    setTimeout(() => this.scanStep.set(3), 3000);
   }
 
   triggerVerificationReport() {
