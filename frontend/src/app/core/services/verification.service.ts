@@ -1,7 +1,14 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
+import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+export interface ForensicMetadata {
+  riskLevel: 'GREEN' | 'AMBER' | 'RED';
+  forensicBrief: string;
+  activeTriggers: any[];
+}
 
 export interface VerificationReport {
   status: string;
@@ -12,6 +19,7 @@ export interface VerificationReport {
 @Injectable({ providedIn: 'root' })
 export class VerificationService {
   private http = inject(HttpClient);
+  private firestore = inject(Firestore);
 
   private readonly API_URL = `${environment.apiUrl}/api/reports/verification`;
   
@@ -21,6 +29,27 @@ export class VerificationService {
   // State Management: Peacetime vs Wartime
   escalationLevel = signal<number>(0); 
   systemColor = computed(() => this.escalationLevel() > 1 ? '#FF0000' : '#00E0FF');
+
+  getForensicMetadata(caseId: string): Observable<ForensicMetadata> {
+    const docRef = doc(this.firestore, `cases/${caseId}/sentinel/forensic_metadata`);
+    return new Observable(subscriber => {
+      const unsubscribe = onSnapshot(docRef,
+        (doc) => {
+          if (doc.exists()) {
+            subscriber.next(doc.data() as ForensicMetadata);
+          } else {
+            subscriber.next({
+              riskLevel: 'GREEN',
+              forensicBrief: 'No sentinel data available for this case.',
+              activeTriggers: []
+            });
+          }
+        },
+        (error) => subscriber.error(error)
+      );
+      return () => unsubscribe();
+    });
+  }
 
   async generateForensicDossier(type: 'VERIFIED' | 'FLAGGED'): Promise<VerificationReport> {
     const reportId = this.currentReportId();
