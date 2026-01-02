@@ -1,20 +1,40 @@
-name: Deploy Frontend to Firebase Hosting
+name: Deploy Backend Functions
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'firebase.json'
+      - '.firebaserc'
+  workflow_dispatch:  # Allow manual trigger
+
 jobs:
-  veritas-audit:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Dependencies
-        run: cd frontend && npm install
-      - name: Veritas Lint Check
-        run: cd frontend && npm run lint
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          # FIXED: Properly mapping the Service Account secret
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}
-          projectId: rpr-verify-b
-          channelId: live
+          python-version: '3.12'
+          cache: 'pip' # FIXED: Uses pip cache for requirements.txt
+          cache-dependency-path: 'backend/requirements.txt'
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Deploy to Firebase
+        run: firebase deploy --only functions --non-interactive --force
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deployment Summary
+        if: success()
+        run: |
+          echo "✅ Backend functions deployed successfully"
+          echo "Check Firebase Console for deployment status"

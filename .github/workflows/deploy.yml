@@ -1,4 +1,4 @@
-name: Veritas Smoke Test & Deploy
+name: Deploy Frontend to Firebase Hosting
 on:
   push:
     branches: [ main ]
@@ -11,9 +11,9 @@ jobs:
         run: cd frontend && npm install
       - name: Veritas Lint Check
         run: cd frontend && npm run lint
-      - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          # FIXED: Maps the specific RPR-VERIFY service account secret
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}
           projectId: rpr-verify-b
