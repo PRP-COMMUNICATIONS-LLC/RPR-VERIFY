@@ -41,6 +41,19 @@ export interface ForensicMetadata {
   activeTriggers: SentinelTrigger[];
 }
 
+export interface VerificationReport {
+  reportId: string;
+  caseId: string;
+  status: string;
+  forensic_metadata: {
+    extracted_by: string;
+    model_version: string;
+    region: string;
+    safety_threshold: string;
+    timestamp: string;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class VerificationService {
   private firestore = inject(Firestore);
@@ -57,13 +70,10 @@ export class VerificationService {
     });
   }
 
-  scanBankSlip(slipFile: File): Observable<VisionScanResult> {
+  verifyDocument(file: File): Observable<VerificationReport> {
     const formData = new FormData();
-    formData.append('file', slipFile);
+    formData.append('file', file);
 
-    // This endpoint should be proxied to the hardened Singapore backend.
-    const endpoint = '/api/vision/scan';
-
-    return this.http.post<VisionScanResult>(endpoint, formData);
+    return this.http.post<VerificationReport>('/api/reports/verification', formData);
   }
 }

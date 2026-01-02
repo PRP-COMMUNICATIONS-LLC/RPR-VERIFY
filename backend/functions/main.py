@@ -1,12 +1,36 @@
-from flask import Flask, request, jsonify
+import firebase_admin
+from firebase_admin import auth
+from functools import wraps
+from flask import request, jsonify, Flask
 from flask_cors import CORS
 from vision_engine import vision_service
 import os
 
+if not firebase_admin._apps:
+    firebase_admin.initialize_app()
+
 app = Flask(__name__)
 CORS(app)
 
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({"error": "Unauthorized: Identity required"}), 401
+
+        id_token = auth_header.split('Bearer ')[1]
+        try:
+            # Enforce Firebase Token Verification
+            decoded_token = auth.verify_id_token(id_token)
+            request.user = decoded_token  # Identity bound to request
+            return f(*args, **kwargs)
+        except Exception as e:
+            return jsonify({"error": f"Invalid Token: {str(e)}"}), 403
+    return decorated
+
 @app.route('/api/v1/slips/scan', methods=['POST'])
+@require_auth
 def scan_slip():
     """Scan bank slip with forensic metadata."""
     if 'file' not in request.files:

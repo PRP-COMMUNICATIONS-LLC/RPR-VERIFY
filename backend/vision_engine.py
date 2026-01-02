@@ -1,177 +1,124 @@
+# -*- coding: utf-8 -*-
+"""RPR-VERIFY Vision Engine
+Phase 4: Forensic OCR with Regional Lock and Error Topology
 
-import vertexai
-from vertexai.generative_models import GenerativeModel, Part
-import json
+Sovereign Alignment: asia-southeast1 (Singapore residency enforced)
+Authority: PRD v12.4 - Phase 4 Execution Roadmap
+"""
+
 import os
-import time
-from dateutil.parser import parse
+import json
+from datetime import datetime, timezone
+import vertexai
+from vertexai.generative_models import GenerativeModel, SafetySetting, HarmCategory, HarmBlockThreshold
+from tenacity import retry, stop_after_attempt, wait_exponential
 
-# --- Configuration ---
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "rpr-verify-b")
-LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "asia-southeast1")
-MODEL_ID = "gemini-1.5-flash-001"
-MAX_RETRIES = 3
-RETRY_DELAY_SECONDS = 5
-
-# --- Custom Error Hierarchy ---
+# --- STEP 1: Error Topology ---
 class VisionEngineError(Exception):
-    """Base exception for the Vision Engine."""
-    pass
+    """Base exception for RPR-VERIFY vision engine failures."""
+    def __init__(self, message, error_code):
+        super().__init__(message)
+        self.error_code = error_code
 
-class TransientApiError(VisionEngineError):
-    """Raised for temporary API issues that might be resolved on retry."""
-    pass
+class RateLimitError(VisionEngineError):
+    """Vertex AI quota exceeded."""
+    def __init__(self, message="Vertex AI Quota Exceeded"):
+        super().__init__(message, "RATE_LIMIT_EXCEEDED")
 
-class FatalApiError(VisionEngineError):
-    """Raised for permanent API errors that should not be retried."""
-    pass
+class DocumentParseError(VisionEngineError):
+    """OCR extraction failure or malformed document."""
+    def __init__(self, message="Document parsing failed"):
+        super().__init__(message, "PARSE_FAILURE")
 
-class DataParsingError(VisionEngineError):
-    """Raised when the API response is not in the expected format."""
-    pass
+class ValidationError(VisionEngineError):
+    """Extracted data does not match PRD schema."""
+    def __init__(self, message="Schema validation failed"):
+        super().__init__(message, "SCHEMA_INVALID")
 
-# --- Helper Functions ---
-def normalize_date(date_string: str) -> str:
-    """Parses a date string and returns it in ISO 8601 format (YYYY-MM-DD)."""
-    if not date_string:
-        return ""
+class RegionalLockError(VisionEngineError):
+    """Request attempted outside of asia-southeast1."""
+    def __init__(self, message="Regional residency breach"):
+        super().__init__(message, "REGIONAL_LOCK_VIOLATION")
+
+class ForensicMetadataError(VisionEngineError):
+    """Case ID or forensic audit packet missing."""
+    def __init__(self, message="Forensic audit trail broken"):
+        super().__init__(message, "AUDIT_TRAIL_BROKEN")
+
+# --- STEP 2: Vertex AI Hardening ---
+
+# Regional Lockdown: Explicit asia-southeast1 binding for Singapore residency
+PROJECT_ID = os.getenv('GOOGLE_CLOUD_PROJECT', 'rpr-verify-b')
+REGION = 'asia-southeast1'
+vertexai.init(project=PROJECT_ID, location=REGION)
+
+# Safety Anchor: BLOCK_NONE for financial document processing (avoids false positives)
+safety_settings = [
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_HARASSMENT, threshold=HarmBlockThreshold.BLOCK_NONE),
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold=HarmBlockThreshold.BLOCK_NONE),
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold=HarmBlockThreshold.BLOCK_NONE),
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=HarmBlockThreshold.BLOCK_NONE),
+]
+
+model = GenerativeModel("gemini-1.5-flash-001")
+
+@retry(
+    stop=stop_after_attempt(4),
+    wait=wait_exponential(multiplier=1, min=1, max=8),
+    reraise=True
+)
+def extract_document_data(image_content, case_id):
+    """
+    Core extraction logic with exponential backoff and forensic metadata tagging.
+
+    Args:
+        image_content: Base64-encoded image or image bytes
+        case_id: Mandatory Case ID for audit trail
+
+    Returns:
+        dict: Structured response with forensic metadata and extracted data
+
+    Raises:
+        ForensicMetadataError: If case_id is missing
+        RateLimitError: If Vertex AI quota exceeded (429 response)
+        DocumentParseError: If OCR extraction fails
+    """
+    if not case_id:
+        raise ForensicMetadataError("Missing Case ID in request packet.")
+
+    prompt = """
+Perform forensic OCR on this document. Return JSON ONLY.
+Schema:
+{
+  "issuing_authority_poi": {"doc_id": "string", "expiry": "string", "legal_name": "string"},
+  "issuing_authority_poa": {"account_num": "string", "address": "string", "issue_date": "string"},
+  "financial_institution": {"bsb": "string", "account_num": "string", "holder_name": "string"}
+}
+"""
+
     try:
-        return parse(date_string).strftime('%Y-%m-%d')
-    except (ValueError, TypeError):
-        return date_string
+        response = model.generate_content(
+            [image_content, prompt],
+            safety_settings=safety_settings
+        )
 
-def mask_account_number(account_number: str) -> str:
-    """Masks an account number, showing only the last 4 digits."""
-    if not isinstance(account_number, str):
-        return ""
-    length = len(account_number)
-    if length == 0:
-        return ""
-    if length <= 4:
-        return "*" * length
-    return f"****-{account_number[-4:]}"
+        # --- STEP 3: Forensic Metadata Integration ---
+        ocr_result = json.loads(response.text.replace("```json", "").replace("```", ""))
 
-def compute_risk_score(declared_metadata: dict, extracted_metadata: dict) -> dict:
-    """
-    Computes a risk score based on the variance between declared and extracted data.
-    """
-    score = 100.0
-    risk_marker = 0
-    mismatches = []
-
-    declared_amount = float(declared_metadata.get('amount', 0))
-    extracted_amount = float(extracted_metadata.get('amount', 0))
-    if declared_amount > 0:
-        variance = abs(declared_amount - extracted_amount) / declared_amount
-        if variance > 0.05:
-            score -= 50
-            risk_marker = 3
-            mismatches.append("CRITICAL_DISCREPANCY")
-        elif variance > 0.01:
-            score -= 25
-            risk_marker = 2
-            mismatches.append("MEDIUM_DISCREPANCY")
-
-    declared_date = normalize_date(declared_metadata.get('date', ''))
-    extracted_date = normalize_date(extracted_metadata.get('date', ''))
-    if declared_date != extracted_date:
-        score -= 10
-        mismatches.append("DATE_MISMATCH")
-
-    declared_inst = declared_metadata.get('institution', '').lower()
-    extracted_inst = extracted_metadata.get('institution', '').lower()
-    if declared_inst not in extracted_inst and extracted_inst not in declared_inst:
-        score -= 15
-        mismatches.append("INSTITUTION_MISMATCH")
-
-    return {
-        "matchScore": max(0, score),
-        "riskMarker": risk_marker,
-        "mismatches": mismatches
-    }
-
-class VisionAuditEngine:
-    def __init__(self):
-        try:
-            vertexai.init(project=PROJECT_ID, location=LOCATION)
-            self.model = GenerativeModel(MODEL_ID)
-            print(f"✅ VisionAuditEngine Initialized: {MODEL_ID} @ {LOCATION}")
-        except Exception as e:
-            print(f"⚠️ VisionAuditEngine Init Failed: {e}")
-            self.model = None
-
-    def audit_slip(self, drive_file_id: str, file_bytes: bytes, declared_metadata: dict, report_id: str, admin_email: str) -> dict:
-        """
-        Audits a bank slip by extracting data, computing risk, and returning a full report.
-        """
-        if not self.model:
-            raise FatalApiError("Vision Audit Engine not initialized")
-
-        # 1. Forensic Extraction
-        extracted_data = self._extract_forensic_data(file_bytes, declared_metadata)
-
-        # 2. Risk Computation
-        risk_analysis = compute_risk_score(declared_metadata, extracted_data)
-
-        # 3. PII Masking
-        extracted_data['accountNumber'] = mask_account_number(extracted_data.get('accountNumber', ''))
-
-        # 4. Echo Metadata and assemble final report
         return {
-            "success": True,
-            "status": "Audit Complete",
-            "driveFileId": drive_file_id,
-            "reportId": report_id,
-            "adminEmail": admin_email,
-            "declaredMetadata": declared_metadata,
-            "extractedMetadata": extracted_data,
-            **risk_analysis
+            "status": "success",
+            "case_id": case_id,  # Mandatory Echo
+            "forensic_metadata": {
+                "extracted_by": "gemini-1.5-flash-001",
+                "region": REGION,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "model_version": "1.5-flash-001",
+                "safety_threshold": "BLOCK_NONE"
+            },
+            "data": ocr_result
         }
 
-    def _extract_forensic_data(self, file_bytes: bytes, forensic_metadata: dict) -> dict:
-        """
-        Calls the Gemini API to extract data from the image, with retry logic.
-        """
-        image_part = Part.from_data(file_bytes, mime_type="image/jpeg")
-        prompt = self._build_prompt(forensic_metadata)
-
-        for attempt in range(MAX_RETRIES):
-            try:
-                response = self.model.generate_content(
-                    [image_part, prompt],
-                    generation_config={"response_mime_type": "application/json"}
-                )
-                text = response.text.strip().replace("```json", "").replace("```", "")
-                return json.loads(text)
-            except json.JSONDecodeError as e:
-                raise DataParsingError(f"Failed to parse JSON on attempt {attempt + 1}: {e}")
-            except Exception as e:
-                if "503" in str(e) or "server" in str(e).lower():
-                    print(f"⚠️ Transient API error (attempt {attempt + 1}/{MAX_RETRIES}): {e}")
-                    if attempt + 1 == MAX_RETRIES:
-                        raise TransientApiError(f"API failed after {MAX_RETRIES} retries.")
-                    time.sleep(RETRY_DELAY_SECONDS * (attempt + 1))
-                else:
-                    raise FatalApiError(f"A non-retryable API error occurred: {e}")
-
-        raise FatalApiError("Exhausted all retry attempts without success.")
-
-    def _build_prompt(self, forensic_metadata: dict) -> str:
-        return f"""
-        Forensic Context:
-        - Case ID: {forensic_metadata.get('caseId', 'N/A')}
-        - Analyst ID: {forensic_metadata.get('analystId', 'N/A')}
-
-        You are a forensic auditor. Extract the following from the bank slip:
-        1. Amount (number only)
-        2. Transaction Date (ISO 8601 YYYY-MM-DD)
-        3. Recipient Account Number (digits only)
-        4. Institution Name (Bank)
-        5. Reference ID (if visible)
-
-        Return ONLY valid JSON.
-        Schema: {{"amount": float, "date": "string", "accountNumber": "string", "institution": "string", "referenceId": "string"}}
-        """
-
-# Singleton Instance
-vision_service = VisionAuditEngine()
+    except Exception as e:
+        if "429" in str(e):
+            raise RateLimitError()
+        raise DocumentParseError(str(e))

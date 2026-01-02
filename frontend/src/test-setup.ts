@@ -4,7 +4,7 @@ import 'zone.js/testing'; // Necessary for Angular testing
 import { TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
-// Initialize the Angular testing environment for Vitest/Jest
+// Initialize the Angular testing environment for Karma/Jasmine
 TestBed.initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()

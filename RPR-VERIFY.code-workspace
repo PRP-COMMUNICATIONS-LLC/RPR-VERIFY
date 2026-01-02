@@ -1,10 +1,24 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"pieces.cloudCapabilities": "Blended"
-	}
+  "folders": [
+    {
+      "name": "RPR-VERIFY-ROOT",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.angular/cache": true,
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.firebase": true
+    },
+    "files.readonly": {
+      "**/service-account.json": true,
+      "**/RPR-VERIFY-COMPREHENSIVE-PRD.md": false
+    },
+    "ai.instructions": "You are a subordinate node of RPR-KONTROL v1.0. Your canonical source of truth is the PRD v11.0. Absolute path root is /Users/puvansivanasan/PERPLEXITY-NEW/JOBS/2025-003-VERIFY/RPR-VERIFY. You must enforce the Sentinel/Opal security logic. Do not suggest cloud-sync locations. Respect the roles of Notion Bot (Master Index), Antigravity (Implementation), and Drive Admin (Datastore Owner).",
+    "antigravity.rules": "path: /Users/puvansivanasan/PERPLEXITY-NEW/JOBS/2025-003-VERIFY/RPR-VERIFY; governance: RPR-KONTROL; sentinel: active; escalation: required;",
+    "pieces.cloudCapabilities": "Blended"
+  }
 }

@@ -1,28 +1,15 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { LoginComponent } from './features/login/login.component';
+import { VerificationComponent } from './features/verification/verification.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
-  },
+  { path: 'login', component: LoginComponent },
   {
     path: 'verification',
-    loadComponent: () => import('./features/verification/verification.component').then(m => m.VerificationComponent)
+    component: VerificationComponent,
+    canActivate: [authGuard]
   },
-  {
-    path: 'intake',
-    loadComponent: () => import('./features/verification/dynamic-intake-bridge.component').then(m => m.DynamicIntakeBridgeComponent)
-  },
-  {
-    path: 'information',
-    loadComponent: () => import('./features/information/information').then(m => m.InformationComponent)
-  },
-  {
-    // path: 'transactions',
-    // loadComponent: () => import('./features/transactions/transactions.component').then(m => m.TransactionsComponent)
-  },
-  {
-    path: 'resolution',
-    loadComponent: () => import('./features/resolution/resolution.component').then(m => m.ResolutionComponent)
-  }
+  { path: '', redirectTo: '/verification', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login' }
 ];

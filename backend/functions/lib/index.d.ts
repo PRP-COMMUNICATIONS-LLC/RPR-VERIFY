@@ -4,6 +4,5 @@
  * This file exports all Cloud Functions for deployment.
  * Currently, functions are being set up for RPR-VERIFY.
  */
-import * as functions from 'firebase-functions';
-export declare const cisReportApi: functions.HttpsFunction;
+export declare const cisReportApi: import("firebase-functions/v2/https").HttpsFunction;
 //# sourceMappingURL=index.d.ts.map

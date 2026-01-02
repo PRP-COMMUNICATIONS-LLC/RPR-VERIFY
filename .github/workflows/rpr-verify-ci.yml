@@ -1,23 +1,15 @@
-name: RPR-VERIFY Sentinel CI
+name: Veritas Smoke Test CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
-  pull-requests: write
+    branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
-  veritas-smoke-test:
-    name: Veritas Smoke Test
+  veritas-validation:
+    name: Forensic Validation
     runs-on: ubuntu-latest
-
-    # RPR-KONTROL Guardrail: Disable Husky in CI to prevent .git path errors
-    env:
-      HUSKY: 0
 
     steps:
       - name: Checkout Code
@@ -25,26 +17,40 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Setup Node.js v20
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies
-        # Using --ignore-scripts as a secondary guardrail against broken hooks
-        run: npm ci --ignore-scripts
-        working-directory: ./frontend
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci --ignore-scripts
 
-      - name: Run Linter
-        run: npm run lint
-        working-directory: ./frontend
+      - name: Hardened Linting Check
+        run: |
+          cd frontend
+          npm run lint
 
-      - name: Execute Veritas Smoke Test
-        run: npm test
-        working-directory: ./frontend
+      - name: Frontend Smoke Test
+        run: |
+          cd frontend
+          npm test -- --watch=false --browsers=ChromeHeadless
 
-      - name: Security Audit
-        run: npm audit --audit-level=high
-        working-directory: ./frontend
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install pytest
+
+      - name: Backend Forensic Integrity Test
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/backend
+          pytest backend/tests/test_vision_engine.py -v

@@ -1,0 +1,22 @@
+RPR-VERIFY: SOVEREIGN AGENT RULES (.cursorrules)
+Governance: RPR-KONTROL v1.0
+Project Root: /Users/puvansivanasan/PERPLEXITY-NEW/JOBS/2025-003-VERIFY/RPR-VERIFY
+
+1. CANONICAL CONSTRAINTS
+PATH LOCK: Only operate within the SSD Root. Ignore /Users/puvansivanasan/Library/CloudStorage/.
+FRAMEWORK: Angular 19 (Frontend) / Firebase Functions v7 (Backend).
+
+2. ROLE AWARENESS
+Notion Bot: treat as the Authoritative Project Registry.
+Drive Admin: treat as the Forensic Archive/Backup Node.
+Antigravity: handle as the Sovereign Implementation lead.
+
+3. SECURITY & LOGIC
+Sentinel Core: All forensic extractions must adhere to the Dynamo Blueprint (Section 5 of PRD).
+Escalation: Any extraction error or risk flag MUST be logged to the ESCALATION-QUEUE.
+PII: extract headers only. Do not suggest long-form PII storage in Firestore.
+
+4. VERITAS COMPLIANCE
+Zero linting errors.
+Functional inject() pattern in Angular services.
+Signals for UI state.
