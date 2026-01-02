@@ -19,7 +19,7 @@ export interface ForensicMetadata {
 export class VerificationService {
   private firestore = inject(Firestore);
 
-  // Required by app.component.ts to resolve TS2339
+  // Required to resolve TS2339 in app.component.ts
   systemColor(): string {
     return '#00E0FF';
   }
