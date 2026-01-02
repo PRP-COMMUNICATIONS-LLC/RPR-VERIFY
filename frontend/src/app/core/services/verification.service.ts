@@ -19,6 +19,11 @@ export interface ForensicMetadata {
 export class VerificationService {
   private firestore = inject(Firestore);
 
+  // Required by app.component.ts to resolve TS2339
+  systemColor(): string {
+    return '#00E0FF';
+  }
+
   getForensicMetadata(caseId: string): Observable<ForensicMetadata> {
     return new Observable(subscriber => {
       const docRef = doc(this.firestore, `cases/${caseId}/forensic_metadata/current`);

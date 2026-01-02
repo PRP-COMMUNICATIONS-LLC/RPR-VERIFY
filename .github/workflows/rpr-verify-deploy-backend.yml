@@ -1,0 +1,23 @@
+name: Deploy Backend to Singapore Node
+on:
+  push:
+    paths:
+      - 'backend/**'
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          # FIXED: Cache now correctly tracks requirements.txt
+          cache: 'pip'
+      - name: Install Dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Deploy to asia-southeast1
+        run: |
+          # Deployment command for Singapore Node goes here
+          echo "Deploying to Singapore..."

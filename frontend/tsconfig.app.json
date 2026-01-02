@@ -1,22 +1,16 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "jsx": "react-jsx",
+    "allowJs": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
+  "files": [
+    "src/main.ts",
+    "src/app/components/DynamicIntakeForm.tsx"
   ],
-  "exclude": [
-    "src/**/*.spec.ts",
-    "src/test-setup.ts",
-    "_legacy_archive",
-    "src/app-OLD/**/*",
-    "src/app/features/auth/**/*",
-    "src/app/features/cases/**/*",
-    "src/app/features/dashboard/**/*"
+  "include": [
+    "src/**/*.d.ts"
   ]
 }
