@@ -11,8 +11,8 @@ import cors from 'cors';
 
 import axios from 'axios';
 
-// Explicitly setting the region to australia-southeast1 for all functions
-setGlobalOptions({ region: 'australia-southeast1' });
+// Explicitly setting the region to asia-southeast1 for all functions
+setGlobalOptions({ region: 'asia-southeast1' });
 
 // CORS configuration
 const corsOptions = {
@@ -32,7 +32,10 @@ const corsHandler = cors(corsOptions);
 
 // Helper to wrap functions with CORS
 function withCors(handler: (req: any, res: any) => void | Promise<void>) {
-  return onRequest((request, response) => {
+  return onRequest({
+    invoker: 'public',
+    cors: true
+  }, (request, response) => {
     corsHandler(request, response, () => {
       handler(request, response);
     });
