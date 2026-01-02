@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-
+import { ResolutionRationaleComponent } from './resolution-rationale.component';
 import { IdentityService } from '../../core/services/identity.service';
 
 @Component({
   selector: 'app-resolution',
   standalone: true,
-  imports: [],
+  imports: [ResolutionRationaleComponent],
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
 
@@ -33,6 +33,8 @@ import { IdentityService } from '../../core/services/identity.service';
       <div style="padding: 0 40px 40px; display: grid; grid-template-columns: 7fr 3fr; gap: 40px; align-items: start;">
 
         <div style="display: flex; flex-direction: column; gap: 40px;">
+
+          <app-resolution-rationale></app-resolution-rationale>
 
           <section style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 30px rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
 
