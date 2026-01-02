@@ -5,10 +5,14 @@
  * Currently, functions are being set up for RPR-VERIFY.
  */
 
-import * as functions from 'firebase-functions';
+import { onRequest } from 'firebase-functions/v2/https';
+import { setGlobalOptions } from 'firebase-functions/v2';
 import cors from 'cors';
 
 import axios from 'axios';
+
+// Explicitly setting the region to australia-southeast1 for all functions
+setGlobalOptions({ region: 'australia-southeast1' });
 
 // CORS configuration
 const corsOptions = {
@@ -27,8 +31,8 @@ const corsOptions = {
 const corsHandler = cors(corsOptions);
 
 // Helper to wrap functions with CORS
-function withCors(handler: (req: functions.Request, res: functions.Response) => void | Promise<void>) {
-  return functions.https.onRequest((request, response) => {
+function withCors(handler: (req: any, res: any) => void | Promise<void>) {
+  return onRequest((request, response) => {
     corsHandler(request, response, () => {
       handler(request, response);
     });
