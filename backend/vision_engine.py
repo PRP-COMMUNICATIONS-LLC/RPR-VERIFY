@@ -1,110 +1,124 @@
-import vertexai
-from vertexai.generative_models import GenerativeModel, Part, SafetySetting
-import json
+# -*- coding: utf-8 -*-
+"""RPR-VERIFY Vision Engine
+Phase 4: Forensic OCR with Regional Lock and Error Topology
+
+Sovereign Alignment: asia-southeast1 (Singapore residency enforced)
+Authority: PRD v12.4 - Phase 4 Execution Roadmap
+"""
+
 import os
+import json
+from datetime import datetime, timezone
+import vertexai
+from vertexai.generative_models import GenerativeModel, SafetySetting, HarmCategory, HarmBlockThreshold
+from tenacity import retry, stop_after_attempt, wait_exponential
 
-# CONFIGURATION
-# Default to Singapore (asia-southeast1) for RPR sovereignty
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "rpr-verify-b")
-LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "asia-southeast1")
-MODEL_ID = "gemini-1.5-flash-001"
+# --- STEP 1: Error Topology ---
+class VisionEngineError(Exception):
+    """Base exception for RPR-VERIFY vision engine failures."""
+    def __init__(self, message, error_code):
+        super().__init__(message)
+        self.error_code = error_code
 
-class VisionEngine:
-    def __init__(self):
-        try:
-            vertexai.init(project=PROJECT_ID, location=LOCATION)
-            self.model = GenerativeModel(MODEL_ID)
-            print(f"✅ VisionEngine Initialized: {MODEL_ID} @ {LOCATION}")
-        except Exception as e:
-            print(f"⚠️ VisionEngine Init Failed: {e}")
-            self.model = None
+class RateLimitError(VisionEngineError):
+    """Vertex AI quota exceeded."""
+    def __init__(self, message="Vertex AI Quota Exceeded"):
+        super().__init__(message, "RATE_LIMIT_EXCEEDED")
 
-    def scan_slip(self, file_bytes, mime_type, forensic_metadata=None):
-        """
-        Analyzes a bank slip image/PDF to extract forensic metadata.
+class DocumentParseError(VisionEngineError):
+    """OCR extraction failure or malformed document."""
+    def __init__(self, message="Document parsing failed"):
+        super().__init__(message, "PARSE_FAILURE")
 
-        Args:
-            file_bytes: Binary file data
-            mime_type: MIME type of the file
-            forensic_metadata: Optional dict with caseId, analystId, documentType, priority, reportId
-        """
-        if not self.model:
-            return {"error": "Vision Engine not initialized", "success": False}
+class ValidationError(VisionEngineError):
+    """Extracted data does not match PRD schema."""
+    def __init__(self, message="Schema validation failed"):
+        super().__init__(message, "SCHEMA_INVALID")
 
-        try:
-            image_part = Part.from_data(file_bytes, mime_type=mime_type)
-            
-            # Enhanced prompt with forensic context
-            metadata_context = ""
-            if forensic_metadata:
-                metadata_context = f"""
-                Forensic Context:
-                - Case ID: {forensic_metadata.get('caseId', 'N/A')}
-                - Analyst ID: {forensic_metadata.get('analystId', 'N/A')}
-                - Document Type: {forensic_metadata.get('documentType', 'BANK_SLIP')}
-                - Priority: {forensic_metadata.get('priority', 'MEDIUM')}
+class RegionalLockError(VisionEngineError):
+    """Request attempted outside of asia-southeast1."""
+    def __init__(self, message="Regional residency breach"):
+        super().__init__(message, "REGIONAL_LOCK_VIOLATION")
 
-                """
-            
-            prompt = f"""
-            {metadata_context}You are a forensic auditor for RPR-VERIFY. Extract the following data from this bank transfer slip:
-            1. Amount (number only, remove currency symbols)
-            2. Transaction Date (ISO 8601 format YYYY-MM-DD)
-            3. Recipient Account Number (digits only, remove spaces/dashes)
-            4. Institution Name (Bank)
-            5. Reference ID (if visible)
-            
-            Return ONLY valid JSON. No markdown formatting.
-            Schema:
-            {{
-                "amount": float,
-                "date": "string",
-                "accountNumber": "string",
-                "institution": "string",
-                "referenceId": "string"
-            }}
-            """
+class ForensicMetadataError(VisionEngineError):
+    """Case ID or forensic audit packet missing."""
+    def __init__(self, message="Forensic audit trail broken"):
+        super().__init__(message, "AUDIT_TRAIL_BROKEN")
 
-            # Strict generation config for JSON
-            response = self.model.generate_content(
-                [image_part, prompt],
-                generation_config={"response_mime_type": "application/json"}
-            )
-            
-            # Clean and parse response
-            text = response.text.strip()
-            # Remove potential markdown code blocks if the model ignores the instruction
-            if text.startswith("```json"):
-                text = text[7:-3]
-            elif text.startswith("```"):
-                text = text[3:-3]
-            
-            extracted_data = json.loads(text)
-            
-            # Return in expected format with success flag
-            return {
-                "success": True,
-                "status": "success",
-                "extractedMetadata": extracted_data,
-                "risk_level": 0,  # Default, can be computed based on mismatches
-                "matchScore": 100.0,  # Default, can be computed
-                "riskMarker": 0  # Default, can be computed
-            }
+# --- STEP 2: Vertex AI Hardening ---
 
-        except json.JSONDecodeError as e:
-            print(f"❌ JSON Parse Error: {e}")
-            return {
-                "success": False,
-                "error": "Failed to parse Vision Engine response",
-                "details": str(e)
-            }
-        except Exception as e:
-            print(f"❌ VISION SCAN ERROR: {e}")
-            return {
-                "success": False,
-                "error": "Forensic extraction failed",
-                "details": str(e)
-            }
+# Regional Lockdown: Explicit asia-southeast1 binding for Singapore residency
+PROJECT_ID = os.getenv('GOOGLE_CLOUD_PROJECT', 'rpr-verify-b')
+REGION = 'asia-southeast1'
+vertexai.init(project=PROJECT_ID, location=REGION)
 
-# Singleton Instance
-vision_service = VisionEngine()
+# Safety Anchor: BLOCK_NONE for financial document processing (avoids false positives)
+safety_settings = [
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_HARASSMENT, threshold=HarmBlockThreshold.BLOCK_NONE),
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold=HarmBlockThreshold.BLOCK_NONE),
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold=HarmBlockThreshold.BLOCK_NONE),
+    SafetySetting(category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=HarmBlockThreshold.BLOCK_NONE),
+]
+
+model = GenerativeModel("gemini-1.5-flash-001")
+
+@retry(
+    stop=stop_after_attempt(4),
+    wait=wait_exponential(multiplier=1, min=1, max=8),
+    reraise=True
+)
+def extract_document_data(image_content, case_id):
+    """
+    Core extraction logic with exponential backoff and forensic metadata tagging.
+    
+    Args:
+        image_content: Base64-encoded image or image bytes
+        case_id: Mandatory Case ID for audit trail
+        
+    Returns:
+        dict: Structured response with forensic metadata and extracted data
+        
+    Raises:
+        ForensicMetadataError: If case_id is missing
+        RateLimitError: If Vertex AI quota exceeded (429 response)
+        DocumentParseError: If OCR extraction fails
+    """
+    if not case_id:
+        raise ForensicMetadataError("Missing Case ID in request packet.")
+    
+    prompt = """
+Perform forensic OCR on this document. Return JSON ONLY.
+Schema:
+{
+  "issuing_authority_poi": {"doc_id": "string", "expiry": "string", "legal_name": "string"},
+  "issuing_authority_poa": {"account_num": "string", "address": "string", "issue_date": "string"},
+  "financial_institution": {"bsb": "string", "account_num": "string", "holder_name": "string"}
+}
+"""
+    
+    try:
+        response = model.generate_content(
+            [image_content, prompt],
+            safety_settings=safety_settings
+        )
+        
+        # --- STEP 3: Forensic Metadata Integration ---
+        ocr_result = json.loads(response.text.replace("```json", "").replace("```", ""))
+        
+        return {
+            "status": "success",
+            "case_id": case_id,  # Mandatory Echo
+            "forensic_metadata": {
+                "extracted_by": "gemini-1.5-flash-001",
+                "region": REGION,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "model_version": "1.5-flash-001",
+                "safety_threshold": "BLOCK_NONE"
+            },
+            "data": ocr_result
+        }
+    
+    except Exception as e:
+        if "429" in str(e):
+            raise RateLimitError()
+        raise DocumentParseError(str(e))
