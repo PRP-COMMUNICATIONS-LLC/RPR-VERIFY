@@ -5,19 +5,27 @@ import { Observable } from 'rxjs';
 
 export interface VisionScanResult {
   success: boolean;
-  status?: string;
-  extractedMetadata?: {
+  status: string;
+  driveFileId: string;
+  reportId: string;
+  adminEmail: string;
+  declaredMetadata: {
+    amount: number;
+    date: string;
+    accountNumber: string;
+    institution: string;
+  };
+  extractedMetadata: {
     amount: number;
     date: string;
     accountNumber: string;
     institution: string;
     referenceId: string;
   };
-  risk_level?: number;
-  matchScore?: number;
-  riskMarker?: number;
+  matchScore: number;
+  riskMarker: number;
+  mismatches: string[];
   error?: string;
-  details?: string;
 }
 
 export interface SentinelTrigger {
