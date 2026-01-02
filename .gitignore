@@ -91,3 +91,8 @@ ALL_PROJECTS_STATUS.json
 
 # Notion Service Account Key
 key-notion-bot.json
+
+# RPR-VERIFY Sovereign Keys
+service-account.json
+src/environments/environment.ts
+src/environments/environment.prod.ts

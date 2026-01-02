@@ -1,0 +1,19 @@
+name: Veritas Smoke Test & Deploy
+on:
+  push:
+    branches: [ main ]
+jobs:
+  veritas-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: cd frontend && npm install
+      - name: Veritas Lint Check
+        run: cd frontend && npm run lint
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: rpr-verify-b
