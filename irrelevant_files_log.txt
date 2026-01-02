@@ -66,3 +66,4 @@ SECTION 5: FIREBASE CLI ALIGNMENT
   ⚠️  Firebase project mismatch: default (expected: rpr-verify-b)
      Action: Run 'firebase use rpr-verify-b'
   ✅ Functions region configured for Singapore (asia-southeast1)
+

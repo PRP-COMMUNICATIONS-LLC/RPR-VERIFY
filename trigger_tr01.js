@@ -7,14 +7,14 @@ async function runSovereignHealthCheck() {
   console.log(`🚀 Initiating Sovereign Health Check...`);
   console.log(`📍 Target Node: ${BACKEND_URL}`);
   console.log(`🔑 Case ID: ${CASE_ID}`);
-
+  
   try {
     // We send an empty request to check for connectivity and auth status
     const response = await axios.post(BACKEND_URL, {
       case_id: CASE_ID,
       document_image: "HEALTH_CHECK_ONLY"
     });
-
+    
     console.log('✅ Node Reachable.');
     console.log('📊 Response Status:', response.status);
     console.log('✅ VERDICT: Backend API responding from asia-southeast1');

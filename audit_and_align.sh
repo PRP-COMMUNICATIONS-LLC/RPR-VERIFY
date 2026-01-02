@@ -105,7 +105,7 @@ if ! command -v firebase &> /dev/null; then
     echo "" >> "$LOG_FILE"
 else
     echo "  ✅ Firebase CLI is installed" | tee -a "$LOG_FILE"
-
+    
     # Check current project
     if [ -f "$PROJECT_ROOT/.firebaserc" ]; then
         CURRENT_PROJECT=$(grep -o '"default"[[:space:]]*:[[:space:]]*"[^"]*"' "$PROJECT_ROOT/.firebaserc" | grep -o '"[^"]*"' | tr -d '"' | head -1)
@@ -119,7 +119,7 @@ else
         echo "  ⚠️  .firebaserc not found" | tee -a "$LOG_FILE"
         echo "     Action: Run 'firebase use rpr-verify-b'" >> "$LOG_FILE"
     fi
-
+    
     # Check Firebase functions region (if functions exist)
     if [ -f "$PROJECT_ROOT/backend/functions/src/index.ts" ]; then
         REGION_CHECK=$(grep -i "australia-southeast1\|asia-southeast1" "$PROJECT_ROOT/backend/functions/src/index.ts" || echo "")

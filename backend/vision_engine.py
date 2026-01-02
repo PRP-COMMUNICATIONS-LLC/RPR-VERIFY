@@ -70,14 +70,14 @@ model = GenerativeModel("gemini-1.5-flash-001")
 def extract_document_data(image_content, case_id):
     """
     Core extraction logic with exponential backoff and forensic metadata tagging.
-
+    
     Args:
         image_content: Base64-encoded image or image bytes
         case_id: Mandatory Case ID for audit trail
-
+        
     Returns:
         dict: Structured response with forensic metadata and extracted data
-
+        
     Raises:
         ForensicMetadataError: If case_id is missing
         RateLimitError: If Vertex AI quota exceeded (429 response)
@@ -85,7 +85,7 @@ def extract_document_data(image_content, case_id):
     """
     if not case_id:
         raise ForensicMetadataError("Missing Case ID in request packet.")
-
+    
     prompt = """
 Perform forensic OCR on this document. Return JSON ONLY.
 Schema:
@@ -95,16 +95,16 @@ Schema:
   "financial_institution": {"bsb": "string", "account_num": "string", "holder_name": "string"}
 }
 """
-
+    
     try:
         response = model.generate_content(
             [image_content, prompt],
             safety_settings=safety_settings
         )
-
+        
         # --- STEP 3: Forensic Metadata Integration ---
         ocr_result = json.loads(response.text.replace("```json", "").replace("```", ""))
-
+        
         return {
             "status": "success",
             "case_id": case_id,  # Mandatory Echo
@@ -117,7 +117,7 @@ Schema:
             },
             "data": ocr_result
         }
-
+    
     except Exception as e:
         if "429" in str(e):
             raise RateLimitError()
