@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const Tab1IntakeSchema = z.object({
   audit_metadata: z.object({
     posture: z.literal('SENTINEL_ACTIVE'),
-    schema_version: z.string().default('v1.0.4'),
+    schema_version: z.string(),
     intake_agent: z.string().min(1, "Agent ID required"),
   }),
   identity_verification: z.object({

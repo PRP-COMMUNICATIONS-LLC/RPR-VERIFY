@@ -30,5 +30,5 @@ import { FormsModule } from '@angular/forms';
   `
 })
 export class ResolutionRationaleComponent {
-  rationale: string = '';
+  rationale = '';
 }

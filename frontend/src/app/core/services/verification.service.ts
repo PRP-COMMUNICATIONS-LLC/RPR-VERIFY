@@ -1,13 +1,18 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+export interface Trigger {
+  id: string;
+  narrative: string;
+}
 
 export interface ForensicMetadata {
   riskLevel: 'GREEN' | 'AMBER' | 'RED';
   forensicBrief: string;
-  activeTriggers: any[];
+  activeTriggers: Trigger[];
 }
 
 export interface VerificationReport {

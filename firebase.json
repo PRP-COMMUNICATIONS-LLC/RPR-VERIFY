@@ -12,6 +12,14 @@
     ],
     "rewrites": [
       {
+        "source": "/health",
+        "function": "app"
+      },
+      {
+        "source": "/api/**",
+        "function": "app"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
