@@ -1,11 +1,10 @@
 {
-  "css.lint.unknownAtRules": "ignore",
-  "scss.lint.unknownAtRules": "ignore",
-  "search.exclude": {
-    "**/frontend-backup-*": true
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/node_modules/**": true,
+    "**/backend/functions/lib/**": true,
+    "**/frontend/.angular/**": true
   },
-  "files.exclude": {
-    "**/frontend-backup-*": true
-  },
-  "pieces.cloudCapabilities": "Blended"
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

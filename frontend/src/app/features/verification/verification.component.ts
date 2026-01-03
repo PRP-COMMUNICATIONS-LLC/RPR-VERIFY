@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { IdentityService } from '../../core/services/identity.service';
+import { VerificationService, ForensicMetadata } from '../../core/services/verification.service';
 
 @Component({
   selector: 'app-verification',
@@ -41,6 +42,11 @@ import { IdentityService } from '../../core/services/identity.service';
             </h3>
 
             <div style="display: flex; gap: 16px;">
+              <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none">
+              <button (click)="fileInput.click()"
+                style="background: #00E0FF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
+                Process Document
+              </button>
               <button (click)="triggerVerificationReport()"
                 style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                 Verification Report
@@ -161,6 +167,18 @@ import { IdentityService } from '../../core/services/identity.service';
                 style="margin-top: 24px; font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.2em; text-transform: uppercase;">
                 VERIFICATION COMPLETE
               </div>
+              
+              @if (forensicMetadata(); as meta) {
+                <div style="margin-top: 32px; padding: 20px; background: rgba(0, 224, 255, 0.05); border: 1px solid rgba(0, 224, 255, 0.2); border-radius: 4px; text-align: left; width: 100%; max-width: 400px;">
+                  <h5 style="color: #00E0FF; font-size: 10px; margin-top: 0; margin-bottom: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Forensic Metadata Echo</h5>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 9px; color: rgba(255,255,255,0.8); font-family: 'JetBrains Mono', monospace;">
+                    <div>REGION: <span style="color: #fff">{{ meta.region }}</span></div>
+                    <div>MODEL: <span style="color: #fff">{{ meta.model_version }}</span></div>
+                    <div style="grid-column: span 2">TIMESTAMP: <span style="color: #fff">{{ meta.timestamp }}</span></div>
+                    <div style="grid-column: span 2">NODE: <span style="color: #fff">ASIA-SOUTHEAST1-SGP</span></div>
+                  </div>
+                </div>
+              }
             }
           </div>
 
@@ -184,10 +202,12 @@ import { IdentityService } from '../../core/services/identity.service';
 })
 export class VerificationComponent implements OnInit {
   identity = inject(IdentityService);
+  verificationService = inject(VerificationService);
 
   // Sovereign State Machine for Pulse Scanner
   readonly scanStep = signal<number>(0);
   readonly status = signal<'SCANNING' | 'COMPLETED'>('SCANNING');
+  readonly forensicMetadata = signal<ForensicMetadata | null>(null);
 
   // Derived metadata for display
   readonly currentPhaseLabel = computed(() => {
@@ -244,6 +264,36 @@ export class VerificationComponent implements OnInit {
       bankInstructions: 'Bank email analysis from Sentinel Protocol'
     });
     alert('VERIFICATION REPORT PROTOCOL INITIATED: Generating comprehensive forensic package (CIS + Ledger + Scans + Bank Instructions)');
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.processDocument(file);
+    }
+  }
+
+  processDocument(file: File) {
+    const caseId = this.identity.currentId();
+    this.status.set('SCANNING');
+    this.scanStep.set(1);
+    this.forensicMetadata.set(null);
+
+    this.verificationService.processDocument(file, caseId).subscribe({
+      next: (result) => {
+        console.log('[FORENSIC ENGINE] Processing successful:', result);
+        this.forensicMetadata.set(result.forensic_metadata);
+        this.status.set('COMPLETED');
+        this.scanStep.set(4);
+      },
+      error: (err) => {
+        console.error('[FORENSIC ENGINE] Processing failed:', err);
+        // Display error state if needed
+        this.status.set('COMPLETED');
+        this.scanStep.set(4);
+      }
+    });
   }
 
   generateCIS() {

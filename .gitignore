@@ -34,8 +34,8 @@ backend/CIS_Report_*.pdf
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
-functions/lib/
-functions/node_modules/
+backend/functions/lib/
+backend/functions/node_modules/
 
 # --- Secrets & Keys (Security) ---
 service-account-key.json
@@ -94,5 +94,5 @@ key-notion-bot.json
 
 # RPR-VERIFY Sovereign Keys
 service-account.json
-src/environments/environment.ts
-src/environments/environment.prod.ts
+frontend/src/environments/environment.ts
+frontend/src/environments/environment.prod.ts

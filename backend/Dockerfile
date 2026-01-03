@@ -1,5 +1,5 @@
 # --- STAGE 1: BUILDER ---
-FROM python:3.11-slim-bookworm AS builder
+FROM python:3.12-slim-bookworm AS builder
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     playwright install chromium
 
 # --- STAGE 2: RUNNER ---
-FROM python:3.11-slim-bookworm AS runner
+FROM python:3.12-slim-bookworm AS runner
 
 ENV PYTHONUNBUFFERED=1 PORT=8080 \
     PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright/
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Transfer executables and packages from builder stage
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
-COPY --from=builder /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
+COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
 COPY --from=builder /root/.cache/ms-playwright/ /root/.cache/ms-playwright/
 
 # Copy application source code

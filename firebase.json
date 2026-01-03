@@ -12,6 +12,11 @@
     ],
     "rewrites": [
       {
+        "source": "/api/**",
+        "function": "cisReportApi",
+        "region": "asia-southeast1"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
