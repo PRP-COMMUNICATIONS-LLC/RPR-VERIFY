@@ -58,6 +58,4 @@ jobs:
         run: pip install -r backend/requirements.txt
 
       - name: Backend Forensic Integrity Test
-        run: |
-          export PYTHONPATH=$PYTHONPATH:$(pwd)/backend
-          python -m pytest backend/tests/test_vision_engine.py -v
+        run: python -m pytest backend/tests/test_vision_engine.py -v

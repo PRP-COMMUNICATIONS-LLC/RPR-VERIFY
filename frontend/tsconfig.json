@@ -20,7 +20,8 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "jsx": "react-jsx"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
