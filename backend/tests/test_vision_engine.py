@@ -9,12 +9,14 @@ import sys
 import os
 from pathlib import Path
 import unittest.mock as mock
+import pytest
 
 # Add backend directory to path for imports
 backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
 # --- STEP 1: Mocks ---
+
 class MockSecretManagerClient:
     """Mock Secret Manager Client"""
     def __init__(self, *args, **kwargs):
@@ -52,7 +54,6 @@ sys.modules['firebase_admin']._apps = [] # Mocked state
 sys.modules['firebase_admin'].firestore = MockFirestore()
 
 # --- STEP 2: Imports ---
-import pytest
 from vision_engine import (
     VisionAuditEngine,
     compute_risk_score,
@@ -111,18 +112,25 @@ def test_date_normalization():
     print("✅ Date normalization functional")
 
 
+def load_test_image(image_path: str) -> bytes:
+    """Load test image file as bytes"""
+    with open(image_path, 'rb') as f:
+        return f.read()
+
+
 def test_extract_document_data_with_valid_case_id():
     """Test that extract_document_data accepts a valid case_id."""
     print("\n🧪 Testing Extract Document Data (with valid case_id)")
     print("=" * 60)
     try:
-        # Mocking the model to avoid real API calls if needed, 
-        # but here we rely on the DocumentParseError being caught if no real API connection
+        # Expecting API-level failure if no real network, but case_id check should pass first
         extract_document_data("dummy_image", "TEST-CASE-001")
     except ForensicMetadataError:
         pytest.fail("ForensicMetadataError raised with valid case_id")
     except (DocumentParseError, RateLimitError, Exception) as e:
-        print(f"✅ Case ID validation passed (Expected API-level failure: {type(e).__name__})")
+        # Expected to fail at API level, but case_id validation should pass
+        print(f"✅ Case ID validation passed (API error expected: {type(e).__name__})")
+    print()
 
 
 if __name__ == "__main__":
