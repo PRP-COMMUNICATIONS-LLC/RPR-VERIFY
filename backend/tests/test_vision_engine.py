@@ -13,7 +13,6 @@ from pathlib import Path
 backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
-<<<<<<< Updated upstream
 # Mock dependencies for testing
 class MockSecretManager:
     """Mock Secret Manager for local testing"""
@@ -74,59 +73,17 @@ from vision_engine import (
     VisionEngineError,
     RateLimitError,
     DocumentParseError,
-    RegionalLockError,
-    ForensicMetadataError,
-    extract_document_data,
-=======
-import pytest
-from vision_engine import (
-    VisionEngineError, 
-    RateLimitError, 
-    DocumentParseError,
     ValidationError,
     RegionalLockError,
     ForensicMetadataError,
-    extract_document_data, 
->>>>>>> Stashed changes
+    extract_document_data,
     REGION
 )
 
 
 def test_error_topology_integrity():
     """Verify that all RPR-VERIFY specific error classes inherit from the base."""
-<<<<<<< Updated upstream
-    assert issubclass(RateLimitError, VisionEngineError)
-    assert issubclass(DocumentParseError, VisionEngineError)
-    assert issubclass(RegionalLockError, VisionEngineError)
-    assert issubclass(ForensicMetadataError, VisionEngineError)
-
-
-def test_forensic_metadata_requirement():
-    """Step 3: Ensure logic fails if Case ID is missing."""
-    with pytest.raises(ForensicMetadataError) as excinfo:
-        # Pass None as case_id - should raise ForensicMetadataError
-        extract_document_data("dummy_image", None)
-
-    assert excinfo.value.error_code == "AUDIT_TRAIL_BROKEN"
-
-
-def test_regional_lock_constant():
-    """Verify that the engine is locked to asia-southeast1."""
-    assert REGION == "asia-southeast1"
-
-
-def load_test_image(image_path: str) -> bytes:
-    """Load test image file as bytes"""
-    with open(image_path, 'rb') as f:
-        return f.read()
-
-
-def test_date_normalization():
-    """Test date parsing normalization"""
-    print("\n🧪 Testing Date Normalization")
-=======
     print("\n🧪 Testing Error Topology Integrity")
->>>>>>> Stashed changes
     print("=" * 60)
     
     assert issubclass(RateLimitError, VisionEngineError)
@@ -164,6 +121,22 @@ def test_regional_lock_constant():
     print()
 
 
+def load_test_image(image_path: str) -> bytes:
+    """Load test image file as bytes"""
+    with open(image_path, 'rb') as f:
+        return f.read()
+
+
+def test_date_normalization():
+    """Test date parsing normalization"""
+    print("\n🧪 Testing Date Normalization")
+    print("=" * 60)
+
+    # Placeholder for date normalization tests
+    print("✅ Date normalization tests passed (placeholder)")
+    print()
+
+
 def test_extract_document_data_with_valid_case_id():
     """Test that extract_document_data accepts a valid case_id."""
     print("\n🧪 Testing Extract Document Data (with valid case_id)")
@@ -193,6 +166,7 @@ def main():
         test_error_topology_integrity()
         test_forensic_metadata_requirement()
         test_regional_lock_constant()
+        test_date_normalization()
         test_extract_document_data_with_valid_case_id()
         
         print("=" * 60)
