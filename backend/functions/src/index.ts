@@ -48,6 +48,9 @@ export const cisReportApi = onRequest({
   invoker: 'public',
   cors: true,
   maxInstances: 10,
+  minInstances: 1,
+  concurrency: 80,
+  memory: '512MiB',
 }, async (request, response) => {
   // Fixes the 405 Method Not Allowed error
   if (request.method !== 'POST' && request.method !== 'OPTIONS') {

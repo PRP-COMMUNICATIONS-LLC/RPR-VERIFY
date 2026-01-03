@@ -1,0 +1,13 @@
+{
+    "name": "rpr-verify-root",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "lab": "concurrently \"firebase emulators:start --only functions\" \"npm run start:frontend\"",
+        "start:frontend": "cd frontend && ng serve",
+        "start:backend": "cd backend/functions && npm run build:watch"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.0"
+    }
+}
