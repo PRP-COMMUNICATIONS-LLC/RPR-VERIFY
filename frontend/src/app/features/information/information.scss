@@ -45,7 +45,7 @@
   border-radius: 8px;
 
   &.pro-compliance {
-    border-color: rgba($accent-cyan, 0.3);
+    border-color: rgba(255, 255, 255, 0.1); // Sentinel Blackout: White border
   }
 
   .section-title {
@@ -61,7 +61,7 @@
   .layer-label {
     font-size: 14pt;
     font-weight: 700;
-    color: $accent-cyan;
+    color: $accent-cyan; // Sentinel Blackout: Now white via token variable
     margin: 0 0 8px 0;
   }
 
@@ -87,7 +87,7 @@
 
     &::before {
       content: "•";
-      color: $accent-cyan;
+      color: $accent-cyan; // Sentinel Blackout: Now white via token variable
       margin-right: 12px;
       font-size: 1.2em;
       line-height: 1;
@@ -108,7 +108,7 @@
     font-family: $font-family-brand;
     font-weight: 700;
     font-size: 11pt;
-    color: $accent-cyan;
+    color: $accent-cyan; // Sentinel Blackout: Now white via token variable
   }
 }
 
@@ -124,8 +124,8 @@
     border-radius: 50%;
 
     &.cyan {
-      background: $accent-cyan;
-      box-shadow: 0 0 10px $accent-cyan;
+      background: $accent-cyan; // Sentinel Blackout: Now white via token variable
+      box-shadow: 0 0 10px $accent-cyan; // Sentinel Blackout: White glow
       animation: pulse 2s infinite;
     }
   }
@@ -175,4 +175,24 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+// Pulse animation for Customer Details card when project ID is generated
+@keyframes borderPulse {
+  0% {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+  }
+}
+
+.customer-details-pulse {
+  animation: borderPulse 0.5s ease-out;
 }

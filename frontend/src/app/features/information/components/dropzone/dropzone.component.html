@@ -1,0 +1,43 @@
+<div class="dropzone-container"
+     (dragover)="onDragOver($event)"
+     (drop)="onDrop($event)"
+     (dragleave)="onDragLeave($event)"
+     (click)="fileInput.click()"
+     [class.drag-active]="isDragging()"
+     [class.processing]="isProcessing()"
+     [class.extracting]="isExtractingIdentity()">
+  <input type="file" 
+         #fileInput 
+         (change)="onFileSelected($event)" 
+         multiple 
+         accept="image/*,.pdf"
+         style="display: none">
+  
+  <div class="dropzone-content">
+    <h3 class="dropzone-label">KYC/AML DOCUMENT INGESTION</h3>
+    
+    @if (activeProjectId()) {
+      <p class="project-id">Project: <span class="project-id-value">{{ activeProjectId() }}</span></p>
+    } @else {
+      <p class="project-id-warning">No active project. Identity will be extracted from document.</p>
+    }
+    
+    <p class="dropzone-hint">DRAG DOCUMENTS HERE OR CLICK TO BROWSE</p>
+    
+    @if (isExtractingIdentity()) {
+      <div class="processing-indicator">
+        <span>Extracting identity...</span>
+      </div>
+    } @else if (isProcessing()) {
+      <div class="processing-indicator">
+        <span>Processing document...</span>
+      </div>
+    }
+    
+    @if (processingError()) {
+      <div class="error-message">
+        <span>{{ processingError() }}</span>
+      </div>
+    }
+  </div>
+</div>

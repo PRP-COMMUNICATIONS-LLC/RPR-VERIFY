@@ -54,7 +54,7 @@ sys.modules['firebase_admin']._apps = [] # Mocked state
 sys.modules['firebase_admin'].firestore = MockFirestore()
 
 # --- STEP 2: Imports ---
-from vision_engine import (
+from functions.vision_engine import (
     VisionAuditEngine,
     compute_risk_score,
     normalize_date,
@@ -144,7 +144,7 @@ def test_forensic_case_id_echo():
     mock_case_id = "RPR-AUDIT-2026-X99"
     
     # Simulate a successful response structure from vision_engine
-    with mock.patch('vision_engine.extract_document_data') as mock_extract:
+    with mock.patch('functions.vision_engine.extract_document_data') as mock_extract:
         mock_extract.return_value = {
             "forensic_metadata": {
                 "case_id": mock_case_id,
@@ -156,7 +156,7 @@ def test_forensic_case_id_echo():
         
         # Call the local reference which might not be patched if we patch vision_engine
         # So we use the return value of the patch context or call vision_engine.extract_document_data
-        import vision_engine
+        from functions import vision_engine
         response = vision_engine.extract_document_data("dummy_image", mock_case_id)
         assert response["forensic_metadata"]["case_id"] == mock_case_id
         assert response["forensic_metadata"]["region"] == "asia-southeast1"
@@ -167,7 +167,7 @@ def test_vertex_ai_safety_bypass():
     """Verify SafetySettings are set to BLOCK_NONE for financial data."""
     print("\n🧪 Testing Vertex AI Safety Bypass (Financial Data)")
     print("=" * 60)
-    from vision_engine import SAFETY_SETTINGS
+    from functions.vision_engine import SAFETY_SETTINGS
     
     # Iterate through settings to ensure all are BLOCK_NONE
     for setting in SAFETY_SETTINGS:

@@ -1,0 +1,137 @@
+.dropzone-container {
+  width: 100%;
+  min-height: 200px;
+  background: rgba(255, 255, 255, 0.01); // Sentinel Blackout: Near-transparent
+  border: 2px dashed rgba(255, 255, 255, 0.5); // Sentinel Blackout: White dashed border
+  border-radius: 4px;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.02); // Sentinel Blackout: White tint
+    border-color: rgba(255, 255, 255, 0.7); // Sentinel Blackout: Brighter white
+  }
+  
+  &.drag-active {
+    background: rgba(255, 255, 255, 0.05); // Sentinel Blackout: White tint
+    border-color: rgba(255, 255, 255, 0.8); // Sentinel Blackout: Bright white
+    border-style: solid;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); // Sentinel Blackout: White Glow
+  }
+  
+  &.processing {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  &.extracting {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: #FFFFFF; // Sentinel Blackout: White progress line
+      animation: scanProgress 2s linear;
+      z-index: 1;
+    }
+  }
+}
+
+@keyframes scanProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.dropzone-content {
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.dropzone-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.project-id {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  
+  .project-id-value {
+    color: #FFFFFF; // Sentinel Blackout: Pure White
+    font-weight: 700;
+    font-family: monospace;
+    letter-spacing: 0.1em;
+  }
+}
+
+.project-id-warning {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+}
+
+.dropzone-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.processing-indicator {
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05); // Sentinel Blackout: White tint
+  border: 1px solid rgba(255, 255, 255, 0.2); // Sentinel Blackout: White border
+  border-radius: 2px;
+  
+  span {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #FFFFFF; // Sentinel Blackout: Pure White
+    text-transform: uppercase;
+  }
+}
+
+.error-message {
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 2px;
+  
+  span {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #ef4444;
+    text-transform: uppercase;
+  }
+}

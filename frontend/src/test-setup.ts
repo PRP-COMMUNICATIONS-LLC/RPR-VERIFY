@@ -1,10 +1,9 @@
-import 'zone.js';
-import 'zone.js/testing'; // Necessary for Angular testing
-
+// ZONELESS ANGULAR 19: Zone.js removed - using signal-based change detection
+// Angular 19 zoneless mode works without Zone.js for testing
 import { TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
-// Initialize the Angular testing environment for Karma/Jasmine
+// Initialize the Angular testing environment for Karma/Jasmine (zoneless)
 TestBed.initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()

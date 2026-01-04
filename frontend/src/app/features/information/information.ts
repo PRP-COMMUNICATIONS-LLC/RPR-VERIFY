@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
-
-import { IdentityService } from '../../core/services/identity.service';
+import { Component, inject, signal, computed, OnInit, effect } from '@angular/core';
+import { ProjectService } from '../../core/services/project.service';
+import { IntakeFormComponent } from '../verification/components/intake-form/intake-form.component';
+import { DropzoneComponent } from './components/dropzone/dropzone.component';
 
 export interface LedgerData {
   bank: string;
@@ -14,10 +15,14 @@ export interface LedgerData {
 @Component({
   selector: 'app-information',
   standalone: true,
-  imports: [],
+  imports: [IntakeFormComponent, DropzoneComponent],
   template: `
-    <div style="width: 100%; background-color: transparent; min-height: 100vh;">
+    <!-- FORCE RENDER: Visual diagnostic indicator -->
+    <!-- If you see this comment in the DOM, the component is rendering -->
+    <!-- SENTINEL UNHIDE: Force visibility with explicit display and z-index -->
+    <div style="width: 100%; background-color: transparent; display: block !important; visibility: visible !important; position: relative; z-index: 1; min-height: 100vh; overflow-y: visible !important;">
 
+      <!-- FORCE RENDER: Diagnostic header - should be visible if component loads -->
       <div style="padding: 40px; display: flex; flex-direction: column;">
         <div style="margin-left: 84px; display: flex; flex-direction: column;">
           <div style="display: block !important; visibility: visible !important; font-family: 'Inter'; font-weight: 500; font-size: 11px; letter-spacing: 0.1em; color: #666666; text-transform: uppercase; margin-bottom: 8px;">
@@ -34,44 +39,26 @@ export interface LedgerData {
         </div>
       </div>
 
-      <div style="padding: 0 40px 40px; display: grid; grid-template-columns: 7fr 3fr; gap: 40px; align-items: stretch;">
+      <!-- Main Content Column: Single Column Stack -->
+      <div style="padding: 0 40px 40px; display: flex; flex-direction: column; gap: 40px;">
+        
+        <!-- Top: CUSTOMER DETAILS (Intake Form) - Component Quarantine -->
+        @if (projectService.activeProjectId() || true) {
+          <section [class.customer-details-pulse]="showCustomerDetailsPulse()" style="background: #0D0D0D; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 30px rgba(255, 255, 255, 0.08); border-radius: 4px; padding: 24px;">
+            <app-intake-form></app-intake-form>
+          </section>
+        }
 
-        <section (click)="simulateDepositIngestion()" (keydown.enter)="simulateDepositIngestion()" role="button" tabindex="0"
-          style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(0,224,255,0.2); border-radius: 4px; height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
-          <h2 style="font-size: 10px; letter-spacing: 0.3em; color: #00E0FF; margin: 0;">KYC/AML DROP ZONE</h2>
-          <p style="color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 12px; text-transform: uppercase;">Drag & Drop Deposit Slips to Link Funds</p>
-
-          @if (identity.currentUserId()) {
-            <div style="margin-top: 15px; padding: 6px 16px; background: rgba(0,224,255,0.1); border: 1px solid #00E0FF; border-radius: 2px;">
-              <span style="font-size: 10px; color: #fff; font-weight: 900; letter-spacing: 0.1em;">ID GENESIS: {{ identity.currentUserId() }}</span>
-            </div>
-          }
-        </section>
-
-        <aside style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 24px; height: 200px; display: flex; flex-direction: column;">
-          <h3 style="font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.3); margin-bottom: 24px; text-transform: uppercase;">Details</h3>
-          <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-            @for (item of ['ID Document', 'Address Proof', 'Bank Account Info', 'ABN/Registration', 'Deposit Slips']; track item) {
-              <div
-                style="display: flex; align-items: center; gap: 16px; font-size: 11px;">
-                <div [style.background]="(item === 'Deposit Slips' ? isDepositAdded() : identity.currentUserId()) ? '#00E0FF' : 'transparent'"
-                style="width: 10px; height: 10px; border: 1px solid #00E0FF; border-radius: 1px;"></div>
-                <span [style.opacity]="(item === 'Deposit Slips' ? isDepositAdded() : identity.currentUserId()) ? 1 : 0.3">{{ item }}</span>
-              </div>
-            }
-          </div>
-        </aside>
-      </div>
-
-      <div style="padding: 0 40px 40px;">
-        <section style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 30px rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; width: 100%;">
+        <!-- Middle: ACCOUNT SUMMARY -->
+        <div style="padding: 0;">
+        <section style="background: #0D0D0D; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 30px rgba(255, 255, 255, 0.08); border-radius: 4px; overflow: hidden; width: 100%;">
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03);">
             <h3 style="font-size: 11px; letter-spacing: 0.15em; color: #ffffff; text-transform: uppercase; margin: 0;">Account summary</h3>
             <div style="display: flex; gap: 24px; align-items: center;">
               <button (click)="triggerEscalation()" style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">ESCALATE CASE</button>
               <button style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">GENERATE REPORT</button>
-              <button (click)="resetLocal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); font-size: 9px; padding: 8px 16px; cursor: pointer; border-radius: 2px;">RESET</button>
+              <button (click)="resetLocal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); font-size: 9px; padding: 8px 16px; cursor: pointer; border-radius: 2px;">RESET</button>
             </div>
           </div>
 
@@ -90,7 +77,7 @@ export interface LedgerData {
             <tbody>
               @for (row of ledgerData(); track row) {
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); color: #ffffff;">
-                  <td style="padding: 20px; font-family: monospace; color: rgba(255,255,255,0.5);">{{ identity.currentUserId() }}</td>
+                  <td style="padding: 20px; font-family: monospace; color: rgba(255,255,255,0.5);">{{ activeProjectId() || 'NO_ID' }}</td>
                   <td style="padding: 20px;">{{ row.bank }}</td>
                   <td style="padding: 20px; color: rgba(255,255,255,0.4);">{{ row.accNo }}</td>
                   <td style="padding: 20px;"><span style="color: #FFFFFF; font-weight: 700;">{{ row.type }}</span></td>
@@ -109,17 +96,70 @@ export interface LedgerData {
             </tbody>
           </table>
         </section>
+        </div>
+
+        <!-- Bottom: KYC/AML DOCUMENT INGESTION (Dropzone) - Component Quarantine -->
+        <!-- FIX: Add padding-bottom to prevent content cutoff -->
+        @if (projectService.activeProjectId() || true) {
+          <section style="width: 100%; padding-bottom: 100px;">
+            <app-dropzone></app-dropzone>
+          </section>
+        }
       </div>
     </div>
     `
 })
-export class InformationComponent {
-  identity = inject(IdentityService);
+export class InformationComponent implements OnInit {
+  projectService = inject(ProjectService);
   isDepositAdded = signal(false);
   ledgerData = signal<LedgerData[]>([]);
+  showCustomerDetailsPulse = signal(false);
+  
+  // Cache the active project ID to avoid repeated computed evaluations in template
+  readonly activeProjectId = computed(() => {
+    const result = this.projectService.activeProjectId();
+    
+    // Trigger pulse animation when project ID changes from null to a value
+    if (result && !this.previousProjectId) {
+      this.triggerCustomerDetailsPulse();
+    }
+    this.previousProjectId = result;
+    
+    return result;
+  });
+  
+  private previousProjectId: string | null = null;
+  
+  constructor() {
+    // FORCE RENDER: Diagnostic logging to verify component initialization
+    console.log('[INFORMATION COMPONENT] Constructor executing - Component is initializing');
+    console.log('[INFORMATION COMPONENT] ProjectService injected:', !!this.projectService);
+    console.log('[INFORMATION COMPONENT] Active Project ID:', this.activeProjectId());
+    
+    // Watch for extracted identity and trigger border pulse when form is populated
+    effect(() => {
+      const identity = this.projectService.extractedIdentity();
+      if (identity && identity.firstName) {
+        // Trigger pulse when identity is extracted and form will be populated
+        // Use setTimeout to ensure form population completes first
+        setTimeout(() => {
+          this.triggerCustomerDetailsPulse();
+        }, 100);
+      }
+    });
+  }
+  
+  // FORCE RENDER: Lifecycle hook to verify component rendered
+  ngOnInit() {
+    console.log('[INFORMATION COMPONENT] ngOnInit - Component view should be rendered');
+    // Force a change detection cycle to ensure template renders
+    setTimeout(() => {
+      console.log('[INFORMATION COMPONENT] Post-render check - Template should be visible');
+    }, 0);
+  }
 
   simulateDepositIngestion() {
-    this.identity.generateGenesisId('SMITH');
+    // Legacy method - can be removed or updated to use ProjectService
     this.isDepositAdded.set(true);
     this.ledgerData.set([
       { bank: 'CBA AU', accNo: '**** 4290', type: 'OSKO', date: '2025-12-15', clearance: '2025-12-15', amount: '15,540.00' },
@@ -133,8 +173,20 @@ export class InformationComponent {
   }
 
   resetLocal() {
-    this.identity.resetIdentity();
+    this.projectService.resetProject();
     this.isDepositAdded.set(false);
     this.ledgerData.set([]);
+    this.previousProjectId = null;
+  }
+  
+  /**
+   * Trigger pulse animation on Customer Details card
+   */
+  private triggerCustomerDetailsPulse(): void {
+    this.showCustomerDetailsPulse.set(true);
+    // Remove pulse class after animation completes
+    setTimeout(() => {
+      this.showCustomerDetailsPulse.set(false);
+    }, 500);
   }
 }

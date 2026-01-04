@@ -1,0 +1,141 @@
+<div class="intake-form-container">
+  <form [formGroup]="intakeForm" (ngSubmit)="onSubmit()" class="intake-form">
+    
+    <!-- Header -->
+    <header class="form-header">
+      <h2 class="form-title">CUSTOMER DETAILS</h2>
+      <p class="form-subtitle">STATUS: SENTINEL_ACTIVE</p>
+    </header>
+
+    <!-- Section I: VERIFY ID -->
+    <div class="form-section">
+      <h3 class="section-title">I. VERIFY ID</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="lastName">Last Name *</label>
+          <input 
+            id="lastName"
+            type="text" 
+            formControlName="lastName"
+            [class.error]="hasError('lastName')"
+            placeholder="Enter last name"
+          />
+          @if (hasError('lastName')) {
+            <span class="error-message">{{ getErrorMessage('lastName') }}</span>
+          }
+        </div>
+        
+        <div class="form-field">
+          <label for="firstName">First Name</label>
+          <input 
+            id="firstName"
+            type="text" 
+            formControlName="firstName"
+            placeholder="Enter first name"
+          />
+        </div>
+        
+        <div class="form-field">
+          <label for="poiId">POI Document ID *</label>
+          <input 
+            id="poiId"
+            type="text" 
+            formControlName="poiId"
+            [class.error]="hasError('poiId')"
+            placeholder="e.g., AUS-DL-99210"
+          />
+          @if (hasError('poiId')) {
+            <span class="error-message">{{ getErrorMessage('poiId') }}</span>
+          }
+        </div>
+        
+        <div class="form-field">
+          <label for="authority">Issuing Authority *</label>
+          <input 
+            id="authority"
+            type="text" 
+            formControlName="authority"
+            [class.error]="hasError('authority')"
+            placeholder="e.g., NSW Transport"
+          />
+          @if (hasError('authority')) {
+            <span class="error-message">{{ getErrorMessage('authority') }}</span>
+          }
+        </div>
+        
+        <div class="form-field">
+          <label for="expiryDate">Expiry Date</label>
+          <input 
+            id="expiryDate"
+            type="date" 
+            formControlName="expiryDate"
+            placeholder="YYYY-MM-DD"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section III: VERIFY BANKING -->
+    <div class="form-section">
+      <h3 class="section-title">III. VERIFY BANKING</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="bsb">BSB *</label>
+          <input 
+            id="bsb"
+            type="text" 
+            formControlName="bsb"
+            [class.error]="hasError('bsb')"
+            placeholder="XXX-XXX"
+            maxlength="7"
+          />
+          @if (hasError('bsb')) {
+            <span class="error-message">{{ getErrorMessage('bsb') }}</span>
+          }
+        </div>
+        
+        <div class="form-field">
+          <label for="accountNumber">Account Number *</label>
+          <input 
+            id="accountNumber"
+            type="text" 
+            formControlName="accountNumber"
+            [class.error]="hasError('accountNumber')"
+            placeholder="Enter account number"
+          />
+          @if (hasError('accountNumber')) {
+            <span class="error-message">{{ getErrorMessage('accountNumber') }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Message: Project ID Display -->
+    @if (activeProjectId()) {
+      <div class="success-badge">
+        <span class="success-label">Project Initialized:</span>
+        <span class="success-id">{{ activeProjectId() }}</span>
+      </div>
+    }
+
+    <!-- Error Message -->
+    @if (submitError()) {
+      <div class="error-badge">
+        <span>{{ submitError() }}</span>
+      </div>
+    }
+
+    <!-- Submit Button -->
+    <button 
+      type="submit" 
+      [disabled]="isSubmitting() || intakeForm.invalid"
+      class="submit-button"
+    >
+      @if (isSubmitting()) {
+        <span>Generating Project ID...</span>
+      } @else {
+        <span>SUBMIT</span>
+      }
+    </button>
+  </form>
+</div>

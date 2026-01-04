@@ -1,0 +1,26 @@
+/* SENTINEL BRAND PROTECTION - Isolated from global blackout */
+/* These rules ensure the logo icon and VERIFY wordmark remain cyan */
+
+.nav-brand {
+  /* High specificity to override any global color rules */
+  
+  .sentinel-logo-icon {
+    fill: #00E0FF !important;
+    
+    path {
+      fill: #00E0FF !important;
+    }
+  }
+  
+  .brand-text-verify {
+    color: #00E0FF !important;
+    text-shadow: 0 0 15px rgba(0, 224, 255, 0.4) !important;
+  }
+}
+
+/* Ensure brand elements are not affected by global blackout */
+header .nav-brand .sentinel-logo-icon,
+header .nav-brand .brand-text-verify {
+  color: #00E0FF !important;
+  fill: #00E0FF !important;
+}

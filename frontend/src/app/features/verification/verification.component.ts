@@ -1,12 +1,14 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
-import { IdentityService } from '../../core/services/identity.service';
-import { VerificationService, ForensicMetadata } from '../../core/services/verification.service';
+import { ProjectService } from '../../core/services/project.service';
+import { VerificationService, ForensicMetadata, ForensicResponse } from '../../core/services/verification.service';
+import { SentinelBriefComponent } from './sentinel-brief.component';
+import { EscalationService } from '../../core/services/escalation.service';
 
 @Component({
   selector: 'app-verification',
   standalone: true,
-  imports: [],
+  imports: [SentinelBriefComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div style="width: 100%; background-color: transparent; min-height: 100vh;">
@@ -38,13 +40,13 @@ import { VerificationService, ForensicMetadata } from '../../core/services/verif
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
             <h3 style="font-size: 11px; letter-spacing: 0.15em; color: #FFFFFF; text-transform: uppercase; margin: 0;">
-              CIS Document #{{ identity.currentUserId() || 'PENDING' }}
+              CIS Document #{{ projectService.activeProjectId() || 'PENDING' }}
             </h3>
 
             <div style="display: flex; gap: 16px;">
               <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none">
               <button (click)="fileInput.click()"
-                style="background: #00E0FF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
+                style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                 Process Document
               </button>
               <button (click)="triggerVerificationReport()"
@@ -169,8 +171,8 @@ import { VerificationService, ForensicMetadata } from '../../core/services/verif
               </div>
               
               @if (forensicMetadata(); as meta) {
-                <div style="margin-top: 32px; padding: 20px; background: rgba(0, 224, 255, 0.05); border: 1px solid rgba(0, 224, 255, 0.2); border-radius: 4px; text-align: left; width: 100%; max-width: 400px;">
-                  <h5 style="color: #00E0FF; font-size: 10px; margin-top: 0; margin-bottom: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Forensic Metadata Echo</h5>
+                <div style="margin-top: 32px; padding: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; text-align: left; width: 100%; max-width: 400px;">
+                  <h5 style="color: #FFFFFF; font-size: 10px; margin-top: 0; margin-bottom: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Forensic Metadata Echo</h5>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 9px; color: rgba(255,255,255,0.8); font-family: 'JetBrains Mono', monospace;">
                     <div>REGION: <span style="color: #fff">{{ meta.region }}</span></div>
                     <div>MODEL: <span style="color: #fff">{{ meta.model_version }}</span></div>
@@ -197,17 +199,28 @@ import { VerificationService, ForensicMetadata } from '../../core/services/verif
     </style>
     </section>
     </div>
+
+    <!-- Sentinel Briefing Section -->
+    <div style="padding: 0 40px 40px;">
+      <app-sentinel-brief
+        [riskLevel]="sentinelBriefData().riskLevel"
+        [forensicBrief]="sentinelBriefData().forensicBrief"
+        [activeTriggers]="sentinelBriefData().activeTriggers">
+      </app-sentinel-brief>
+    </div>
     </div>
     `
 })
 export class VerificationComponent implements OnInit {
-  identity = inject(IdentityService);
+  projectService = inject(ProjectService);
   verificationService = inject(VerificationService);
+  private escalation = inject(EscalationService); // Activate escalation logic
 
   // Sovereign State Machine for Pulse Scanner
   readonly scanStep = signal<number>(0);
   readonly status = signal<'SCANNING' | 'COMPLETED'>('SCANNING');
   readonly forensicMetadata = signal<ForensicMetadata | null>(null);
+  readonly forensicData = signal<ForensicResponse | null>(null); // Full response data for UI display
 
   // Derived metadata for display
   readonly currentPhaseLabel = computed(() => {
@@ -215,14 +228,44 @@ export class VerificationComponent implements OnInit {
     return labels[this.scanStep()] || 'PROCESSING';
   });
 
-  // Pulse Scanner Color: Reactive to escalation state (Cyan ↔ Red)
+  // Pulse Scanner Color: Reactive to backend risk status (GREEN/AMBER/RED)
   readonly pulseColor = computed(() => {
-    return this.identity.isEscalated() ? '#FF0000' : '#00E0FF';
+    return this.verificationService.systemColor(); // Returns hex based on GREEN/AMBER/RED
   });
 
-  // Pulse Scanner Shadow Color: Reactive to escalation state
+  // Pulse Scanner Shadow Color: Synchronized with system risk status
   readonly pulseShadowColor = computed(() => {
-    return this.identity.isEscalated() ? 'rgba(255,0,0,0.5)' : 'rgba(0,224,255,0.5)';
+    const status = this.verificationService.systemStatus();
+    if (status === 'RED') return 'rgba(255,0,0,0.5)';
+    if (status === 'AMBER') return 'rgba(255,191,0,0.5)';
+    return 'rgba(255, 255, 255, 0.3)'; // Sentinel Blackout: White glow for proactive state
+  });
+
+  // Sentinel Brief Data: Computed from forensic response
+  readonly sentinelBriefData = computed(() => {
+    const data = this.forensicData();
+    const status = this.verificationService.systemStatus();
+    
+    // Map NORMAL to GREEN for Sentinel brief component
+    const riskLevel: 'GREEN' | 'AMBER' | 'RED' = 
+      status === 'NORMAL' ? 'GREEN' : 
+      status === 'AMBER' ? 'AMBER' : 'RED';
+    
+    // Generate forensic brief from available metadata
+    let forensicBrief = 'No forensic analysis available.';
+    if (data) {
+      const meta = data.forensic_metadata;
+      forensicBrief = `Forensic analysis completed for case ${data.case_id || 'UNKNOWN'}. ` +
+        `Risk status: ${data.risk_status || 'UNKNOWN'}. ` +
+        `Processed by ${meta?.extracted_by || 'Unknown'} in ${meta?.region || 'Unknown'} region ` +
+        `using model ${meta?.model_version || 'Unknown'} at ${meta?.timestamp || 'Unknown'}.`;
+    }
+    
+    return {
+      riskLevel,
+      forensicBrief,
+      activeTriggers: [] // Placeholder - will be populated when backend provides sentinel_triggers
+    };
   });
 
   ledgerData = [
@@ -258,7 +301,7 @@ export class VerificationComponent implements OnInit {
     // Comprehensive Verification Report: CIS + Transaction Ledger + Scanned Deposit Slips + Bank Email Instructions
     console.log('[VERIFICATION REPORT] Generating comprehensive forensic package...');
     console.log('[VERIFICATION REPORT] Including:', {
-      cisDocument: this.identity.currentUserId(),
+      cisDocument: this.projectService.activeProjectId() || '',
       transactionLedger: this.ledgerData,
       scannedDeposits: 'Deposit slip images',
       bankInstructions: 'Bank email analysis from Sentinel Protocol'
@@ -275,21 +318,31 @@ export class VerificationComponent implements OnInit {
   }
 
   processDocument(file: File) {
-    const caseId = this.identity.currentId();
+    const caseId = this.projectService.currentId();
     this.status.set('SCANNING');
     this.scanStep.set(1);
     this.forensicMetadata.set(null);
+    this.forensicData.set(null);
 
     this.verificationService.processDocument(file, caseId).subscribe({
       next: (result) => {
         console.log('[FORENSIC ENGINE] Processing successful:', result);
+
+        // Sync the signal-based system color
+        this.verificationService.updateSystemStatus(result.risk_status);
+
+        // Store full forensic response data for UI display
+        this.forensicData.set(result);
+        
+        // Store forensic metadata for dashboard traceability
         this.forensicMetadata.set(result.forensic_metadata);
         this.status.set('COMPLETED');
         this.scanStep.set(4);
       },
       error: (err) => {
         console.error('[FORENSIC ENGINE] Processing failed:', err);
-        // Display error state if needed
+        this.verificationService.systemStatus.set('RED');
+        this.forensicData.set(null);
         this.status.set('COMPLETED');
         this.scanStep.set(4);
       }
@@ -298,7 +351,7 @@ export class VerificationComponent implements OnInit {
 
   generateCIS() {
     // Standard CIS-only report generation
-    console.log('[CIS REPORT] Generating Customer Information Sheet for:', this.identity.currentUserId());
+    console.log('[CIS REPORT] Generating Customer Information Sheet for:', this.projectService.activeProjectId());
     alert('CIS REPORT GENERATED: Customer Information Sheet PDF');
   }
 }

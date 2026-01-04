@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, fromEvent, switchMap, map, retry, timer, catchError, throwError, MonoTypeOperatorFunction } from 'rxjs';
 
 export interface SentinelTrigger {
   id: string;
@@ -11,6 +11,7 @@ export interface SentinelTrigger {
 }
 
 export interface ForensicMetadata {
+  case_id: string; // ADDED: Matches backend injection for Step 3 traceability
   extracted_by: string;
   region: string;
   timestamp: string;
@@ -21,6 +22,7 @@ export interface ForensicMetadata {
 export interface ForensicResponse {
   status: string;
   case_id: string;
+  risk_status: string;
   forensic_metadata: ForensicMetadata;
   data: Record<string, unknown>; // Data structure depends on document type
 }
@@ -30,8 +32,120 @@ export class VerificationService {
   private http = inject(HttpClient);
   private firestore = inject(Firestore);
 
-  // Endpoint locked to Singapore Node per Sovereign Constitution v12.4
-  private readonly API_URL = 'https://asia-southeast1-rpr-verify-b.cloudfunctions.net/cisReportApi';
+  // Signal to track system health and risk status
+  public systemStatus = signal<'NORMAL' | 'AMBER' | 'RED'>('NORMAL');
+  
+  // Signal to track manual escalation state (for ResolutionComponent)
+  private _isEscalated = signal(false);
+  public readonly isEscalated = this._isEscalated.asReadonly();
+
+  /**
+   * Maps backend risk status to UI-bound signals
+   * @param backendRisk The risk_status returned from the forensic engine
+   */
+  updateSystemStatus(backendRisk: string) {
+    if (backendRisk === 'GREEN') this.systemStatus.set('NORMAL');
+    else if (backendRisk === 'AMBER') this.systemStatus.set('AMBER');
+    else if (backendRisk === 'RED') this.systemStatus.set('RED');
+  }
+  
+  /**
+   * Trigger manual escalation (Red-Alert activation)
+   * Used by ResolutionComponent for dispute escalation
+   */
+  triggerAlert(): void {
+    console.warn("🚨 Sovereign Red-Alert Activated");
+    this._isEscalated.set(true);
+    this.systemStatus.set('RED');
+  }
+  
+  /**
+   * Reset manual escalation (return to proactive state)
+   * Used by ResolutionComponent to reset alert state
+   */
+  resetAlert(): void {
+    console.log("✅ Sovereign Red-Alert Reset: Returning to Proactive state");
+    this._isEscalated.set(false);
+    // Reset to NORMAL unless backend indicates otherwise
+    if (this.systemStatus() === 'RED') {
+      this.systemStatus.set('NORMAL');
+    }
+  }
+
+  // Returns hex codes based on Sovereign Constitution risk markers
+  public systemColor() {
+    // If manually escalated, always return red
+    if (this._isEscalated()) return '#FF0000';
+    
+    const status = this.systemStatus();
+    if (status === 'RED') return '#FF0000';   // High Risk / Critical Failure
+    if (status === 'AMBER') return '#FFBF00'; // Discrepancy / Warning
+    return '#FFFFFF';                         // Sentinel Blackout: White (Proactive state)
+  }
+
+  // Live Singapore Production Node - Cloud Run Backend
+  private readonly API_URL = 'https://rpr-verify-backend-794095666194.asia-southeast1.run.app';
+  private readonly IDENTITY_EXTRACTION_URL = 'https://rpr-verify-backend-794095666194.asia-southeast1.run.app/extractIdentity';
+
+  /**
+   * Creates a retry operator with exponential backoff for handling Cloud Run cold starts
+   * @param maxRetries Maximum number of retry attempts (default: 3)
+   * @returns RxJS operator for retry logic with proper type safety
+   */
+  private createRetryOperator<T>(maxRetries = 3): MonoTypeOperatorFunction<T> {
+    return (source: Observable<T>) => source.pipe(
+      retry({
+        count: maxRetries,
+        delay: (error: any, retryCount: number) => {
+          // Don't retry on 4xx errors (client errors)
+          if (error?.status >= 400 && error?.status < 500) {
+            return throwError(() => error);
+          }
+          // Exponential backoff: 1s, 2s, 3s
+          const delayMs = retryCount * 1000;
+          console.log(`[VERIFICATION SERVICE] Retry ${retryCount}/${maxRetries} after ${delayMs}ms`);
+          return timer(delayMs);
+        }
+      })
+    );
+  }
+
+  /**
+   * Extracts identity (firstName, lastName, and document ID) from a document for zero-touch project initialization
+   * Refactored to use RxJS streams for clean retry logic
+   * @param file The document image (File object from DOM)
+   * @returns Observable with extracted firstName, lastName, and idNumber
+   */
+  extractIdentity(file: File): Observable<{ firstName: string; lastName: string; idNumber: string }> {
+    const reader = new FileReader();
+    
+    // Create observable from FileReader load event
+    const fileRead$ = fromEvent(reader, 'load').pipe(
+      map(() => {
+        const result = reader.result as string;
+        return result.split(',')[1]; // Extract base64 string
+      })
+    );
+    
+    // Start reading the file
+    reader.readAsDataURL(file);
+    
+    // Chain: File Read -> HTTP Post -> Retry -> Error Handling
+    type IdentityData = { firstName: string; lastName: string; idNumber: string };
+    return fileRead$.pipe(
+      switchMap(base64String => 
+        this.http.post<IdentityData>(
+          this.IDENTITY_EXTRACTION_URL,
+          { image: base64String }
+        )
+      ),
+      this.createRetryOperator<IdentityData>(3), // Fixed Type Safety - Exponential backoff handles the 10s cold start
+      catchError((error) => {
+        console.error('[VERIFICATION SERVICE] Identity extraction failed after retries:', error);
+        return throwError(() => new Error('Failed to extract identity. The service may be starting up. Please try again.'));
+      })
+    );
+  }
 
   getForensicMetadata(caseId: string): Observable<ForensicMetadata> {
     return new Observable(subscriber => {
@@ -52,6 +166,12 @@ export class VerificationService {
     formData.append('document_image', file);
     formData.append('case_id', caseId);
 
-    return this.http.post<ForensicResponse>(this.API_URL, formData);
+    return this.http.post<ForensicResponse>(this.API_URL, formData).pipe(
+      this.createRetryOperator<ForensicResponse>(3), // Fixed Type Safety
+      catchError((error) => {
+        console.error('[VERIFICATION SERVICE] Document processing failed after retries:', error);
+        return throwError(() => new Error('Document processing failed. The service may be starting up. Please try again.'));
+      })
+    );
   }
 }

@@ -1,0 +1,143 @@
+=== RPR-VERIFY WORKSPACE AUDIT REPORT ===
+Generated: 2025-01-XX
+Workspace: /Users/puvansivanasan/PERPLEXITY-NEW/JOBS/2025-003-VERIFY/RPR-VERIFY
+
+=== KEEP LIST ===
+[Core app files/folders - DO NOT DELETE]
+
+Core Application Directories:
+- ./frontend/ (Angular app)
+- ./backend/ (Flask/Python backend)
+- ./scripts/ (Deployment and utility scripts)
+- ./tests/ (Test files)
+- ./docs/ (Documentation)
+- ./operations/ (Operations scripts)
+- ./reports/ (Report templates and assets)
+
+Configuration Files:
+- ./.gitignore
+- ./README.md
+- ./package.json
+- ./package-lock.json
+- ./angular.json (in frontend/)
+- ./firebase.json
+- ./.firebaserc
+- ./eslint.config.js
+- ./firestore.indexes.json
+- ./firestore.rules
+- ./storage.rules
+- ./cloudbuild.yaml
+- ./DYNAMO-IDENTITY-BLUEPRINT.json
+
+CI/CD:
+- ./.github/ (GitHub workflows)
+- ./.husky/ (Git hooks)
+
+IDE Configurations:
+- ./.cursor/
+- ./.cursorrules
+- ./.iderules
+- ./.idx/
+- ./.npmrc
+- ./RPR-VERIFY.code-workspace
+- ./.vscode/
+
+Documentation:
+- ./walkthrough.md (Forensic audit trail)
+- ./COPILOT_REPO_GUARDRAILS.md
+- ./DEPLOYMENT_CHECKLIST.md
+- ./SOVEREIGN_AUDIT_REPORT.md
+- ./TEST-EXECUTION-REPORT.md
+
+=== REVIEW LIST ===
+[Files/folders candidates for deletion with full paths and reason]
+
+1. ./vercel.json
+   Reason: Minimal Vercel config (only "framework": "angular"). Project uses Firebase Hosting, not Vercel. However, scripts/prepare-vercel-output.js references it. May be legacy from previous deployment setup.
+   Status: REVIEW - Check if prepare-vercel-output.js is still used in deployment workflows
+
+2. ./trigger_tr01.js
+   Reason: Health check script for backend API. Not referenced in frontend/, backend/, scripts/, or package.json scripts.
+   Status: DELETE - Appears to be standalone utility script, not integrated into app
+
+3. ./verify_final.js
+   Reason: Simple console log script with status message. Not referenced anywhere.
+   Status: DELETE - Legacy verification script
+
+4. ./wipe-storage.js
+   Reason: Firebase admin script for wiping Firestore storage. Not referenced in frontend/, backend/, scripts/, or package.json scripts.
+   Status: DELETE - Standalone utility script
+
+5. ./verify-audit.cjs
+   Reason: Firestore audit script. Not referenced in frontend/, backend/, scripts/, or package.json scripts.
+   Status: DELETE - Standalone utility script
+
+6. ./deploy_singapore.sh
+   Reason: Deployment script for Singapore node. However, scripts/ folder contains multiple deployment scripts (deploy-backend-with-cors.sh, deploy-cloud-run.sh, etc.). Need to verify if this root-level script is still used or if scripts/ versions supersede it.
+   Status: REVIEW - Check if referenced in .github/workflows/ or DEPLOYMENT_CHECKLIST.md
+
+7. ./enhanced-frontend-setup.sh
+   Reason: Frontend setup script with WRONG PATH (references CLIENT-2025-003-VERIFY instead of 2025-003-VERIFY). Appears to be legacy from different project structure.
+   Status: DELETE - Contains incorrect paths, likely obsolete
+
+8. ./audit_and_align.sh
+   Reason: Audit script that scans for shadow files. References cleanup_shadows.sh. Appears to be utility script for workspace maintenance.
+   Status: REVIEW - Utility script, but may be useful for maintenance. Check if still needed.
+
+9. ./cleanup_shadows.sh
+   Reason: Cleanup script for removing shadow files. Referenced by audit_and_align.sh.
+   Status: REVIEW - Utility script, but may be useful for maintenance. Check if still needed.
+
+10. ./forensic_audit_test.sh
+    Reason: Test script for forensic audit functionality. Not referenced in frontend/, backend/, scripts/, or package.json scripts.
+    Status: REVIEW - May be useful for manual testing, but not integrated into test suite
+
+11. ./safe_git_clean.sh
+    Reason: Git utility script for safe cleanup. Not referenced in frontend/, backend/, scripts/, or package.json scripts.
+    Status: REVIEW - Utility script, may be useful for maintenance
+
+12. ./node_modules/ (root level)
+    Reason: Node modules at root level. Should be gitignored (and is in .gitignore). Root package.json only has devDependencies (concurrently). This may be legitimate for root-level scripts, but typically node_modules should be in frontend/ or backend/functions/.
+    Status: REVIEW - Check if root package.json scripts actually need this
+
+13. ./.venv/
+    Reason: Python virtual environment. Should be gitignored (and is in .gitignore). Build artifact.
+    Status: DELETE - Build artifact, should not be in repo
+
+14. ./venv/
+    Reason: Another Python virtual environment. Should be gitignored (and is in .gitignore). Build artifact.
+    Status: DELETE - Build artifact, should not be in repo
+
+15. ./.pytest_cache/
+    Reason: Python pytest cache. Should be gitignored. Build artifact.
+    Status: DELETE - Build artifact, should not be in repo
+
+16. ./service-account.json
+    Reason: Service account key file. Should be gitignored (and is in .gitignore). Security-sensitive file.
+    Status: DELETE - Security-sensitive file, should not be in repo (already gitignored, but should be removed from filesystem if committed)
+
+=== SUMMARY ===
+Total items in KEEP list: 30+ (core app structure)
+Total items in REVIEW list: 16
+
+Items recommended for immediate deletion (confirmed artifacts/legacy):
+- trigger_tr01.js
+- verify_final.js
+- wipe-storage.js
+- verify-audit.cjs
+- enhanced-frontend-setup.sh (wrong paths)
+- .venv/
+- venv/
+- .pytest_cache/
+- service-account.json (if committed)
+
+Items requiring further review:
+- vercel.json (check if prepare-vercel-output.js is used)
+- deploy_singapore.sh (check if superseded by scripts/ versions)
+- audit_and_align.sh, cleanup_shadows.sh, forensic_audit_test.sh, safe_git_clean.sh (utility scripts - may be useful)
+- node_modules/ (root level - check if needed for root package.json)
+
+=== NEXT STEPS ===
+1. Review items marked "REVIEW" to determine if they should be kept or deleted
+2. Proceed with PART 2: Targeted Cleanup for confirmed deletions
+3. Wait for user confirmation before committing changes

@@ -57,6 +57,61 @@ model = GenerativeModel("gemini-1.5-flash-001")
     wait=wait_exponential(multiplier=1, min=1, max=8),
     reraise=True
 )
+def extract_identity(image_content):
+    """
+    Lightweight identity extraction for zero-touch project initialization.
+    Extracts only the full name and document ID from a forensic document.
+    
+    Args:
+        image_content: Base64-encoded image or image bytes
+        
+    Returns:
+        dict: { name: string, id: string }
+        
+    Raises:
+        RateLimitError: If Vertex AI quota exceeded (429 response)
+        DocumentParseError: If OCR extraction fails
+    """
+    prompt = """
+Extract only the FULL NAME and DOCUMENT ID from this forensic document. Return as JSON: { "name": "string", "id": "string" }.
+Focus on:
+- Full legal name (first name and last name)
+- Document identification number (ID number, passport number, etc.)
+Return JSON ONLY, no additional text.
+"""
+    
+    try:
+        response = model.generate_content(
+            [image_content, prompt],
+            safety_settings=vertex_safety_settings
+        )
+        
+        # Parse JSON response
+        response_text = response.text.replace("```json", "").replace("```", "").strip()
+        identity_result = json.loads(response_text)
+        
+        # Validate required fields
+        if not identity_result.get('name') or not identity_result.get('id'):
+            raise DocumentParseError("Failed to extract name or ID from document")
+        
+        return {
+            "name": identity_result.get('name', '').strip(),
+            "id": identity_result.get('id', '').strip()
+        }
+    
+    except json.JSONDecodeError as e:
+        raise DocumentParseError(f"Failed to parse identity extraction response: {str(e)}")
+    except Exception as e:
+        if "429" in str(e):
+            raise RateLimitError()
+        raise DocumentParseError(str(e))
+
+
+@retry(
+    stop=stop_after_attempt(4),
+    wait=wait_exponential(multiplier=1, min=1, max=8),
+    reraise=True
+)
 def extract_document_data(image_content, case_id):
     """
     Core extraction logic with exponential backoff and forensic metadata tagging.

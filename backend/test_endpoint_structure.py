@@ -39,7 +39,7 @@ def test_endpoint_structure():
             all_passed = False
     
     # Test 2: Check vision_engine.py structure
-    vision_py = Path(__file__).parent / "vision_engine.py"
+    vision_py = Path(__file__).parent / "functions" / "vision_engine.py"
     if vision_py.exists():
         vision_content = vision_py.read_text()
         vision_checks = [

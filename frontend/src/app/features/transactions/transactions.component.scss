@@ -91,7 +91,7 @@
 
     .uid {
       font-family: $font-family-data;
-      color: $accent-cyan;
+      color: $accent-cyan; // Sentinel Blackout: Now white via token variable
     }
 
     .data-value {

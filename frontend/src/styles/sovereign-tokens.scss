@@ -3,10 +3,13 @@ $bg-layout: #020712; // Global Background (Midnight - NOT BLACK)
 $bg-pure-black: #000000;
 $bg-surface: $bg-pure-black; // CARDS ARE BLACK OR TRANSPARENT
 
-$accent-cyan: #00E0FF; // Proactive Compliance
+/* SENTINEL BRAND IDENTITY - Protected from blackout */
+$brand-cyan: #00E0FF; // SENTINEL Brand Anchor - Logo & VERIFY Wordmark ONLY
+
+$accent-cyan: #FFFFFF; // Sentinel Blackout: Pure White (formerly Proactive Cyan)
 $accent-blue: #0099FF; // Escalation Dominance
 $accent-primary: $accent-cyan;
-$alert-primary: #FF0000;
+$alert-primary: #FF0000; // Preserve Red Escalation
 
 $text-white: #FFFFFF;
 $text-primary: $text-white;

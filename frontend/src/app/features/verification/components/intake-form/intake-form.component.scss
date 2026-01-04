@@ -1,0 +1,175 @@
+.intake-form-container {
+  width: 100%;
+  padding: 0;
+}
+
+.intake-form {
+  background: #111111; // Sentinel Blackout: Near-Black (darker than #0D0D0D for depth)
+  color: #ffffff;
+  border-radius: 0.75rem; // rounded-xl
+  padding: 1.5rem; // p-6
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; // space-y-8
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.08); // Sentinel Blackout: White Glow
+}
+
+.form-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); // Sentinel Blackout: White border
+  padding-bottom: 1rem; // pb-4
+}
+
+.form-title {
+  font-size: 1.5rem; // text-2xl
+  font-weight: 700; // font-bold
+  letter-spacing: 0.1em; // tracking-widest
+  color: #FFFFFF; // Sentinel Blackout: Pure White
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.form-subtitle {
+  font-size: 0.75rem; // text-xs
+  font-family: monospace; // font-mono
+  color: rgba(255, 255, 255, 0.6); // Sentinel Blackout: White with reduced opacity
+  margin: 0.5rem 0 0 0;
+}
+
+.form-section {
+  padding: 1rem; // p-4
+  border: 1px solid rgba(255, 255, 255, 0.08); // Sentinel Blackout: Subtle white border
+  border-radius: 0.5rem; // rounded
+  background: rgba(0, 0, 0, 0.3); // Sentinel Blackout: Dark transparent overlay
+}
+
+.section-title {
+  font-size: 0.875rem; // text-sm
+  font-weight: 700; // font-bold
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7); // Sentinel Blackout: White with reduced opacity
+  margin: 0 0 1rem 0; // mb-4
+  letter-spacing: 0.05em;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; // gap-4
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  font-size: 0.75rem; // text-xs
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.form-field input {
+  background: #000000; // Sentinel Blackout: Pure Black
+  border: 1px solid #333333; // Sentinel Blackout: Dark Grey
+  padding: 0.5rem; // p-2
+  color: #ffffff;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: #FFFFFF; // Sentinel Blackout: Pure White
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); // White Glow
+  }
+  
+  &.error {
+    border-color: #ef4444; // red-500 (Preserve Red)
+  }
+  
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.error-message {
+  font-size: 0.75rem;
+  color: #ef4444; // red-500
+  margin-top: 0.25rem;
+}
+
+.success-badge {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05); // Sentinel Blackout: White tint
+  border: 1px solid rgba(255, 255, 255, 0.2); // Sentinel Blackout: White border
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.success-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.success-id {
+  color: #FFFFFF; // Sentinel Blackout: Pure White
+  font-weight: 900;
+  font-family: monospace;
+  letter-spacing: 0.1em;
+}
+
+.error-badge {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 0.25rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.75rem 1rem; // py-3
+  background: #FFFFFF; // Sentinel Blackout: Pure White
+  border: none;
+  color: #000000; // Sentinel Blackout: Black text on white
+  font-weight: 700; // font-bold
+  text-transform: uppercase;
+  letter-spacing: 0.1em; // tracking-widest
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+  
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.9); // Sentinel Blackout: Slightly dimmed white
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  // Ensure white glow persists on mobile
+  .intake-form {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08); // Sentinel Blackout: White Glow
+  }
+}

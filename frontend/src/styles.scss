@@ -11,7 +11,7 @@
    ========================================================================== */
 :root {
   /* Dynamic Pillar 3 Variables */
-  --system-primary: #00E0FF; /* Proactive Cyan */
+  --system-primary: #FFFFFF; /* Sentinel Blackout: Pure White */
   --system-midnight: #020712;
   --system-ink: #050815;
   --forensic-white: #FFFFFF;
@@ -21,14 +21,20 @@
   --hero-offset: 84px;
 }
 
+html {
+  background: #000000;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(180deg, var(--system-midnight) 0%, var(--system-ink) 100%);
+  background: #000000; /* Sentinel Blackout: Pure Black */
   color: var(--forensic-white);
-  height: 100vh;
-  overflow: hidden;
+  /* SENTINEL UNHIDE: Remove height/overflow restrictions to allow scrolling */
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Pillar 1: Monolithic Structural Physics */
@@ -56,10 +62,17 @@ body {
   -webkit-backdrop-filter: blur(20px) !important;
 }
 
-/* Active Navigation States - Brand Playbook Colors */
+/* Sentinel Card Class - White Glow Halo */
+.sentinel-card {
+  background: #0D0D0D !important; /* Near-Black depth */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.08); /* White Glow Halo */
+}
+
+/* Active Navigation States - Sentinel Blackout */
 .active-info, .active-verify {
-  color: #00E0FF !important;
-  border-bottom: 2px solid #00E0FF !important;
+  color: #FFFFFF !important; /* Sentinel Blackout: Pure White */
+  border-bottom: 2px solid #FFFFFF !important;
 }
 
 .active-trans {
@@ -68,6 +81,12 @@ body {
 }
 
 .active-reso {
-  color: #FF0000 !important;
+  color: #FF0000 !important; /* Preserve Red Escalation */
   border-bottom: 2px solid #FF0000 !important;
+}
+
+/* Form Elements - White Accent Color */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: #FFFFFF !important; /* Sentinel Blackout: Pure White */
 }

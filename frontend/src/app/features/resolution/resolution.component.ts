@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 
-import { IdentityService } from '../../core/services/identity.service';
+import { ProjectService } from '../../core/services/project.service';
+import { VerificationService } from '../../core/services/verification.service';
 
 @Component({
   selector: 'app-resolution',
@@ -38,7 +39,7 @@ import { IdentityService } from '../../core/services/identity.service';
 
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
               <h3 style="font-size: 11px; letter-spacing: 0.15em; color: #FFFFFF; text-transform: uppercase; margin: 0;">
-                DISPUTE CASE #{{ identity.currentUserId() || 'PENDING' }}
+                DISPUTE CASE #{{ projectService.activeProjectId() || 'PENDING' }}
               </h3>
 
               <div style="display: flex; gap: 16px;">
@@ -108,7 +109,7 @@ import { IdentityService } from '../../core/services/identity.service';
               <button
                 id="reset-alert-button"
                 (click)="resetEscalation()"
-                style="background: #00E0FF; border: none; color: #000000; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(0,224,255,0.5); transition: all 0.3s ease;">
+                style="background: #FFFFFF; border: none; color: #000000; font-size: 14px; padding: 16px 32px; cursor: pointer; border-radius: 4px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; box-shadow: 0 0 20px rgba(255,255,255,0.3); transition: all 0.3s ease;">
                 ✅ RESET ALERT
               </button>
             }
@@ -137,7 +138,11 @@ import { IdentityService } from '../../core/services/identity.service';
     `
 })
 export class ResolutionComponent {
-  identity = inject(IdentityService);
+  projectService = inject(ProjectService);
+  verificationService = inject(VerificationService);
+  
+  // Alias for template compatibility
+  identity = this.verificationService;
 
   caseData = [
     {
@@ -167,16 +172,16 @@ export class ResolutionComponent {
   resetEscalation() {
     console.log("✅ RESET BUTTON CLICKED: Returning to proactive state");
     this.identity.resetAlert();
-    alert('✅ ALERT RESET: System state returned to PROACTIVE (Cyan)');
+    alert('✅ ALERT RESET: System state returned to PROACTIVE (White)');
   }
 
   triggerResolution() {
-    console.log('[RESOLUTION] Generating final resolution package for:', this.identity.currentUserId());
+    console.log('[RESOLUTION] Generating final resolution package for:', this.projectService.activeProjectId());
     alert('FINAL RESOLUTION PROTOCOL INITIATED: Generating comprehensive dispute resolution package');
   }
 
   downloadCase() {
-    console.log('[CASE DOWNLOAD] Preparing case files for:', this.identity.currentUserId());
+    console.log('[CASE DOWNLOAD] Preparing case files for:', this.projectService.activeProjectId());
     alert('CASE DOWNLOAD INITIATED: Preparing dispute case documentation package');
   }
 }
