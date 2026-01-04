@@ -16,37 +16,16 @@ import firebase_admin
 from dateutil.parser import parse as parse_date
 
 
-# --- STEP 1: Error Topology ---
+# Defined per Phase 4, Step 1
 class VisionEngineError(Exception):
-    """Base exception for RPR-VERIFY vision engine failures."""
-    def __init__(self, message, error_code):
-        super().__init__(message)
-        self.error_code = error_code
+    """Base class for all vision-related errors."""
+    pass
 
-class RateLimitError(VisionEngineError):
-    """Vertex AI quota exceeded."""
-    def __init__(self, message="Vertex AI Quota Exceeded"):
-        super().__init__(message, "RATE_LIMIT_EXCEEDED")
-
-class DocumentParseError(VisionEngineError):
-    """OCR extraction failure or malformed document."""
-    def __init__(self, message="Document parsing failed"):
-        super().__init__(message, "PARSE_FAILURE")
-
-class ValidationError(VisionEngineError):
-    """Extracted data does not match PRD schema."""
-    def __init__(self, message="Schema validation failed"):
-        super().__init__(message, "SCHEMA_INVALID")
-
-class RegionalLockError(VisionEngineError):
-    """Request attempted outside of asia-southeast1."""
-    def __init__(self, message="Regional residency breach"):
-        super().__init__(message, "REGIONAL_LOCK_VIOLATION")
-
-class ForensicMetadataError(VisionEngineError):
-    """Case ID or forensic audit packet missing."""
-    def __init__(self, message="Forensic audit trail broken"):
-        super().__init__(message, "AUDIT_TRAIL_BROKEN")
+class RateLimitError(VisionEngineError): pass
+class DocumentParseError(VisionEngineError): pass
+class ValidationError(VisionEngineError): pass
+class RegionalLockError(VisionEngineError): pass
+class ForensicMetadataError(VisionEngineError): pass
 
 # --- STEP 2: Vertex AI Hardening ---
 
@@ -56,11 +35,19 @@ REGION = 'asia-southeast1'
 vertexai.init(project=PROJECT_ID, location=REGION)
 
 # Safety Anchor: BLOCK_NONE for financial document processing (avoids false positives)
-safety_settings = [
-    SafetySetting(category=HarmCategory.HARM_CATEGORY_HARASSMENT, threshold=HarmBlockThreshold.BLOCK_NONE),
-    SafetySetting(category=HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold=HarmBlockThreshold.BLOCK_NONE),
-    SafetySetting(category=HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold=HarmBlockThreshold.BLOCK_NONE),
-    SafetySetting(category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=HarmBlockThreshold.BLOCK_NONE),
+SAFETY_SETTINGS = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+]
+
+# Convert to VertexAI objects for model usage
+vertex_safety_settings = [
+    SafetySetting(
+        category=getattr(HarmCategory, s["category"]), 
+        threshold=getattr(HarmBlockThreshold, s["threshold"])
+    ) for s in SAFETY_SETTINGS
 ]
 
 model = GenerativeModel("gemini-1.5-flash-001")
@@ -87,7 +74,9 @@ def extract_document_data(image_content, case_id):
         DocumentParseError: If OCR extraction fails
     """
     if not case_id:
-        raise ForensicMetadataError("Missing Case ID in request packet.")
+        error = ForensicMetadataError("Missing Case ID in request packet.")
+        error.error_code = "AUDIT_TRAIL_BROKEN"
+        raise error
     
     prompt = """
 Perform forensic OCR on this document. Return JSON ONLY.
@@ -102,7 +91,7 @@ Schema:
     try:
         response = model.generate_content(
             [image_content, prompt],
-            safety_settings=safety_settings
+            safety_settings=vertex_safety_settings
         )
         
         # --- STEP 3: Forensic Metadata Integration ---
@@ -112,6 +101,7 @@ Schema:
             "status": "success",
             "case_id": case_id,  # Mandatory Echo
             "forensic_metadata": {
+                "case_id": case_id,
                 "extracted_by": "gemini-1.5-flash-001",
                 "region": REGION,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
