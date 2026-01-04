@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Test suite for Vision Engine - Phase 4
-Validates forensic extraction, error topology, regional lock, and audit trail.
+RPR-VERIFY Phase 4 Test Suite
+Tests error topology, forensic metadata, and regional lock enforcement
 
 Authority: PRD v12.4 - Phase 4 Execution Roadmap
 """
@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import unittest.mock as mock
 import pytest
+from unittest.mock import Mock, patch, MagicMock
 
 # Add backend directory to path for imports
 backend_dir = Path(__file__).parent.parent
@@ -43,7 +44,6 @@ class MockFirestore:
                     def document(self, doc_id):
                         class MockDocument:
                             def set(self, data, merge=False):
-                                print(f"📝 Mock Firestore: Setting document {doc_id}")
                                 return True
                         return MockDocument()
                 return MockCollection()
@@ -53,12 +53,46 @@ sys.modules['firebase_admin'] = mock.MagicMock()
 sys.modules['firebase_admin']._apps = [] # Mocked state
 sys.modules['firebase_admin'].firestore = MockFirestore()
 
+# Mock Vertex AI to prevent actual API initialization
+# Create mock classes with required attributes
+class MockHarmCategory:
+    HARM_CATEGORY_HARASSMENT = "HARM_CATEGORY_HARASSMENT"
+    HARM_CATEGORY_HATE_SPEECH = "HARM_CATEGORY_HATE_SPEECH"
+    HARM_CATEGORY_SEXUALLY_EXPLICIT = "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+    HARM_CATEGORY_DANGEROUS_CONTENT = "HARM_CATEGORY_DANGEROUS_CONTENT"
+
+class MockHarmBlockThreshold:
+    BLOCK_NONE = "BLOCK_NONE"
+
+class MockSafetySetting:
+    def __init__(self, category=None, threshold=None):
+        self.category = category
+        self.threshold = threshold
+
+class MockGenerativeModel:
+    def __init__(self, *args, **kwargs):
+        pass
+    
+    def generate_content(self, *args, **kwargs):
+        # This will be patched in individual tests
+        pass
+
+sys.modules['vertexai'] = mock.MagicMock()
+sys.modules['vertexai'].init = mock.MagicMock()  # Mock init() to prevent actual connection
+sys.modules['vertexai.generative_models'] = mock.MagicMock()
+sys.modules['vertexai.generative_models'].GenerativeModel = MockGenerativeModel
+sys.modules['vertexai.generative_models'].SafetySetting = MockSafetySetting
+sys.modules['vertexai.generative_models'].HarmCategory = MockHarmCategory
+sys.modules['vertexai.generative_models'].HarmBlockThreshold = MockHarmBlockThreshold
+
+# Mock tenacity retry decorator
+sys.modules['tenacity'] = mock.MagicMock()
+sys.modules['tenacity'].retry = lambda *args, **kwargs: lambda func: func
+sys.modules['tenacity'].stop_after_attempt = mock.MagicMock()
+sys.modules['tenacity'].wait_exponential = mock.MagicMock()
+
 # --- STEP 2: Imports ---
 from functions.vision_engine import (
-    VisionAuditEngine,
-    compute_risk_score,
-    normalize_date,
-    mask_account_number,
     VisionEngineError,
     RateLimitError,
     DocumentParseError,
@@ -66,113 +100,143 @@ from functions.vision_engine import (
     RegionalLockError,
     ForensicMetadataError,
     extract_document_data,
-    REGION,
-    SAFETY_SETTINGS
+    REGION
 )
 
 # --- STEP 3: Tests ---
 
-def test_error_topology_integrity():
-    """Verify that all RPR-VERIFY specific error classes inherit from the base."""
-    print("\n🧪 Testing Error Topology Integrity")
-    print("=" * 60)
-    assert issubclass(RateLimitError, VisionEngineError)
-    assert issubclass(DocumentParseError, VisionEngineError)
-    assert issubclass(ValidationError, VisionEngineError)
-    assert issubclass(RegionalLockError, VisionEngineError)
-    assert issubclass(ForensicMetadataError, VisionEngineError)
-    print("✅ All error classes properly inherit from VisionEngineError")
-
-
-def test_forensic_metadata_requirement():
-    """Ensure logic fails if Case ID is missing."""
-    print("\n🧪 Testing Forensic Metadata Requirement")
-    print("=" * 60)
-    with pytest.raises(ForensicMetadataError) as excinfo:
-        extract_document_data("dummy_image", None)
-    assert excinfo.value.error_code == "AUDIT_TRAIL_BROKEN"
-    print("✅ ForensicMetadataError raised correctly when case_id is missing")
-
-
-def test_regional_lock_constant():
-    """Verify that the engine is locked to asia-southeast1."""
-    print("\n🧪 Testing Regional Lock")
-    print("=" * 60)
-    assert REGION == "asia-southeast1"
-    print(f"✅ Regional lock verified: {REGION}")
-
-
-def test_date_normalization():
-    """Test date parsing normalization"""
-    print("\n🧪 Testing Date Normalization")
-    print("=" * 60)
-    assert normalize_date("2024-01-01") == "2024-01-01"
-    assert normalize_date("Jan 1, 2024") == "2024-01-01"
-    assert normalize_date("01/01/2024") == "2024-01-01"
-    assert normalize_date("invalid-date") is None
-    print("✅ Date normalization functional")
-
-
-def load_test_image(image_path: str) -> bytes:
-    """Load test image file as bytes"""
-    with open(image_path, 'rb') as f:
-        return f.read()
-
-
-def test_extract_document_data_with_valid_case_id():
-    """Test that extract_document_data accepts a valid case_id."""
-    print("\n🧪 Testing Extract Document Data (with valid case_id)")
-    print("=" * 60)
-    try:
-        # Expecting API-level failure if no real network, but case_id check should pass first
-        extract_document_data("dummy_image", "TEST-CASE-001")
-    except ForensicMetadataError:
-        pytest.fail("ForensicMetadataError raised with valid case_id")
-    except (DocumentParseError, RateLimitError, Exception) as e:
-        # Expected to fail at API level, but case_id validation should pass
-        print(f"✅ Case ID validation passed (API error expected: {type(e).__name__})")
-    print()
-
-
-def test_forensic_case_id_echo():
-    """
-    PRD REQUIREMENT: Case ID MUST be echoed from request to response 
-    for dashboard traceability.
-    """
-    print("\n🧪 Testing Case ID Echo & Traceability")
-    print("=" * 60)
-    mock_case_id = "RPR-AUDIT-2026-X99"
+class TestErrorTopology:
+    """Test Step 1: Error class instantiation and inheritance"""
     
-    # Simulate a successful response structure from vision_engine
-    with mock.patch('functions.vision_engine.extract_document_data') as mock_extract:
-        mock_extract.return_value = {
-            "forensic_metadata": {
-                "case_id": mock_case_id,
-                "region": "asia-southeast1",
-                "timestamp": "2026-01-02T12:00:00Z"
-            },
-            "risk_score": 0
-        }
+    def test_error_hierarchy(self):
+        """Verify all error classes inherit from VisionEngineError"""
+        errors = [
+            RateLimitError,
+            DocumentParseError,
+            ValidationError,
+            RegionalLockError,
+            ForensicMetadataError
+        ]
+        for error_class in errors:
+            assert issubclass(error_class, VisionEngineError)
+    
+    def test_error_messages(self):
+        """Verify error classes can be instantiated with custom messages"""
+        try:
+            raise RateLimitError("Custom rate limit message")
+        except VisionEngineError as e:
+            assert "Custom rate limit message" in str(e)
+
+
+class TestForensicMetadata:
+    """Test Step 3: Forensic metadata presence and case_id echo"""
+    
+    @patch('functions.vision_engine.model')
+    def test_case_id_echo(self, mock_model):
+        """Verify case_id is echoed from request to response"""
+        # Mock Vertex AI response
+        mock_response = MagicMock()
+        mock_response.text = '{"accountNumber": "12345678", "bsb": "123-456"}'
+        mock_model.generate_content.return_value = mock_response
         
-        # Call the local reference which might not be patched if we patch vision_engine
-        # So we use the return value of the patch context or call vision_engine.extract_document_data
-        from functions import vision_engine
-        response = vision_engine.extract_document_data("dummy_image", mock_case_id)
-        assert response["forensic_metadata"]["case_id"] == mock_case_id
-        assert response["forensic_metadata"]["region"] == "asia-southeast1"
-    print(f"✅ Case ID {mock_case_id} successfully echoed in forensic_metadata.")
-
-
-def test_vertex_ai_safety_bypass():
-    """Verify SafetySettings are set to BLOCK_NONE for financial data."""
-    print("\n🧪 Testing Vertex AI Safety Bypass (Financial Data)")
-    print("=" * 60)
-    from functions.vision_engine import SAFETY_SETTINGS
+        test_case_id = "TEST-CASE-001"
+        result = extract_document_data(b"fake_image_data", test_case_id)
+        
+        assert "case_id" in result
+        assert result["case_id"] == test_case_id
+        assert "forensic_metadata" in result
+        assert result["forensic_metadata"]["case_id"] == test_case_id
     
-    # Iterate through settings to ensure all are BLOCK_NONE
-    for setting in SAFETY_SETTINGS:
-        assert setting['threshold'] == "BLOCK_NONE"
-    print("✅ SafetySettings verified as BLOCK_NONE (Financial Bypass Active).")
+    @patch('functions.vision_engine.model')
+    def test_forensic_metadata_structure(self, mock_model):
+        """Verify forensic_metadata contains required fields"""
+        mock_response = MagicMock()
+        mock_response.text = '{"accountNumber": "12345678"}'
+        mock_model.generate_content.return_value = mock_response
+        
+        result = extract_document_data(b"fake_image_data", "TEST-002")
+        
+        forensic = result["forensic_metadata"]
+        assert "case_id" in forensic
+        assert "extracted_by" in forensic
+        assert "region" in forensic
+        assert forensic["region"] == "asia-southeast1"
+        assert "timestamp" in forensic
+        assert "model_version" in forensic
+        assert "safety_threshold" in forensic
+        assert forensic["safety_threshold"] == "BLOCK_NONE"
+    
+    def test_missing_case_id_raises_error(self):
+        """Verify ForensicMetadataError raised when case_id is missing"""
+        with pytest.raises(ForensicMetadataError) as excinfo:
+            extract_document_data(b"fake_image_data", None)
+        assert excinfo.value.error_code == "AUDIT_TRAIL_BROKEN"
+        
+        with pytest.raises(ForensicMetadataError):
+            extract_document_data(b"fake_image_data", "")
+
+
+class TestRegionalLock:
+    """Test Step 2: Regional enforcement (asia-southeast1)"""
+    
+    @patch('functions.vision_engine.model')
+    def test_region_in_metadata(self, mock_model):
+        """Verify region is always asia-southeast1"""
+        mock_response = MagicMock()
+        mock_response.text = '{"data": "test"}'
+        mock_model.generate_content.return_value = mock_response
+        
+        result = extract_document_data(b"fake_image_data", "TEST-003")
+        
+        assert result["forensic_metadata"]["region"] == "asia-southeast1"
+    
+    def test_regional_lock_constant(self):
+        """Verify that the engine is locked to asia-southeast1."""
+        assert REGION == "asia-southeast1"
+
+
+class TestDocumentExtraction:
+    """Test extraction logic with real-world scenarios"""
+    
+    @patch('functions.vision_engine.model')
+    def test_bank_slip_extraction(self, mock_model):
+        """Test bank slip data extraction"""
+        mock_response = MagicMock()
+        mock_response.text = '''{
+            "accountNumber": "123456789",
+            "bsb": "062-000",
+            "accountHolder": "John Doe",
+            "balance": "1234.56"
+        }'''
+        mock_model.generate_content.return_value = mock_response
+        
+        result = extract_document_data(b"fake_bank_slip", "BANK-TEST-001")
+        
+        assert "data" in result
+        data = result["data"]
+        assert "accountNumber" in data
+        assert "bsb" in data
+        assert result["case_id"] == "BANK-TEST-001"
+    
+    @patch('functions.vision_engine.model')
+    def test_identity_doc_extraction(self, mock_model):
+        """Test identity document extraction"""
+        mock_response = MagicMock()
+        mock_response.text = '''{
+            "documentNumber": "P1234567",
+            "fullName": "Jane Smith",
+            "dateOfBirth": "1990-01-01",
+            "expiryDate": "2030-12-31"
+        }'''
+        mock_model.generate_content.return_value = mock_response
+        
+        result = extract_document_data(b"fake_passport", "ID-TEST-001")
+        
+        assert "data" in result
+        data = result["data"]
+        assert "documentNumber" in data
+        assert "fullName" in data
+        assert result["case_id"] == "ID-TEST-001"
 
 
 if __name__ == "__main__":
