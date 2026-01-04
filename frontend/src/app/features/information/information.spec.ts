@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 // Fix the import to match the class name defined in information.ts
@@ -12,15 +13,13 @@ describe('InformationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        InformationComponent,
-        HttpClientTestingModule
+        InformationComponent
       ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(), // Replaces deprecated HttpClientTestingModule
         provideFirebaseApp(() => initializeApp({
-          projectId: 'test-project',
-          appId: 'test-app-id',
-          apiKey: 'test-api-key',
-          authDomain: 'test.firebaseapp.com'
+          projectId: 'mock-id'
         })),
         provideFirestore(() => getFirestore())
       ]
