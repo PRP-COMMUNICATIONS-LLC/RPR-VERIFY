@@ -7,7 +7,7 @@ import { ProjectService } from '../services/project.service';
 export class SecurityContextInterceptor implements HttpInterceptor {
   private projectService = inject(ProjectService);
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const projectId = this.projectService.activeProjectId();
     
     // Auto-inject Project ID into all Cloud Run backend calls

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed, effect, untracked } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Firestore, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 
 export interface ProjectMetadata {
   project_id: string;
@@ -36,14 +36,19 @@ if (typeof window !== 'undefined') {
 }
 
 // Global effect flag - stored in window to survive HMR
+interface WindowWithRPR extends Window {
+  __RPR_PROJECT_EFFECT_INITIALIZED?: boolean;
+  __RPR_PROJECT_CLEANUP_DONE?: boolean;
+}
+
 const getEffectInitialized = (): boolean => {
   if (typeof window === 'undefined') return false;
-  return (window as any).__RPR_PROJECT_EFFECT_INITIALIZED === true;
+  return (window as WindowWithRPR).__RPR_PROJECT_EFFECT_INITIALIZED === true;
 };
 
 const setEffectInitialized = (): void => {
   if (typeof window !== 'undefined') {
-    (window as any).__RPR_PROJECT_EFFECT_INITIALIZED = true;
+    (window as WindowWithRPR).__RPR_PROJECT_EFFECT_INITIALIZED = true;
   }
 };
 
@@ -70,14 +75,14 @@ export class ProjectService {
   
   constructor() {
     // NUCLEAR CLEANUP: Clear localStorage once on first service instantiation to remove "poisoned" IDs from old builds
-    if (typeof window !== 'undefined' && !(window as any).__RPR_PROJECT_CLEANUP_DONE) {
+    if (typeof window !== 'undefined' && !(window as WindowWithRPR).__RPR_PROJECT_CLEANUP_DONE) {
       const oldId = localStorage.getItem(ProjectService.STORAGE_KEY);
       if (oldId) {
         console.log('[PROJECT SERVICE] Clearing stale localStorage project ID:', oldId);
         localStorage.removeItem(ProjectService.STORAGE_KEY);
         GLOBAL_ACTIVE_PROJECT_ID.set(null);
       }
-      (window as any).__RPR_PROJECT_CLEANUP_DONE = true;
+      (window as WindowWithRPR).__RPR_PROJECT_CLEANUP_DONE = true;
     }
     
     // Global effect pattern: Only initialize effect once, even across HMR reloads

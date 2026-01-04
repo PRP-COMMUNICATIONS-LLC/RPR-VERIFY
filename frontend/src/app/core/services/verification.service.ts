@@ -96,9 +96,10 @@ export class VerificationService {
     return (source: Observable<T>) => source.pipe(
       retry({
         count: maxRetries,
-        delay: (error: any, retryCount: number) => {
+        delay: (error: unknown, retryCount: number) => {
           // Don't retry on 4xx errors (client errors)
-          if (error?.status >= 400 && error?.status < 500) {
+          const httpError = error as { status?: number };
+          if (httpError?.status && httpError.status >= 400 && httpError.status < 500) {
             return throwError(() => error);
           }
           // Exponential backoff: 1s, 2s, 3s
@@ -131,7 +132,11 @@ export class VerificationService {
     reader.readAsDataURL(file);
     
     // Chain: File Read -> HTTP Post -> Retry -> Error Handling
-    type IdentityData = { firstName: string; lastName: string; idNumber: string };
+    interface IdentityData {
+      firstName: string;
+      lastName: string;
+      idNumber: string;
+    }
     return fileRead$.pipe(
       switchMap(base64String => 
         this.http.post<IdentityData>(
