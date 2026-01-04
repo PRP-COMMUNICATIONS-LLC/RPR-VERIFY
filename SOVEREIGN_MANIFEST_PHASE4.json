@@ -1,0 +1,39 @@
+{
+  "project_id": "rpr-verify-b",
+  "phase": "4",
+  "status": "STABILIZED",
+  "last_audit": "2026-01-04T14:35:00Z",
+  "residency": {
+    "primary_node": "Singapore",
+    "region": "asia-southeast1",
+    "lock_enforced": true
+  },
+  "infrastructure": {
+    "runtime": "nodejs20",
+    "memory_allocation": "512MiB",
+    "min_instances": 1,
+    "max_instances": 10,
+    "concurrency_limit": 80
+  },
+  "api_endpoints": {
+    "verification_engine": "https://asia-southeast1-rpr-verify-b.cloudfunctions.net/cisReportApi",
+    "service_bridge": "https://asia-southeast1-rpr-verify-b.cloudfunctions.net/extractIdentity"
+  },
+  "vision_engine": {
+    "model_id": "gemini-1.5-flash-001",
+    "safety_settings": "BLOCK_NONE",
+    "backoff_logic": "tenacity-retry-v1",
+    "error_topology": [
+      "VisionEngineError",
+      "VertexAIError",
+      "PayloadValidationError",
+      "ForensicMetadataError",
+      "RegionalResidencyError"
+    ]
+  },
+  "veritas_smoke_test": {
+    "accessibility_compliant": true,
+    "zone_js_testing_active": true,
+    "budget_enforced": "700kb initial / 4kb style"
+  }
+}
