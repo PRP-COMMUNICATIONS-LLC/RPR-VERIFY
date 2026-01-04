@@ -69,20 +69,30 @@ body {
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.08); /* White Glow Halo */
 }
 
-/* Active Navigation States - Sentinel Blackout */
+/* Active Navigation States - Phase 4 Cyan Branding */
 .active-info, .active-verify {
-  color: #FFFFFF !important; /* Sentinel Blackout: Pure White */
-  border-bottom: 2px solid #FFFFFF !important;
+  color: #00FFFF !important; /* Phase 4: Veritas Cyan */
+  border-bottom: 2px solid #00FFFF !important;
 }
 
 .active-trans {
-  color: #FFFFFF !important;
-  border-bottom: 2px solid #FFFFFF !important;
+  color: #00FFFF !important; /* Phase 4: Veritas Cyan */
+  border-bottom: 2px solid #00FFFF !important;
 }
 
 .active-reso {
   color: #FF0000 !important; /* Preserve Red Escalation */
   border-bottom: 2px solid #FF0000 !important;
+}
+
+/* Navigation Hover States - Enhanced UX */
+nav a {
+  transition: all 0.3s ease;
+  
+  &:hover:not(.active-info):not(.active-verify):not(.active-trans):not(.active-reso) {
+    color: #00FFFF;
+    opacity: 0.8;
+  }
 }
 
 /* Form Elements - White Accent Color */
