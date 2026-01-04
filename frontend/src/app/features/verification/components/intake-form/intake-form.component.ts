@@ -92,10 +92,13 @@ export class IntakeFormComponent {
       // Form submission successful - project ID is now stored in ProjectService
       // Optionally reset form or keep data for reference
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('[INTAKE FORM] Error generating project ID:', error);
+      
+      // Safe type-narrowing for error messages
+      const err = error as { error?: { error?: string }; message?: string };
       this.submitError.set(
-        error?.error?.error || error?.message || 'Failed to generate project ID. Please try again.'
+        err?.error?.error || err?.message || 'Failed to generate project ID. Please try again.'
       );
     } finally {
       this.isSubmitting.set(false);

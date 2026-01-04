@@ -27,7 +27,13 @@ export class DropzoneComponent {
     return this.projectService.activeProjectId();
   });
   
-  constructor() {
+  /**
+   * Handle file selection trigger (for keyboard accessibility)
+   * This allows the Enter/Space handlers in the HTML to trigger the file input
+   */
+  onFileSelect(): void {
+    const fileInput = document.querySelector<HTMLInputElement>('input[type="file"]');
+    fileInput?.click();
   }
   
   /**
