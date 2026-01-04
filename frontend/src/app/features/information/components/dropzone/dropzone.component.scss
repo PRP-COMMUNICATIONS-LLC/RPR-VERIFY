@@ -67,9 +67,15 @@
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.15em;
-  color: #FFFFFF;
+  color: #00FFFF; /* Updated from white to Cyan for Phase 4 branding */
   text-transform: uppercase;
   margin: 0;
+}
+
+.dropzone-icon {
+  color: #00FFFF; /* Updated from white to Cyan for Phase 4 branding */
+  font-size: 3rem;
+  margin-bottom: 1rem;
 }
 
 .project-id {
