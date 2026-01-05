@@ -1,61 +1,32 @@
-/* SENTINEL BRAND PROTECTION - Isolated from global blackout */
-/* These rules ensure the logo icon and VERIFY wordmark remain cyan */
-.nav-brand {
-  /* High specificity to override any global color rules */
-  .sentinel-logo-icon {
-    fill: #00E0FF !important;
-    path {
-      fill: #00E0FF !important;
-    }
-  }
-  .brand-text-verify {
-    color: #00E0FF !important;
-    text-shadow: 0 0 15px rgba(0, 224, 255, 0.4) !important;
-  }
-}
-
-/* Ensure brand elements are not affected by global blackout */
-header .nav-brand .sentinel-logo-icon,
-header .nav-brand .brand-text-verify {
-  color: #00E0FF !important;
-  fill: #00E0FF !important;
-}
-
-/* Precision targeting for the global header navigation */
-nav a, .mat-tab-link {
-    color: rgba(255, 255, 255, 0.6) !important; /* Forces Muted White, kills Purple */
-    text-decoration: none !important;
-    transition: all 0.25s ease-in-out !important;
+/* Target the specific Angular Material classes to reclaim control */
+::ng-deep {
+  .mat-tab-link,
+  .nav-item,
+  nav a {
+    color: rgba(255, 255, 255, 0.6) !important; /* Kills the Purple */
+    transition: all 0.2s ease-in-out !important;
+    pointer-events: auto !important;
     cursor: pointer !important;
-    pointer-events: auto !important; /* Ensures hover is registered */
-    display: inline-flex !important;
-    align-items: center;
+    opacity: 0.8;
 
-    /* Restoration of the Hover Function */
+    /* Restoration of the Hover Functionality */
     &:hover {
-        color: #00FFFF !important; /* RPR Cyan on Hover */
-        background-color: rgba(0, 255, 255, 0.05) !important; /* Subtle Cyan glow */
-        opacity: 1 !important;
+      color: #00FFFF !important; /* RPR Cyan */
+      opacity: 1 !important;
+      background-color: rgba(0, 255, 255, 0.05) !important;
     }
 
-    /* The Active State (Current Tab) */
-    &.active-verify, &.active-link, &.active-info, &.active-trans, &.active-reso {
+    /* Active State for all tabs */
+    &.active-verify,
+    &.router-link-active,
+    &.mat-tab-label-active {
+      color: #00FFFF !important;
+      border-bottom: 2px solid #00FFFF !important;
+      opacity: 1 !important;
+
+      i, span {
         color: #00FFFF !important;
-        border-bottom: 2px solid #00FFFF !important;
-        opacity: 1 !important;
-
-        i, span {
-            color: #00FFFF !important;
-        }
+      }
     }
-
-    /* Preserve Red Escalation for Resolution Tab */
-    &.active-reso {
-        color: #FF0000 !important;
-        border-bottom: 2px solid #FF0000 !important;
-
-        i, span {
-            color: #FF0000 !important;
-        }
-    }
+  }
 }
