@@ -85,16 +85,10 @@ body {
   border-bottom: 2px solid #FF0000 !important;
 }
 
-/* Force Cyan on Tab 3 (VERIFICATION) - Override any specificity issues */
-nav a.active-verify {
-  color: #00FFFF !important;
-  border-bottom: 2px solid #00FFFF !important;
-  
-  /* Ensure text and any child elements are Cyan */
-  * {
+/* Force Cyan on Tab 3 (VERIFICATION) - Brute Force Override */
+nav a:nth-child(3) {
     color: #00FFFF !important;
-    -webkit-text-fill-color: #00FFFF !important;
-  }
+    border-bottom: 2px solid #00FFFF !important;
 }
 
 /* Navigation Hover States - Enhanced UX */
