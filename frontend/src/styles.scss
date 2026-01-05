@@ -113,10 +113,17 @@ input[type="radio"] {
   accent-color: #FFFFFF !important; /* Sentinel Blackout: Pure White */
 }
 
-/* Phase 4 Mobile Branding */
-@media (max-width: 768px) {
-  .nav-item.active, .mobile-menu-link.active {
-    color: #00FFFF !important;
-    border-bottom: 2px solid #00FFFF !important;
+/* Mobile Responsive Patch */
+@media screen and (max-width: 768px) {
+  .global-header {
+    height: auto !important;
+    flex-wrap: wrap !important;
+    padding: 10px !important;
+  }
+  nav {
+    display: flex !important;
+    overflow-x: auto !important; /* Allow tab scrolling on mobile */
+    width: 100% !important;
+    justify-content: flex-start !important;
   }
 }

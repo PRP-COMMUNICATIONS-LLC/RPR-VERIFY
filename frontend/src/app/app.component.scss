@@ -1,26 +1,62 @@
-/* SENTINEL BRAND PROTECTION - Isolated from global blackout */
-/* These rules ensure the logo icon and VERIFY wordmark remain cyan */
+/* Target the specific Angular Material classes to reclaim control */
+::ng-deep {
+  .mat-tab-link,
+  .nav-item,
+  nav a {
+    color: rgba(0, 255, 255, 0.7) !important; /* RPR Cyan Ghost */
+    transition: all 0.2s ease-in-out !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    padding-bottom: 8px; /* Add padding for the border */
 
-.nav-brand {
-  /* High specificity to override any global color rules */
-  
-  .sentinel-logo-icon {
-    fill: #00E0FF !important;
-    
-    path {
-      fill: #00E0FF !important;
+    /* Restoration of the Hover Functionality */
+    &:hover {
+      color: #00FFFF !important; /* RPR Cyan */
+      background-color: rgba(0, 255, 255, 0.05) !important;
     }
-  }
-  
-  .brand-text-verify {
-    color: #00E0FF !important;
-    text-shadow: 0 0 15px rgba(0, 224, 255, 0.4) !important;
+
+    /* Active State for all tabs */
+    &.active-verify,
+    &.router-link-active,
+    &.mat-tab-label-active,
+    &.active-info,
+    &.active-trans,
+    &.active-reso {
+      color: #00FFFF !important;
+      border-bottom: 3px solid #00FFFF !important; /* The Cyan Line */
+
+      i, span {
+        color: #00FFFF !important;
+      }
+    }
+
+    /* Preserve Red Escalation for Resolution Tab */
+    &.active-reso {
+        color: #FF0000 !important;
+        border-bottom: 3px solid #FF0000 !important;
+
+        i, span {
+            color: #FF0000 !important;
+        }
+    }
   }
 }
 
-/* Ensure brand elements are not affected by global blackout */
-header .nav-brand .sentinel-logo-icon,
-header .nav-brand .brand-text-verify {
-  color: #00E0FF !important;
-  fill: #00E0FF !important;
+/* Lock Logo Wordmark and Icon on a Single Line */
+.nav-brand {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important; /* Prevents stacking */
+    white-space: nowrap !important; /* Prevents text wrapping */
+    min-width: fit-content;
+
+    .logo-icon {
+        flex-shrink: 0; /* Prevents icon from squishing */
+        margin-right: 10px;
+    }
+
+    .logo-text {
+        display: flex;
+        gap: 5px; /* Adjust spacing between RPR and VERIFY */
+    }
 }
