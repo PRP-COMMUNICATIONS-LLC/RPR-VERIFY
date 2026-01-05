@@ -15,26 +15,32 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install & Build
+      - name: Build UI
         run: |
           cd frontend
           npm install
-          npm run build -- --configuration=production
-      - name: Deploy to Firebase Hosting
+          npm run build
+      - name: Deploy Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}'
           projectId: rpr-verify-b
           channelId: live
-      - name: Sync Phase 4 Progress to Notion
-        if: success() # Only triggers if Hosting succeeds
-        uses: valerii-belov/notion-task-sync@v1.2.0
-        with:
-          notion-token: ${{ secrets.NOTION_TOKEN }}
-          notion-db-id: "2d0883cd4fa18107ad7be91ceabcbd79"
-          task-name: "UI Branding Alignment"
-          task-status: "Done"
+      - name: Direct Notion Sync (No Action Needed)
+        if: success()
+        run: |
+          PAGE_ID=$(curl -s -X POST https://api.notion.com/v1/databases/2d0883cd4fa18107ad7be91ceabcbd79/query \
+            -H "Authorization: Bearer ${{ secrets.NOTION_TOKEN }}" \
+            -H "Notion-Version: 2022-06-28" \
+            -H "Content-Type: application/json" \
+            -d '{"filter":{"property":"Name","title":{"equals":"UI Branding Alignment"}}}' | jq -r '.results[0].id')
+          
+          curl -X PATCH https://api.notion.com/v1/pages/$PAGE_ID \
+            -H "Authorization: Bearer ${{ secrets.NOTION_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -H "Notion-Version: 2022-06-28" \
+            --data '{"properties": {"Status": {"status": {"name": "Done"}}}}'
 
   # Job 2: Independent Backend Functions
   deploy_functions:
