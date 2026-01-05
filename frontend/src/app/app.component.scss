@@ -1,17 +1,13 @@
 /* SENTINEL BRAND PROTECTION - Isolated from global blackout */
 /* These rules ensure the logo icon and VERIFY wordmark remain cyan */
-
 .nav-brand {
   /* High specificity to override any global color rules */
-  
   .sentinel-logo-icon {
     fill: #00E0FF !important;
-    
     path {
       fill: #00E0FF !important;
     }
   }
-  
   .brand-text-verify {
     color: #00E0FF !important;
     text-shadow: 0 0 15px rgba(0, 224, 255, 0.4) !important;
@@ -25,40 +21,41 @@ header .nav-brand .brand-text-verify {
   fill: #00E0FF !important;
 }
 
-/* Precision targeting for the Tab 3 navigation header only */
-::ng-deep nav a.active-verify {
-    color: #00FFFF !important;
-    border-bottom: 2px solid #00FFFF !important;
+/* Precision targeting for the global header navigation */
+nav a, .mat-tab-link {
+    color: rgba(255, 255, 255, 0.6) !important; /* Forces Muted White, kills Purple */
+    text-decoration: none !important;
+    transition: all 0.25s ease-in-out !important;
+    cursor: pointer !important;
+    pointer-events: auto !important; /* Ensures hover is registered */
+    display: inline-flex !important;
+    align-items: center;
 
-    /* Target the icon and text specifically to avoid global shifts */
-    i, span, .e-tab-text, .e-tab-icon {
-        color: #00FFFF !important;
-        -webkit-text-fill-color: #00FFFF !important;
+    /* Restoration of the Hover Function */
+    &:hover {
+        color: #00FFFF !important; /* RPR Cyan on Hover */
+        background-color: rgba(0, 255, 255, 0.05) !important; /* Subtle Cyan glow */
+        opacity: 1 !important;
     }
-}
 
-
-/* Target the "active-verify" class assigned by Angular"s router */
-nav a.active-verify {
-    color: #00FFFF !important;
-    border-bottom: 2px solid #00FFFF !important;
-
-    /* Target nested elements specifically to avoid layout shifts elsewhere */
-    i, span, .e-tab-text, .e-tab-icon {
+    /* The Active State (Current Tab) */
+    &.active-verify, &.active-link, &.active-info, &.active-trans, &.active-reso {
         color: #00FFFF !important;
-        -webkit-text-fill-color: #00FFFF !important;
+        border-bottom: 2px solid #00FFFF !important;
+        opacity: 1 !important;
+
+        i, span {
+            color: #00FFFF !important;
+        }
     }
-}
 
+    /* Preserve Red Escalation for Resolution Tab */
+    &.active-reso {
+        color: #FF0000 !important;
+        border-bottom: 2px solid #FF0000 !important;
 
-/* Target the "active-verify" class assigned by the Angular router */
-nav a.active-verify {
-    color: #00FFFF !important;
-    border-bottom: 2px solid #00FFFF !important;
-
-    /* Target nested elements specifically to avoid layout shifts elsewhere */
-    i, span, .e-tab-text, .e-tab-icon {
-        color: #00FFFF !important;
-        -webkit-text-fill-color: #00FFFF !important;
+        i, span {
+            color: #FF0000 !important;
+        }
     }
 }
