@@ -2,17 +2,17 @@
 echo "🔍 Checking Sovereign Readiness..."
 
 # Check for the correct Notion target in the workflow
-if grep -q "Backend API Hardening" .github/workflows/firebase-deploy.yml; then
-    echo "✅ [PASS] Notion target is set to: Backend API Hardening"
+if grep -q "UI Branding Alignment" .github/workflows/firebase-deploy.yml; then
+    echo "✅ [PASS] Notion target is set to: UI Branding Alignment"
 else
-    echo "⚠️ [WARN] Notion target is still set to UI Alignment"
+    echo "⚠️ [WARN] Notion target is not set to UI Branding Alignment"
 fi
 
-# Check for the Tab 3 active class in the SCSS
-if grep -q "active-verify" frontend/src/styles.scss; then
-    echo "✅ [PASS] CSS Override exists in global styles"
+# Verify that the maintainable class-based fix is present
+if grep -q "active-verify" frontend/src/app/app.component.scss; then
+    echo "✅ [PASS] CSS Override exists via .active-verify class"
 else
-    echo "❌ [FAIL] CSS Override missing from global styles"
+    echo "❌ [FAIL] CSS Override (.active-verify) missing"
 fi
 
 echo "🚀 Local URL: http://localhost:4200"

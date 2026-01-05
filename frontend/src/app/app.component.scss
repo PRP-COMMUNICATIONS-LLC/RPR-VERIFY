@@ -24,3 +24,41 @@ header .nav-brand .brand-text-verify {
   color: #00E0FF !important;
   fill: #00E0FF !important;
 }
+
+/* Precision targeting for the Tab 3 navigation header only */
+::ng-deep nav a.active-verify {
+    color: #00FFFF !important;
+    border-bottom: 2px solid #00FFFF !important;
+
+    /* Target the icon and text specifically to avoid global shifts */
+    i, span, .e-tab-text, .e-tab-icon {
+        color: #00FFFF !important;
+        -webkit-text-fill-color: #00FFFF !important;
+    }
+}
+
+
+/* Target the "active-verify" class assigned by Angular"s router */
+nav a.active-verify {
+    color: #00FFFF !important;
+    border-bottom: 2px solid #00FFFF !important;
+
+    /* Target nested elements specifically to avoid layout shifts elsewhere */
+    i, span, .e-tab-text, .e-tab-icon {
+        color: #00FFFF !important;
+        -webkit-text-fill-color: #00FFFF !important;
+    }
+}
+
+
+/* Target the "active-verify" class assigned by the Angular router */
+nav a.active-verify {
+    color: #00FFFF !important;
+    border-bottom: 2px solid #00FFFF !important;
+
+    /* Target nested elements specifically to avoid layout shifts elsewhere */
+    i, span, .e-tab-text, .e-tab-icon {
+        color: #00FFFF !important;
+        -webkit-text-fill-color: #00FFFF !important;
+    }
+}
