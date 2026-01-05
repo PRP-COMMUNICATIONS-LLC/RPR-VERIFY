@@ -67,13 +67,12 @@ jobs:
 
       - name: Sync Phase 4 Progress to Notion
         if: success()
-        uses: thomas-lowry/github-to-notion@v1.0.1
+        uses: valerii-belov/notion-task-sync@v1.2.0
         with:
           notion-token: ${{ secrets.NOTION_TOKEN }}
-          notion-database-id: "2d0883cd4fa18107ad7be91ceabcbd79"
-          status-property: "Status"
-          status-value: "Done"
-          filter-property: "Name"
+          notion-db-id: "2d0883cd4fa18107ad7be91ceabcbd79"
+          task-name: "UI Branding Alignment"
+          task-status: "Done"
 
       # Install Functions Dependencies and Build
       - name: Install Functions Dependencies
@@ -84,6 +83,11 @@ jobs:
       - name: Build Functions
         working-directory: ./backend/functions
         run: npm run build
+        continue-on-error: true
+
+      # Install Firebase CLI (required for Functions deployment)
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
         continue-on-error: true
 
       # Deploy Functions (Optional - won't fail workflow if this fails)
