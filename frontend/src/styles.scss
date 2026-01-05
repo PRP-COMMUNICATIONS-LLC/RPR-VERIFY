@@ -100,3 +100,11 @@ input[type="checkbox"],
 input[type="radio"] {
   accent-color: #FFFFFF !important; /* Sentinel Blackout: Pure White */
 }
+
+/* Phase 4 Mobile Branding */
+@media (max-width: 768px) {
+  .nav-item.active, .mobile-menu-link.active {
+    color: #00FFFF !important;
+    border-bottom: 2px solid #00FFFF !important;
+  }
+}

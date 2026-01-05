@@ -141,3 +141,19 @@
     text-transform: uppercase;
   }
 }
+
+/* Phase 4 Mobile Responsiveness */
+@media (max-width: 768px) {
+  .dropzone-container {
+    padding: 20px;
+    min-height: 150px;
+  }
+  
+  .dropzone-icon {
+    font-size: 2rem;
+  }
+  
+  .dropzone-content {
+    gap: 12px;
+  }
+}

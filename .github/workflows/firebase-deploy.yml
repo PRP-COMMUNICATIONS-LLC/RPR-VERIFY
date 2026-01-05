@@ -72,6 +72,16 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcloud-service-account.json
 
+      - name: Sync Phase 4 Progress to Notion
+        if: success()
+        uses: danyatomas/github-to-notion-sync@v1.0.0
+        with:
+          notion-token: ${{ secrets.NOTION_TOKEN }}
+          notion-database-id: ${{ secrets.NOTION_DATABASE_ID }}
+          status-property: "Status"
+          status-value: "Done"
+          filter-property: "Name" # Matches the 'Name' column in your Notion Checklist
+
       # Install Functions Dependencies and Build
       - name: Install Functions Dependencies
         working-directory: ./backend/functions
