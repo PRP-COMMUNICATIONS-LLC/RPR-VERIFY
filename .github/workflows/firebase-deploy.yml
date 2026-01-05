@@ -1,13 +1,9 @@
 name: RPR-VERIFY Full Stack Deployment
-
-# Trigger on every push to the main branch
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  # Job 1: Independent Frontend & Roadmap Sync
   deploy_frontend:
     runs-on: ubuntu-latest
     steps:
@@ -27,22 +23,24 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}'
           projectId: rpr-verify-b
           channelId: live
-      - name: Direct Notion Sync (No Action Needed)
+      
+      - name: Sovereign Notion Sync
         if: success()
         run: |
-          PAGE_ID=$(curl -s -X POST https://api.notion.com/v1/databases/2d0883cd4fa18107ad7be91ceabcbd79/query \
+          # Step 1: Find the Row ID for the task
+          PAGE_ID=$(curl -s -X POST "https://api.notion.com/v1/databases/2d0883cd4fa180768aa9c3c19de5ef09/query" \
             -H "Authorization: Bearer ${{ secrets.NOTION_TOKEN }}" \
             -H "Notion-Version: 2022-06-28" \
             -H "Content-Type: application/json" \
-            -d '{"filter":{"property":"Name","title":{"equals":"UI Branding Alignment"}}}' | jq -r '.results[0].id')
+            -d '{"filter": {"property": "Name", "title": {"equals": "UI Branding Alignment"}}}' | jq -r '.results[0].id')
           
-          curl -X PATCH https://api.notion.com/v1/pages/$PAGE_ID \
+          # Step 2: Update the 'Status' property to 'Done'
+          curl -X PATCH "https://api.notion.com/v1/pages/$PAGE_ID" \
             -H "Authorization: Bearer ${{ secrets.NOTION_TOKEN }}" \
-            -H "Content-Type: application/json" \
             -H "Notion-Version: 2022-06-28" \
-            --data '{"properties": {"Status": {"status": {"name": "Done"}}}}'
+            -H "Content-Type: application/json" \
+            -d '{"properties": {"Status": {"status": {"name": "Done"}}}}'
 
-  # Job 2: Independent Backend Functions
   deploy_functions:
     runs-on: ubuntu-latest
     steps:
@@ -50,23 +48,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install Functions Dependencies
+      - name: Build & Deploy Functions
         run: |
           cd backend/functions
           npm install
-      - name: Build Functions
-        run: |
-          cd backend/functions
           npm run build
-        continue-on-error: true
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-      - name: Write Service Account Credentials
-        run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}' > /tmp/gcloud-service-account.json
-          chmod 600 /tmp/gcloud-service-account.json
-      - name: Deploy Cloud Functions
-        run: firebase deploy --only functions --project rpr-verify-b --non-interactive
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcloud-service-account.json
-        continue-on-error: true
+          sudo npm install -g firebase-tools
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RPR_VERIFY_B }}' > /tmp/key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/key.json
+          firebase deploy --only functions --project rpr-verify-b
