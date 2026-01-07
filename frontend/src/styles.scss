@@ -121,21 +121,25 @@ input[type="radio"] {
   }
 }
 
-/* SOVEREIGN BRANDING CORRECTION */
-.brand-text-verify, .logo-container span {
-  /* Fix 1: Exact Sovereign Cyan (Correcting the 0, 224, 255 drift) */
-  color: #00FFFF !important;
-
-  /* Fix 2: Prevent stacking/wrapping (Correcting 'normal' to 'nowrap') */
-  white-space: nowrap !important;
-  display: inline-block;
-}
-
-/* Fix 3: Ensure the container forces horizontal integrity */
+/* SOVEREIGN BRANDING: SPLIT-COLOR WORDMARK */
 .logo-container {
   display: flex !important;
   flex-wrap: nowrap !important;
   align-items: center;
+  white-space: nowrap !important;
+  font-family: 'Inter', sans-serif; /* Ensuring the "Previous Visual Style" font */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  .brand-text-rpr {
+    color: #FFFFFF !important; /* Pure White Mandate */
+    margin-right: 4px;
+  }
+
+  .brand-text-verify {
+    color: #00FFFF !important; /* Sovereign Cyan (#00FFFF) */
+    text-transform: uppercase;
+  }
 }
 
 /* SOVEREIGN STATE CORRECTION: Red Alert Transition */
