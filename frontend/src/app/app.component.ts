@@ -19,7 +19,7 @@ import { VerificationService } from './core/services/verification.service';
           </svg>
           
           <div class="logo-container" style="font-family: 'Inter', sans-serif; font-size: 22px; letter-spacing: -0.5px; line-height: 1;">
-            <span style="font-weight: 700; color: #FFFFFF;">RPR </span>
+            <span class="brand-text-rpr">RPR </span>
             <span class="brand-text-verify">VERIFY</span>
           </div>
         </div>
