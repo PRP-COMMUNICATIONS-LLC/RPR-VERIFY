@@ -4,6 +4,15 @@ import { HttpClient } from '@angular/common/http';
 import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
 import { Observable, fromEvent, switchMap, map, retry, timer, catchError, throwError, MonoTypeOperatorFunction } from 'rxjs';
 
+export interface ForensicError {
+  message: string;
+  status: number;
+  error?: {
+    code?: string;
+    message?: string;
+  };
+}
+
 export interface SentinelTrigger {
   id: string;
   name: string;
@@ -204,8 +213,8 @@ export class VerificationService {
 
     return this.http.post<ForensicResponse>(this.API_URL, formData).pipe(
       this.createRetryOperator<ForensicResponse>(3), // Fixed Type Safety
-      catchError((error: any) => {
-        const errorCode = error.error?.errorCode;
+      catchError((error: ForensicError) => {
+        const errorCode = error.error?.code;
         console.error(`[VERIFICATION SERVICE] Document processing failed with error code: ${errorCode}`, error);
 
         switch (errorCode) {

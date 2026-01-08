@@ -102,3 +102,4 @@ npm_output.log
 test-results/
 frontend/src/**/*.js
 frontend/src/**/*.js.map
+*.png
