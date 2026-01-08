@@ -40,7 +40,7 @@ import { EscalationService } from '../../core/services/escalation.service';
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
             <h3 style="font-size: 11px; letter-spacing: 0.15em; color: #FFFFFF; text-transform: uppercase; margin: 0;">
-              CIS Document #{{ projectService.activeProjectId() || 'PENDING' }}
+              CIS Document #{{ forensicData()?.case_id || 'PENDING' }}
             </h3>
 
             <div style="display: flex; gap: 16px;">
@@ -64,36 +64,36 @@ import { EscalationService } from '../../core/services/escalation.service';
             <div>
               <h4 style="font-size: 10px; color: #FFFFFF; letter-spacing: 0.1em; margin-bottom: 16px; text-transform: uppercase;">I. Identity Section</h4>
               <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.7);">
-                <p>FULL NAME: <strong style="color: #fff;">JONATHAN QUINTON SMITH</strong></p>
-                <p>ID NUMBER: <strong style="color: #fff;">SMITH202552</strong></p>
-                <p>VERIFICATION: <strong style="color: #FFFFFF;">NOMINAL</strong></p>
+                <p>FULL NAME: <strong style="color: #fff;">{{ forensicData()?.data?.identity?.fullName || 'N/A' }}</strong></p>
+                <p>ID NUMBER: <strong style="color: #fff;">{{ forensicData()?.data?.identity?.idNumber || 'N/A' }}</strong></p>
+                <p>VERIFICATION: <strong style="color: #FFFFFF;">{{ forensicData()?.risk_status || 'PENDING' }}</strong></p>
               </div>
             </div>
 
             <div>
               <h4 style="font-size: 10px; color: #FFFFFF; letter-spacing: 0.1em; margin-bottom: 16px; text-transform: uppercase;">II. Address Section</h4>
               <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.7);">
-                <p>STREET: <strong style="color: #fff;">123 FINANCIAL DISTRICT</strong></p>
-                <p>POSTAL CODE: <strong style="color: #fff;">2000 AU</strong></p>
-                <p>COUNTRY: <strong style="color: #fff;">AUSTRALIA</strong></p>
+                <p>STREET: <strong style="color: #fff;">{{ forensicData()?.data?.address?.street || 'N/A' }}</strong></p>
+                <p>POSTAL CODE: <strong style="color: #fff;">{{ forensicData()?.data?.address?.postalCode || 'N/A' }}</strong></p>
+                <p>COUNTRY: <strong style="color: #fff;">{{ forensicData()?.data?.address?.country || 'N/A' }}</strong></p>
               </div>
             </div>
 
             <div>
               <h4 style="font-size: 10px; color: #FFFFFF; letter-spacing: 0.1em; margin-bottom: 16px; text-transform: uppercase;">III. Entity Section</h4>
               <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.7);">
-                <p>TYPE: <strong style="color: #fff;">BUSINESS TRUST</strong></p>
-                <p>ABN: <strong style="color: #fff;">12 345 678 901</strong></p>
-                <p>STATUS: <strong style="color: #fff;">ACTIVE / REGISTERED</strong></p>
+                <p>TYPE: <strong style="color: #fff;">{{ forensicData()?.data?.entity?.type || 'N/A' }}</strong></p>
+                <p>ABN: <strong style="color: #fff;">{{ forensicData()?.data?.entity?.abn || 'N/A' }}</strong></p>
+                <p>STATUS: <strong style="color: #fff;">{{ forensicData()?.data?.entity?.status || 'N/A' }}</strong></p>
               </div>
             </div>
 
             <div>
               <h4 style="font-size: 10px; color: #FFFFFF; letter-spacing: 0.1em; margin-bottom: 16px; text-transform: uppercase;">IV. Bank Section</h4>
               <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.7);">
-                <p>BANK: <strong style="color: #fff;">CBA AU (COMMONWEALTH)</strong></p>
-                <p>ACCOUNT: <strong style="color: #fff;">BUSINESS CHECKING</strong></p>
-                <p>BRANCH: <strong style="color: #fff;">SYDNEY CENTRAL</strong></p>
+                <p>BANK: <strong style="color: #fff;">{{ forensicData()?.data?.bank?.bankName || 'N/A' }}</strong></p>
+                <p>ACCOUNT: <strong style="color: #fff;">{{ forensicData()?.data?.bank?.accountType || 'N/A' }}</strong></p>
+                <p>BRANCH: <strong style="color: #fff;">{{ forensicData()?.data?.bank?.branch || 'N/A' }}</strong></p>
               </div>
             </div>
           </div>
