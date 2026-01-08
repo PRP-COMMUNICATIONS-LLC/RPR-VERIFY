@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { ProjectService } from '../../core/services/project.service';
 import { VerificationService, ForensicMetadata, ForensicResponse } from '../../core/services/verification.service';
@@ -67,6 +68,9 @@ import { EscalationService } from '../../core/services/escalation.service';
                 <p>FULL NAME: <strong style="color: #fff;">{{ forensicData()?.data?.identity?.fullName || 'N/A' }}</strong></p>
                 <p>ID NUMBER: <strong style="color: #fff;">{{ forensicData()?.data?.identity?.idNumber || 'N/A' }}</strong></p>
                 <p>VERIFICATION: <strong style="color: #FFFFFF;">{{ forensicData()?.risk_status || 'PENDING' }}</strong></p>
+                @if (viewMode() === 'CLIENT') {
+                  <p>BEHAVIORAL SCORE: <strong style="color: #FFFFFF;">{{ forensicData()?.data?.behavioral_score || 'N/A' }}</strong></p>
+                }
               </div>
             </div>
 
@@ -215,12 +219,14 @@ export class VerificationComponent implements OnInit {
   projectService = inject(ProjectService);
   verificationService = inject(VerificationService);
   private escalation = inject(EscalationService); // Activate escalation logic
+  private route = inject(ActivatedRoute);
 
   // Sovereign State Machine for Pulse Scanner
   readonly scanStep = signal<number>(0);
   readonly status = signal<'SCANNING' | 'COMPLETED'>('SCANNING');
   readonly forensicMetadata = signal<ForensicMetadata | null>(null);
   readonly forensicData = signal<ForensicResponse | null>(null); // Full response data for UI display
+  readonly viewMode = signal<'CLIENT' | 'BANK'>('CLIENT');
 
   // Derived metadata for display
   readonly currentPhaseLabel = computed(() => {
@@ -276,6 +282,14 @@ export class VerificationComponent implements OnInit {
 
   ngOnInit() {
     this.runForensicSequence();
+    this.route.queryParams.subscribe(params => {
+      const mode = params['viewMode'];
+      if (mode === 'BANK') {
+        this.viewMode.set('BANK');
+      } else {
+        this.viewMode.set('CLIENT');
+      }
+    });
   }
 
   private runForensicSequence() {
