@@ -97,3 +97,9 @@ service-account.json
 frontend/src/environments/environment.ts
 frontend/src/environments/environment.prod.ts
 npm_output.log
+
+# --- Build and Test Artifacts ---
+test-results/
+frontend/src/**/*.js
+frontend/src/**/*.js.map
+*.png
