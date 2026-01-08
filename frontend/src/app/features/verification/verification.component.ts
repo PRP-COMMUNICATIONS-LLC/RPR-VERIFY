@@ -68,9 +68,6 @@ import { EscalationService } from '../../core/services/escalation.service';
                 <p>FULL NAME: <strong style="color: #fff;">{{ forensicData()?.data?.identity?.fullName || 'N/A' }}</strong></p>
                 <p>ID NUMBER: <strong style="color: #fff;">{{ forensicData()?.data?.identity?.idNumber || 'N/A' }}</strong></p>
                 <p>VERIFICATION: <strong style="color: #FFFFFF;">{{ forensicData()?.risk_status || 'PENDING' }}</strong></p>
-                @if (viewMode() === 'CLIENT') {
-                  <p>BEHAVIORAL SCORE: <strong style="color: #FFFFFF;">{{ forensicData()?.data?.behavioral_score || 'N/A' }}</strong></p>
-                }
               </div>
             </div>
 
