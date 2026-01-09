@@ -1,17 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// import { HttpErrorResponse } from '@angular/common/http';
 import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
 import { Observable, fromEvent, switchMap, map, retry, timer, catchError, throwError, MonoTypeOperatorFunction } from 'rxjs';
-
-export interface ForensicError {
-  message: string;
-  status: number;
-  error?: {
-    code?: string;
-    message?: string;
-  };
-}
 
 export interface SentinelTrigger {
   id: string;
@@ -29,42 +19,12 @@ export interface ForensicMetadata {
   safety_threshold: string;
 }
 
-export interface IdentityData {
-  fullName?: string;
-  idNumber?: string;
-}
-
-export interface AddressData {
-  street?: string;
-  postalCode?: string;
-  country?: string;
-}
-
-export interface EntityData {
-  type?: string;
-  abn?: string;
-  status?: string;
-}
-
-export interface BankData {
-  bankName?: string;
-  accountType?: string;
-  branch?: string;
-}
-
-export interface ForensicData {
-  identity?: IdentityData;
-  address?: AddressData;
-  entity?: EntityData;
-  bank?: BankData;
-}
-
 export interface ForensicResponse {
   status: string;
   case_id: string;
   risk_status: string;
   forensic_metadata: ForensicMetadata;
-  data: ForensicData;
+  data: Record<string, unknown>; // Data structure depends on document type
 }
 
 @Injectable({ providedIn: 'root' })
@@ -120,7 +80,7 @@ export class VerificationService {
     const status = this.systemStatus();
     if (status === 'RED') return '#FF0000';   // High Risk / Critical Failure
     if (status === 'AMBER') return '#FFBF00'; // Discrepancy / Warning
-    return '#00FFFF';                         // Default to Cyan for NORMAL state
+    return '#FFFFFF';                         // Sentinel Blackout: White (Proactive state)
   }
 
   // Live Singapore Production Node - Cloud Run Backend
@@ -213,23 +173,9 @@ export class VerificationService {
 
     return this.http.post<ForensicResponse>(this.API_URL, formData).pipe(
       this.createRetryOperator<ForensicResponse>(3), // Fixed Type Safety
-      catchError((error: ForensicError) => {
-        const errorCode = error.error?.code;
-        console.error(`[VERIFICATION SERVICE] Document processing failed with error code: ${errorCode}`, error);
-
-        switch (errorCode) {
-          case 'RateLimitError':
-            this.systemStatus.set('AMBER');
-            break;
-          case 'ValidationError':
-          case 'ForensicMetadataError':
-            this.systemStatus.set('RED');
-            break;
-          default:
-            this.systemStatus.set('RED'); // Default to RED for any other server-side failure
-        }
-
-        return throwError(() => new Error(`Processing failed: ${errorCode || 'Unknown Error'}`));
+      catchError((error) => {
+        console.error('[VERIFICATION SERVICE] Document processing failed after retries:', error);
+        return throwError(() => new Error('Document processing failed. The service may be starting up. Please try again.'));
       })
     );
   }
