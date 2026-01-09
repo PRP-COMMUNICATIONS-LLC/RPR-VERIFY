@@ -46,6 +46,7 @@ import { EscalationService } from '../../core/services/escalation.service';
             <div style="display: flex; gap: 16px;">
               <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none">
               <button (click)="fileInput.click()"
+                data-testid="trigger-verification"
                 style="background: #FFFFFF; border: none; color: #000000; font-size: 9px; padding: 10px 24px; cursor: pointer; border-radius: 2px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">
                 Process Document
               </button>
@@ -169,15 +170,15 @@ import { EscalationService } from '../../core/services/escalation.service';
                 style="margin-top: 24px; font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.2em; text-transform: uppercase;">
                 VERIFICATION COMPLETE
               </div>
-              
-              @if (forensicMetadata(); as meta) {
+
+              @if (forensicData(); as data) {
                 <div style="margin-top: 32px; padding: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; text-align: left; width: 100%; max-width: 400px;">
                   <h5 style="color: #FFFFFF; font-size: 10px; margin-top: 0; margin-bottom: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Forensic Metadata Echo</h5>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 9px; color: rgba(255,255,255,0.8); font-family: 'JetBrains Mono', monospace;">
-                    <div>REGION: <span style="color: #fff">{{ meta.region }}</span></div>
-                    <div>MODEL: <span style="color: #fff">{{ meta.model_version }}</span></div>
-                    <div style="grid-column: span 2">TIMESTAMP: <span style="color: #fff">{{ meta.timestamp }}</span></div>
-                    <div style="grid-column: span 2">NODE: <span style="color: #fff">ASIA-SOUTHEAST1-SGP</span></div>
+                    <div>CASE ID: <span style="color: #fff">{{ data.case_id }}</span></div>
+                    <div>RISK: <span [style.color]="pulseColor()">{{ data.risk_status }}</span></div>
+                    <div data-testid="proc-method" style="grid-column: span 2">PROC. METHOD: <span style="color: #fff">{{ data.forensic_metadata.extracted_by }}</span></div>
+                    <!-- BANK_MODE GOVERNANCE: behavioral_score is intentionally NOT rendered -->
                   </div>
                 </div>
               }
